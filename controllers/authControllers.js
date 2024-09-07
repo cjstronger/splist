@@ -1,13 +1,24 @@
 const crypto = require("crypto");
+const AppError = require("../utils/AppError");
+const User = require("../models/userModel");
+const catchAsync = require("../utils/catchAsync");
 
-exports.signUp = (req, res) => {
-  //1) get the un/pw
-  const { username, password, passwordConfirm } = req.body;
-  if(password !== passwordConfirm) return next()
-  //2) salt the pw in the model
+exports.signUp = catchAsync(async (req, res) => {
+  //1) get the un/pw - done
+  const { email, password, confirmPassword } = req.body;
+  //2) salt the pw in a pre middleware - done
   //3) create a new user with the User model
-  //4) error handle
-  //5) login
+  const user = await User.create({
+    password,
+    email,
+    confirmPassword,
+  });
+
+  res.status(200).json({ status: "success", data: { user } });
+});
+
+exports.hello = (req, res) => {
+  res.status(200).json({ data: "hello" });
 };
 
 exports.login = (req, res) => {
