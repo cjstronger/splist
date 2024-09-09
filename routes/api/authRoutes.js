@@ -7,4 +7,8 @@ authRouter.post("/login", authController.login);
 authRouter.post("/logout");
 authRouter.post("/signup", authController.signUp, authController.login);
 
+authRouter.get("/spotify", authController.spotifyRedirect);
+
+authRouter.route("/callback").get(authController.spotifyCallback);
+
 module.exports = authRouter;

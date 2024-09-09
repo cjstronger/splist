@@ -5,4 +5,19 @@ const mongoose = require("mongoose");
 //3) playlists should have a one to one relationship
 //4) songs should have a many to many relationship
 
-const playlistSchema = new mongoose.Schema({});
+const playlistSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "A playlist name is required"],
+    unique: [true, "Playlist name must be unique"],
+  },
+  songs: [{ type: mongoose.Schema.ObjectId, ref: "song" }],
+  description: {
+    type: String,
+    max: [500, "Max characters in a description is 500 characters"],
+  },
+});
+
+const Playlist = mongoose.model("playlist", playlistSchema);
+
+module.exports = Playlist;
