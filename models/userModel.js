@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema({
     default: "user",
     select: false,
   },
+  platforms: {
+    type: [String],
+  },
 });
 
 userSchema.pre("save", async function (next) {
@@ -52,7 +55,7 @@ userSchema.method("verify", async function (attemptedPW, encryptedPW) {
 });
 
 userSchema.method("generateToken", function (id) {
-  const token = jwt.sign({ id }, process.env.JWTKEY, {
+  const token = jwt.sign({ id }, process.env.JWT_KEY, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
   return token;

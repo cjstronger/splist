@@ -2,6 +2,7 @@ const express = require("express");
 const authRouter = require("./routes/api/authRoutes");
 const handleOpErrors = require("./utils/handleOpErrors");
 const cookieParser = require("cookie-parser");
+const userRouter = require("./routes/api/userRoutes");
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 
 app.use((err, req, res, next) => {
   console.log(err);
