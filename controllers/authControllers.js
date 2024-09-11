@@ -38,8 +38,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
   res.cookie("jwt", token, cookieOptions);
 
-  res.user = verifiedUser;
-
   res.status(201).json({
     status: "success",
     token,
@@ -47,10 +45,9 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.verify = (req, res, next) => {
+exports.verify = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    req.body.user = undefined;
     return next(
       new AppError(
         "You must be logged in for this route, use the /login route",
@@ -58,15 +55,19 @@ exports.verify = (req, res, next) => {
       )
     );
   }
-  const verified = jwt.verify(token, process.env.JWT_KEY);
-  if (!verified) {
-    req.body.user = undefined;
+  const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
+  if (!verifiedToken) {
     return next(
       new AppError("Your login has expired, please login again", 401)
     );
   }
+
+  const freshUser = await User.findById(verifiedToken.id);
+
+  res.user = freshUser;
+
   next();
-};
+});
 
 exports.spotifyRedirect = (req, res, next) => {
   const generateRandomString = (length) => {
@@ -101,6 +102,8 @@ exports.spotifyCallback = async (req, res, next) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   const originalState = cookies.state;
+  const token = cookies.jwt;
+  const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
 
   if (originalState !== state)
     return next(
@@ -132,8 +135,8 @@ exports.spotifyCallback = async (req, res, next) => {
     const response = await axios.post(authOptions.url, authOptions.form, {
       headers: authOptions.headers,
     });
-    await User.findByIdAndUpdate(req.body.user._id, {
-      $push: { platforms: "spotify" },
+    await User.findByIdAndUpdate(verifiedToken.id, {
+      $addToSet: { platforms: "spotify" },
     });
     res.status(200).json({
       status: "success",

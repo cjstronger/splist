@@ -9,7 +9,7 @@ const playlistSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "A playlist name is required"],
-    unique: [true, "Playlist name must be unique"],
+    unique: [true, "Playlist name cannot match that of another"],
   },
   songs: [{ type: mongoose.Schema.ObjectId, ref: "song" }],
   description: {

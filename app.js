@@ -1,8 +1,11 @@
 const express = require("express");
 const authRouter = require("./routes/api/authRoutes");
+const viewsRouter = require("./routes/react/viewRoutes");
 const handleOpErrors = require("./utils/handleOpErrors");
 const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
+const path = require("path");
+const reactViews = require("express-react-views");
 
 const app = express();
 
@@ -10,8 +13,18 @@ app.use(express.json({ limit: "10kb" }));
 
 app.use(cookieParser());
 
-app.use("/api/auth", authRouter);
-app.use("/api/users", userRouter);
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jsx");
+app.engine("jsx", reactViews.createEngine());
+
+app.use(express.static(path.join(__dirname, "public")));
+
+if (process.env.MODE === "development") {
+  app.use("/api/auth", authRouter);
+  app.use("/api/users", userRouter);
+} else {
+  app.use("/", viewsRouter);
+}
 
 app.use((err, req, res, next) => {
   console.log(err);
