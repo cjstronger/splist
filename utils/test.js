@@ -1,5 +1,3 @@
-const nums = [1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5];
-
 var removeElement = function (nums, val) {
   let k = 0;
   for (let i = 0; i < nums.length; ) {
@@ -35,4 +33,48 @@ var removeDuplicates = function (nums) {
   return nums;
 };
 
-console.log(removeDuplicates(nums));
+// var majorityElement = function (nums) {
+//   const map = new Map();
+//   let majority = null;
+//   for (let i = 0; i < nums.length; i++) {
+//     if (map.has(nums[i])) {
+//       map.set(nums[i], map.get(nums[i]) + 1);
+//     } else {
+//       map.set(nums[i], 1);
+//     }
+//     if (map.get(nums[i]) > nums.length / 2) {
+//       majority = nums[i];
+//     }
+//   }
+//   return majority;
+// };
+
+var majorityElement = function (nums) {
+  let count = 0;
+  let candidate = null;
+  for (let i = 0; i < nums.length; i++) {
+    if (count === 0) {
+      candidate = nums[i];
+      count++;
+    } else if (nums[i] === candidate) {
+      count++;
+    } else {
+      count--;
+    }
+  }
+  return candidate;
+};
+
+var maxProfit = function (prices) {
+  let buyLow = prices[0];
+  let profit = 0;
+  for (let i = 1; i < prices.length; i++) {
+    if (prices[i] < buyLow) {
+      buyLow = prices[i];
+    } else if (prices[i] - buyLow > profit) {
+      profit = prices[i] - buyLow;
+    }
+  }
+  return profit;
+};
+console.log(maxProfit([9, 2, 1, 9, 0, 6, 7]));

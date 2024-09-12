@@ -23,6 +23,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password)
     return next(new AppError("An email and password is required", 401));
   const user = await User.findOne({ email }).select("+password");
+  if (!user) return next(new AppError("Account not found with this email"));
   const verifiedUser = await user.verify(req.body.password, user.password);
   if (!verifiedUser)
     return next(new AppError("The email or password is incorrect", 401));
@@ -85,13 +86,15 @@ exports.spotifyRedirect = (req, res, next) => {
     //add secure to true for live app
   });
 
+  res.cookie("api", true);
+
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
         response_type: "code",
         client_id: process.env.SPOTIFY_ID,
         scope: scope,
-        redirect_uri: "http://localhost:3000/api/auth/callback",
+        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
         state: state,
       })
   );
@@ -117,7 +120,7 @@ exports.spotifyCallback = async (req, res, next) => {
       url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
-        redirect_uri: "http://localhost:3000/api/auth/callback",
+        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
         grant_type: "authorization_code",
       },
       headers: {
@@ -138,10 +141,17 @@ exports.spotifyCallback = async (req, res, next) => {
     await User.findByIdAndUpdate(verifiedToken.id, {
       $addToSet: { platforms: "spotify" },
     });
-    res.status(200).json({
-      status: "success",
-      data: response.data,
-    });
+
+    res.cookie("spotify_token", response.data.access_token);
+
+    if (cookies.api == "true") {
+      res.status(200).json({
+        status: "success",
+        data: response.data,
+      });
+    } else {
+      res.redirect("/");
+    }
   } catch (err) {
     return next(new AppError(err.message, err.statusCode));
   }

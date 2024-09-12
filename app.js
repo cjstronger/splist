@@ -5,26 +5,54 @@ const handleOpErrors = require("./utils/handleOpErrors");
 const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
-const reactViews = require("express-react-views");
+const helmet = require("helmet");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors());
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'", "data:", "blob:", "https:", "ws:"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", "https:", "data:"],
+        scriptSrc: ["'self'", "https:", "http:", "blob:"],
+        objectSrc: ["'none'"],
+        styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+        childSrc: ["'self'", "blob:"],
+        imgSrc: ["'self'", "data:", "blob:"],
+        formAction: ["'self'"],
+        connectSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "data:",
+          "blob:",
+          "https://*.spotify.com",
+          "https://bundle.js:*",
+          "ws://127.0.0.1:*/",
+        ],
+        upgradeInsecureRequests: [],
+      },
+    },
+  })
+);
 
 app.use(express.json({ limit: "10kb" }));
 
 app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jsx");
-app.engine("jsx", reactViews.createEngine());
+app.set("view engine", "pug");
 
 app.use(express.static(path.join(__dirname, "public")));
 
-if (process.env.MODE === "development") {
-  app.use("/api/auth", authRouter);
-  app.use("/api/users", userRouter);
-} else {
-  app.use("/", viewsRouter);
-}
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+
+app.use("/", viewsRouter);
 
 app.use((err, req, res, next) => {
   console.log(err);
