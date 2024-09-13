@@ -77,4 +77,30 @@ var maxProfit = function (prices) {
   }
   return profit;
 };
-console.log(maxProfit([9, 2, 1, 9, 0, 6, 7]));
+
+var romanToInt = function (s) {
+  let conversion = 0;
+  let romanToInt = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000,
+  };
+  for (let i = 0; i < s.length; ) {
+    let count = 0;
+    if (romanToInt[s[i]] > romanToInt[s[i + 1]]) {
+      count += romanToInt[s[i]];
+      i++;
+    } else {
+      count += romanToInt[s[i + 1]] - romanToInt[s[i]];
+      i += 2;
+    }
+    conversion += count;
+  }
+  return conversion;
+};
+
+console.log(romanToInt("MCMXCVI"));

@@ -1,16 +1,15 @@
 const express = require("express");
 const authRouter = require("./routes/api/authRoutes");
 const viewsRouter = require("./routes/react/viewRoutes");
+const playlistRouter = require("./routes/api/playlistRoutes");
 const handleOpErrors = require("./utils/handleOpErrors");
 const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
 const helmet = require("helmet");
-const cors = require("cors");
+const Bundler = require("parcel-bundler");
 
 const app = express();
-
-app.use(cors());
 
 app.use(
   helmet({
@@ -51,6 +50,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/playlists", playlistRouter);
 
 app.use("/", viewsRouter);
 
