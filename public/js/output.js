@@ -6360,6 +6360,18 @@ if (spotifyLink) {
     }, _callee2);
   })));
 }
+var lightDarkButton = document.querySelector(".light-dark-button");
+if (lightDarkButton) {
+  lightDarkButton.addEventListener("click", function (e) {
+    var root = document.documentElement;
+    var bg = getComputedStyle(root).getPropertyValue("--bg");
+    var accent = getComputedStyle(root).getPropertyValue("--accent");
+    var text = getComputedStyle(root).getPropertyValue("--text");
+    root.style.setProperty("--bg", bg === "#bfcdd9" ? "#414141" : "#bfcdd9");
+    root.style.setProperty("--accent", accent === "#e8e8e8" ? "#282828" : "#e8e8e8");
+    root.style.setProperty("--text", text === "#414141" ? "#e8e8e8" : "#414141");
+  });
+}
 },{"./login":"login.js","./spotify":"spotify.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -6385,7 +6397,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54164" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60835" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

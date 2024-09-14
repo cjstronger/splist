@@ -22,3 +22,23 @@ if (spotifyLink) {
     await spotifyLogin();
   });
 }
+
+const lightDarkButton = document.querySelector(".light-dark-button");
+
+if (lightDarkButton) {
+  lightDarkButton.addEventListener("click", (e) => {
+    const root = document.documentElement;
+    const bg = getComputedStyle(root).getPropertyValue("--bg");
+    const accent = getComputedStyle(root).getPropertyValue("--accent");
+    const text = getComputedStyle(root).getPropertyValue("--text");
+    root.style.setProperty("--bg", bg === "#bfcdd9" ? "#414141" : "#bfcdd9");
+    root.style.setProperty(
+      "--accent",
+      accent === "#e8e8e8" ? "#282828" : "#e8e8e8"
+    );
+    root.style.setProperty(
+      "--text",
+      text === "#414141" ? "#e8e8e8" : "#414141"
+    );
+  });
+}

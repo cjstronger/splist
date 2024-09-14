@@ -1,11 +1,21 @@
+:root {
+  --bg: #bfcdd9;
+  --accent: #e8e8e8;
+  --text: #414141;
+}
+
+* {
+  font-family: "Work Sans";
+  font-weight: 600;
+  font-variant: bold;
+  transition: background-color 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 body {
   padding: 0px;
   margin: 0px;
-  background-color: #bfcdd9;
-  color: #414141;
-  font-family: "Roboto Condensed";
-  letter-spacing: 8px;
-  text-transform: uppercase;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 main {
@@ -17,17 +27,12 @@ button {
   background-color: transparent;
   border: none;
   font-size: 20px;
-  border-radius: 50px;
-  padding: 10px;
   transition: all 0.1s ease-in;
-  font-family: "Roboto Condensed";
-  letter-spacing: 3px;
-  text-transform: uppercase;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #bfcdd9;
+  background-color: var(--bg);
 }
 
 nav {
@@ -35,10 +40,18 @@ nav {
   top: 0;
   width: 100%;
   height: 50px;
-  background-color: #e8e8e8;
+  background-color: var(--accent);
   display: flex;
   align-items: center;
   padding: 0px 20px;
+}
+
+.spotify-login {
+  border-radius: 50px;
+  padding: 10px;
+}
+
+.light-dark-button {
 }
 
 .title {
@@ -53,14 +66,14 @@ nav {
 }
 
 .user button {
-  color: #e8e8e8;
+  color: var(--accent);
 }
 
 .user-modal {
   cursor: default;
   width: 200px;
   height: 350px;
-  background-color: #414141;
+  background-color: var(--text);
   position: absolute;
   visibility: hidden;
   opacity: 0%;
@@ -78,4 +91,57 @@ nav {
 .user:hover .user-modal {
   visibility: visible;
   opacity: 100%;
+}
+
+.chat-bot {
+  border-radius: 30px;
+  width: 90vw;
+  max-width: 600px;
+  height: 40px;
+  background-color: var(--accent);
+  border: none;
+  display: flex;
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text);
+  overflow: hidden;
+  padding: 5px 5px;
+}
+
+.chat-input {
+  width: 90%;
+  height: 100%;
+  background-color: var(--accent);
+  border: none;
+  margin-left: 10px;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.chat-input:focus {
+  border: none;
+  outline: none;
+}
+
+.submit-svg {
+  width: 20px;
+  height: 20px;
+  padding: 11px;
+  z-index: 5;
+  background-color: var(--bg);
+  color: var(--text);
+  fill: currentColor;
+  border-radius: 999px;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.chat-input:valid + .submit-svg {
+  cursor: pointer;
+  pointer-events: all;
+  background-color: var(--text);
+  color: var(--accent);
 }
