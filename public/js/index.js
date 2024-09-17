@@ -1,5 +1,5 @@
 const { login } = require("./login");
-const { default: spotifyLogin } = require("./spotify");
+const spotify = require("./spotify");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -19,7 +19,18 @@ const spotifyLink = document.querySelector(".spotify-login");
 
 if (spotifyLink) {
   spotifyLink.addEventListener("click", async () => {
-    await spotifyLogin();
+    await spotify.spotifyLogin();
+  });
+}
+
+const chatBot = document.querySelector(".chat-bot");
+
+if (chatBot) {
+  const parameters = document.querySelector(".chat-input");
+  parameters.focus();
+  chatBot.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await spotify.spotifyGenerate(parameters.value);
   });
 }
 

@@ -1,6 +1,9 @@
 import axios from "axios";
-const querystring = require("querystring");
 
-export default function spotifyLogin() {
+exports.spotifyLogin = () => {
   location.assign("/spotify-login");
-}
+};
+
+exports.spotifyGenerate = async (params) => {
+  await axios.post("/api/playlists/generate", params);
+};

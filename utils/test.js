@@ -103,4 +103,23 @@ var romanToInt = function (s) {
   return conversion;
 };
 
-console.log(romanToInt("MCMXCVI"));
+var isPalindrome = function (s) {
+  let lowercaseS = s.toLowerCase();
+  let end = lowercaseS.length - 1;
+  let i = 0;
+  while (i < end) {
+    if (!lowercaseS[i].match(/^[A-Za-z]+$/)) {
+      i++;
+    } else if (!lowercaseS[end].match(/^[A-Za-z]+$/)) {
+      end--;
+    } else if (lowercaseS[end] !== lowercaseS[i]) {
+      return false;
+    } else {
+      i++;
+      end--;
+    }
+  }
+  return true;
+};
+
+console.log(isPalindrome("a."));

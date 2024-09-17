@@ -46,12 +46,42 @@ nav {
   padding: 0px 20px;
 }
 
+.login-form {
+  width: 80vw;
+  max-width: 800px;
+  height: 60vh;
+  background-color: var(--accent);
+  margin: 0 auto;
+  margin-top: 10vh;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding-top: 50px;
+}
+
+.login-input {
+  width: 60%;
+  height: 5vh;
+  border-radius: 30px;
+  background-color: var(--bg);
+  border: none;
+  font-size: 15px;
+  padding: 0px 10px;
+}
+
+.error {
+  color: #d65a5a;
+}
+
+.login-input:focus {
+  outline: none;
+}
+
 .spotify-login {
   border-radius: 50px;
   padding: 10px;
-}
-
-.light-dark-button {
 }
 
 .title {
@@ -121,7 +151,6 @@ nav {
 }
 
 .chat-input:focus {
-  border: none;
   outline: none;
 }
 

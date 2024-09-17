@@ -46,7 +46,7 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.verify = catchAsync(async (req, res, next) => {
+function signJWT(req, next) {
   const token = req.cookies.jwt;
   if (!token) {
     return next(
@@ -62,6 +62,11 @@ exports.verify = catchAsync(async (req, res, next) => {
       new AppError("Your login has expired, please login again", 401)
     );
   }
+  return verifiedToken;
+}
+
+exports.verify = catchAsync(async (req, res, next) => {
+  const verifiedToken = await signJWT(req, next);
 
   const freshUser = await User.findById(verifiedToken.id);
 
@@ -105,8 +110,7 @@ exports.spotifyCallback = async (req, res, next) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   const originalState = cookies.state;
-  const token = cookies.jwt;
-  const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
+  const verifiedToken = await signJWT(req, next);
 
   if (originalState !== state)
     return next(
