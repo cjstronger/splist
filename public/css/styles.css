@@ -23,7 +23,8 @@ main {
   margin-top: 50px;
 }
 
-button {
+button,
+a {
   background-color: transparent;
   border: none;
   font-size: 20px;
@@ -31,7 +32,8 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover,
+a:hover {
   background-color: var(--bg);
 }
 
@@ -44,6 +46,25 @@ nav {
   display: flex;
   align-items: center;
   padding: 0px 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.app-notif {
+  width: 200px;
+  height: auto;
+  text-align: center;
+  padding: 10px;
+  background-color: var(--accent);
+  color: var(--text);
+  border-radius: 20px;
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: medium;
 }
 
 .login-form {
@@ -63,7 +84,7 @@ nav {
 
 .login-input {
   width: 60%;
-  height: 5vh;
+  height: 40px;
   border-radius: 30px;
   background-color: var(--bg);
   border: none;
@@ -79,11 +100,6 @@ nav {
   outline: none;
 }
 
-.spotify-login {
-  border-radius: 50px;
-  padding: 10px;
-}
-
 .title {
   font-size: 100px;
   text-align: center;
@@ -95,8 +111,12 @@ nav {
   cursor: pointer;
 }
 
-.user button {
+.user-modal > * {
+  border-radius: 50px;
+  padding: 10px;
   color: var(--accent);
+  width: 100%;
+  text-align: center;
 }
 
 .user-modal {
@@ -114,7 +134,8 @@ nav {
   display: flex;
   flex-direction: column;
   justify-items: center;
-  gap: 5px;
+  align-items: center;
+  gap: 2px;
   padding: 12px;
 }
 
@@ -173,4 +194,14 @@ nav {
   pointer-events: all;
   background-color: var(--text);
   color: var(--accent);
+}
+
+::selection {
+  color: var(--bg);
+  background-color: var(--text);
+}
+
+.song {
+  background-color: var(--accent);
+  border-radius: 20px;
 }

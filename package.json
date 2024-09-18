@@ -4,6 +4,7 @@
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
+    "gsap": "^3.12.5",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
@@ -13,6 +14,6 @@
   },
   "scripts": {
     "dev": "node --env-file=.env.local --watch server.js",
-    "watch:js": "parcel watch ./public/js/index.js input-dir ./public/js/index.js --out-dir ./public/js --out-file output.js"
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file output.js"
   }
 }

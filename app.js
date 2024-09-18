@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
 const helmet = require("helmet");
-const Bundler = require("parcel-bundler");
 
 const app = express();
 
@@ -22,7 +21,7 @@ app.use(
         objectSrc: ["'none'"],
         styleSrc: ["'self'", "https:", "'unsafe-inline'"],
         childSrc: ["'self'", "blob:"],
-        imgSrc: ["'self'", "data:", "blob:"],
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
         formAction: ["'self'"],
         connectSrc: [
           "'self'",
@@ -32,6 +31,7 @@ app.use(
           "https://*.spotify.com",
           "https://bundle.js:*",
           "ws://127.0.0.1:*/",
+          "https://i.scdn.co/image/*",
         ],
         upgradeInsecureRequests: [],
       },

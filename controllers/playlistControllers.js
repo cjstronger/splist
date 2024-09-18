@@ -40,18 +40,19 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
     spotifyRes.forEach((res) => {
       spotifySongs = [...spotifySongs, res.data.tracks.items[0]];
     });
-    console.log(spotifySongs);
-    res.render("playlist", {
-      title: "New Playlist",
-      playlist: spotifySongs,
+    res.status(200).json({
+      status: "success",
+      data: spotifySongs,
     });
-    // res.status(200).json({
-    //   status: "success",
-    //   data: spotifySongs,
-    // });
   } catch (err) {
-    console.log(err);
-    console.log(err.response.data.error);
+    if (err.response.data.error.message === "Invalid access token") {
+      return next(
+        new AppError(
+          "Your Spotify login expired, login with Spotify please",
+          401
+        )
+      );
+    }
     return next(
       new AppError("Something went wrong while generating the playlist", 500)
     );

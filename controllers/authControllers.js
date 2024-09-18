@@ -49,12 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
 function signJWT(req, next) {
   const token = req.cookies.jwt;
   if (!token) {
-    return next(
-      new AppError(
-        "You must be logged in for this route, use the /login route",
-        401
-      )
-    );
+    return next(new AppError("You must be logged in", 401));
   }
   const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
   if (!verifiedToken) {
@@ -67,6 +62,8 @@ function signJWT(req, next) {
 
 exports.verify = catchAsync(async (req, res, next) => {
   const verifiedToken = await signJWT(req, next);
+
+  if (!verifiedToken) return;
 
   const freshUser = await User.findById(verifiedToken.id);
 

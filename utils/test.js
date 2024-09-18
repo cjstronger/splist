@@ -122,4 +122,27 @@ var isPalindrome = function (s) {
   return true;
 };
 
-console.log(isPalindrome("a."));
+var canConstruct = function (ransomNote, magazine) {
+  let map = new Map();
+  for (let i = 0; i < ransomNote.length; i++) {
+    let setter = map.get(ransomNote[i]);
+    if (setter) {
+      map.set(ransomNote[i], map.get(ransomNote[i]) + 1);
+    } else {
+      map.set(ransomNote[i], 1);
+    }
+  }
+  for (let j = 0; j < magazine.length; j++) {
+    let checker = map.get(magazine[j]);
+    if (checker) {
+      map.set(magazine[j], map.get(magazine[j]) - 1);
+    }
+    if (map.get(magazine[j]) === 0) {
+      map.delete(magazine[j]);
+    }
+    if (map.size === 0) {
+      return true;
+    }
+  }
+  return false;
+};

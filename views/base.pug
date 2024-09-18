@@ -13,6 +13,7 @@ html
       .user user
         .user-modal
           button.spotify-login #{spotifyToken ? 'Spotify' : 'connect spotify'}
+          a(href="/login") login
           button.light-dark-button light
     main
       block content

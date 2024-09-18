@@ -1,5 +1,6 @@
 const { login } = require("./login");
 const spotify = require("./spotify");
+const toast = require("./toast");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -30,7 +31,15 @@ if (chatBot) {
   parameters.focus();
   chatBot.addEventListener("submit", async (e) => {
     e.preventDefault();
-    await spotify.spotifyGenerate(parameters.value);
+    const { data, err } = await spotify.spotifyGenerate(parameters.value);
+    console.log(data.data.data);
+    if (err) {
+      return;
+    }
+    data.data.data.forEach((item) => {
+      let html = `<div class="song"><h1 class="song-name">${item.name}</h1><p class="album-name">${item.album.name}</p><p class="artist-name">${item.artists[0].name}</p><img src="${item.album.images[1].url}"/></div>`;
+      document.querySelector("body").insertAdjacentHTML("afterend", html);
+    });
   });
 }
 
