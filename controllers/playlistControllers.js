@@ -45,7 +45,8 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
       data: spotifySongs,
     });
   } catch (err) {
-    if (err.response.data.error.message === "Invalid access token") {
+    console.log(err.response.data.error);
+    if (err.response.data.error.status === 401) {
       return next(
         new AppError(
           "Your Spotify login expired, login with Spotify please",
