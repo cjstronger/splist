@@ -59,3 +59,35 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
     );
   }
 });
+
+exports.createPlaylist = catchAsync(async (req, res, next) => {
+  const cookies = cookieParser.JSONCookies(req.cookies);
+
+  console.log(cookies);
+
+  const { data, error } = await axios.get(`https://api.spotify.com/v1/me`, {
+    headers: { Authorization: `Bearer ${cookies.spotify_token}` },
+  });
+
+  if (error)
+    return next(new AppError("There was a problem getting your profile", 400));
+
+  const { id } = data;
+
+  console.log(req.body.name);
+  const { data: playlistData, error: playlistError } = axios.post(
+    `https://api.spotify.com/v1/users/${id}/playlists`,
+    {
+      name: req.body.name,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.spotify_token}`,
+      },
+    }
+  );
+  if (playlistError)
+    return next(new AppError("There was an error creating the playlist", 400));
+  console.log(playlistData);
+  return next();
+});

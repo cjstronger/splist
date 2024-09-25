@@ -4,10 +4,10 @@ const authController = require("../../controllers/authControllers");
 
 const playlistRouter = express.Router();
 
-playlistRouter.post(
-  "/generate",
-  authController.verify,
-  playlistController.generatePlaylist
-);
+playlistRouter.use(authController.verify);
+
+playlistRouter.post("/generate", playlistController.generatePlaylist);
+
+playlistRouter.post("/create", playlistController.createPlaylist);
 
 module.exports = playlistRouter;

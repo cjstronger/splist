@@ -81,7 +81,7 @@ exports.spotifyRedirect = (req, res, next) => {
   };
 
   var state = generateRandomString(16);
-  var scope = "user-read-private user-read-email";
+  var scope = "playlist-modify-public playlist-modify-private";
 
   res.cookie("state", state, {
     httpOnly: true,
@@ -90,16 +90,19 @@ exports.spotifyRedirect = (req, res, next) => {
 
   res.cookie("api", true);
 
-  res.redirect(
-    "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: process.env.SPOTIFY_ID,
-        scope: scope,
-        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
-        state: state,
-      })
-  );
+  const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.SPOTIFY_ID}&scope=playlist-modify-public%20playlist-modify-private&redirect_uri=http://127.0.0.1:3000/api/auth/callback&state=${state}`;
+
+  // res.redirect(
+  //   "https://accounts.spotify.com/authorize?" +
+  //     querystring.stringify({
+  //       response_type: "code",
+  //       client_id: process.env.SPOTIFY_ID,
+  //       scope,
+  //       redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
+  //       state: state,
+  //     })
+  // );
+  res.redirect(url);
 };
 
 exports.spotifyCallback = async (req, res, next) => {
@@ -144,6 +147,8 @@ exports.spotifyCallback = async (req, res, next) => {
     });
 
     res.cookie("spotify_token", response.data.access_token);
+
+    console.log("Access token scopes:", response.data.scope);
 
     if (cookies.api == "true") {
       res.status(200).json({

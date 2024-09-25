@@ -11590,6 +11590,41 @@ exports.spotifyGenerate = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
+exports.sendPlaylist = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(params) {
+    var html, submitButton;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          html = "<button class=\"spotify-playlist-submit\">send to spotify</button>";
+          document.querySelector("main").insertAdjacentHTML("beforeend", html);
+          submitButton = document.querySelector(".spotify-playlist-submit");
+          submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+            return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return _axios.default.post("/api/playlists/create", {
+                    body: {
+                      name: params.playlistName
+                    }
+                  });
+                case 2:
+                case "end":
+                  return _context2.stop();
+              }
+            }, _callee2);
+          })));
+        case 4:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3);
+  }));
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
+  };
+}();
 },{"axios":"../../node_modules/axios/index.js","./toast":"toast.js"}],"index.js":[function(require,module,exports) {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
@@ -11651,29 +11686,50 @@ if (spotifyLink) {
     }, _callee2);
   })));
 }
+var buffer = function buffer(ms) {
+  return new Promise(function (resolve) {
+    return setTimeout(resolve, ms);
+  });
+};
 var chatBot = document.querySelector(".chat-bot");
 if (chatBot) {
   var parameters = document.querySelector(".chat-input");
   parameters.focus();
+  var loading = false;
   chatBot.addEventListener("submit", /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-      var _yield$spotify$spotif, data, err, songs, playlist, splistTitle, playlistForm, gridLength;
+      var loaders, loaderElements, _yield$spotify$spotif, data, err, songs, playlist, splistTitle, playlistForm, playlistName, params;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
             e.preventDefault();
-            _context3.next = 3;
+            loading = true;
+            if (loading) {
+              loaders = '<div class="loaders">' + '<div class="loader"></div>'.repeat(21) + "</div>";
+              document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
+              loaderElements = document.querySelectorAll(".loader");
+              loaderElements.forEach(function (loader) {
+                var random = Math.random() * 2;
+                loader.style.animationDelay = "".concat(random, "s");
+              });
+            }
+            _context3.next = 5;
+            return buffer(1000);
+          case 5:
+            _context3.next = 7;
             return spotify.spotifyGenerate(parameters.value);
-          case 3:
+          case 7:
             _yield$spotify$spotif = _context3.sent;
             data = _yield$spotify$spotif.data;
             err = _yield$spotify$spotif.err;
+            document.querySelector(".loaders").remove();
+            loading = false;
             if (!err) {
-              _context3.next = 8;
+              _context3.next = 14;
               break;
             }
             return _context3.abrupt("return");
-          case 8:
+          case 14:
             songs = [];
             playlist = document.createElement("div");
             playlist.className = "playlist";
@@ -11686,6 +11742,12 @@ if (chatBot) {
             songs = songs[0];
             splistTitle = document.querySelector(".title");
             playlistForm = document.querySelector(".playlist-form");
+            gsap.gsap.from(songs, {
+              y: "100vh",
+              stagger: 0.1,
+              duration: 0.5,
+              ease: "sine"
+            });
             gsap.gsap.to(chatBot, {
               y: "100vh",
               duration: 3.5,
@@ -11702,29 +11764,21 @@ if (chatBot) {
               delay: 0.5,
               ease: "power2"
             });
-            playlistForm.focus();
-            gridLength = getComputedStyle(playlist).gridTemplateColumns.split(" ").length;
             songs.forEach(function (song, i) {
               var songDetails = song.children[1];
               var songsBelow = [];
-              for (var j = i + gridLength; j < songs.length; j += gridLength) {
-                songsBelow = [].concat(_toConsumableArray(songsBelow), [songs[j]]);
+              window.addEventListener("resize", function () {
+                triggerSongs();
+              });
+              function triggerSongs() {
+                var gridLength = getComputedStyle(playlist).gridTemplateColumns.split(" ").length;
+                songsBelow = [];
+                for (var j = i + gridLength; j < songs.length; j += gridLength) {
+                  songsBelow = [].concat(_toConsumableArray(songsBelow), [songs[j]]);
+                }
               }
+              triggerSongs();
               song.dataset.clicked = "false";
-              song.addEventListener("mouseenter", function () {
-                gsap.gsap.to(songDetails, {
-                  y: 10,
-                  ease: "sine",
-                  duration: 0.1
-                });
-              });
-              song.addEventListener("mouseleave", function () {
-                gsap.gsap.to(songDetails, {
-                  y: 0,
-                  ease: "sine",
-                  duration: 0.1
-                });
-              });
               song.addEventListener("mousedown", function () {
                 if (song.dataset.clicked === "false") {
                   song.dataset.clicked = "true"; // Set clicked to true
@@ -11738,7 +11792,8 @@ if (chatBot) {
                       y: songDetails.clientHeight - 15,
                       ease: "sine",
                       duration: 0.25,
-                      delay: 0.05
+                      delay: 0.05,
+                      stagger: 0.05
                     });
                   }
                 } else {
@@ -11753,13 +11808,34 @@ if (chatBot) {
                       y: 0,
                       ease: "sine",
                       delay: 0.15,
-                      duration: 0.15
+                      duration: 0.15,
+                      stagger: 0.05
                     });
                   }
                 }
               });
+              song.addEventListener("mouseenter", function () {
+                gsap.gsap.to(songDetails, {
+                  y: 10,
+                  ease: "sine",
+                  duration: 0.1
+                });
+              });
+              song.addEventListener("mouseleave", function () {
+                gsap.gsap.to(songDetails, {
+                  y: 0,
+                  ease: "sine",
+                  duration: 0.1
+                });
+              });
             });
-          case 23:
+            playlistName = playlistForm.querySelector(".playlist-name").value;
+            params = {
+              playlistName: playlistName
+            };
+            _context3.next = 32;
+            return spotify.sendPlaylist(params);
+          case 32:
           case "end":
             return _context3.stop();
         }
@@ -11807,7 +11883,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50250" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60487" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

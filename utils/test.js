@@ -146,3 +146,45 @@ var canConstruct = function (ransomNote, magazine) {
   }
   return false;
 };
+
+var wordPattern = function (pattern, s) {
+  const map = new Map();
+  s = s.split(" ");
+  if (pattern.length !== s.length) {
+    return false;
+  }
+  for (let i = 0; i < pattern.length; i++) {
+    console.log(map.keys());
+    console.log(map.values());
+    if (!map.get(pattern[i])) {
+      map.set(pattern[i], s[i]);
+    } else if (map.get(pattern[i]) !== s[i]) {
+      return false;
+    }
+  }
+  return map.keys().length == map.values().length;
+};
+
+var isAnagram = function (s, t) {
+  if (s.length !== t.length) {
+    return false;
+  }
+  let map = new Map();
+  for (let i = 0; i < s.length; i++) {
+    if (!map.get(s[i])) {
+      map.set(s[i], 1);
+    } else {
+      map.set(s[i], map.get(s[i]) + 1);
+    }
+  }
+  for (let j = 0; j < t.length; j++) {
+    if (map.get(t[j]) > 0) {
+      map.set(t[j], map.get(t[j]) - 1);
+    } else {
+      return false;
+    }
+  }
+  return true;
+};
+
+isAnagram("aacc", "ccac");
