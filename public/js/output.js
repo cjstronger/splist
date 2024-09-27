@@ -11611,23 +11611,41 @@ exports.sendPlaylist = /*#__PURE__*/function () {
             submitButton.style.setProperty("--y", "".concat(e.pageY - submitButton.offsetTop, "px"));
           });
           submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var _yield$axios$post, data, playlistButton;
+            var _yield$axios$post, saveData, _yield$axios$post2, data, playlistButton;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
+                  _context2.prev = 0;
+                  _context2.next = 3;
+                  return _axios.default.post("/api/playlists/save", {
+                    name: params.name,
+                    songs: params.uris
+                  });
+                case 3:
+                  _yield$axios$post = _context2.sent;
+                  saveData = _yield$axios$post.data;
+                  console.log(saveData);
+                  _context2.next = 11;
+                  break;
+                case 8:
+                  _context2.prev = 8;
+                  _context2.t0 = _context2["catch"](0);
+                  return _context2.abrupt("return", (0, _toast.default)(_context2.t0.response.data.message));
+                case 11:
                   _gsap.default.to(submitButton, {
                     scale: 0,
                     ease: "sine",
                     duration: 0.25
                   });
-                  _context2.next = 3;
+                  submitButton.remove();
+                  _context2.next = 15;
                   return _axios.default.post("/api/playlists/create", {
                     name: params.name,
                     uris: params.uris
                   });
-                case 3:
-                  _yield$axios$post = _context2.sent;
-                  data = _yield$axios$post.data;
+                case 15:
+                  _yield$axios$post2 = _context2.sent;
+                  data = _yield$axios$post2.data;
                   document.querySelector("main").insertAdjacentHTML("beforeend", '<button class="open-playlist">open playlist</button>');
                   playlistButton = document.querySelector(".open-playlist");
                   _gsap.default.from(playlistButton, {
@@ -11638,11 +11656,11 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                   playlistButton.addEventListener("mousedown", function () {
                     window.open("".concat(data.link), "_blank");
                   });
-                case 9:
+                case 21:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2);
+            }, _callee2, null, [[0, 8]]);
           })));
         case 6:
         case "end":
@@ -11726,10 +11744,10 @@ if (chatBot) {
   parameters.focus();
   var loading = false;
   chatBot.addEventListener("submit", /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-      var loaders, loaderElements, _yield$spotify$spotif, data, err, songs, uris, playlist, splistTitle, playlistForm, playlistName, name, params;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
+      var loaders, loaderElements, _yield$spotify$spotif, data, err, songs, uris, playlist, splistTitle, playlistForm, backButton, playlistName, name, params;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
             e.preventDefault();
             loading = true;
@@ -11742,22 +11760,22 @@ if (chatBot) {
                 loader.style.animationDelay = "".concat(random, "s");
               });
             }
-            _context3.next = 5;
+            _context4.next = 5;
             return buffer(1000);
           case 5:
-            _context3.next = 7;
+            _context4.next = 7;
             return spotify.spotifyGenerate(parameters.value);
           case 7:
-            _yield$spotify$spotif = _context3.sent;
+            _yield$spotify$spotif = _context4.sent;
             data = _yield$spotify$spotif.data;
             err = _yield$spotify$spotif.err;
             document.querySelector(".loaders").remove();
             loading = false;
             if (!err) {
-              _context3.next = 14;
+              _context4.next = 14;
               break;
             }
-            return _context3.abrupt("return");
+            return _context4.abrupt("return");
           case 14:
             songs = [];
             uris = [];
@@ -11773,6 +11791,8 @@ if (chatBot) {
             songs = songs[0];
             splistTitle = document.querySelector(".title");
             playlistForm = document.querySelector(".playlist-form");
+            document.querySelector("main").insertAdjacentHTML("beforebegin", '<button class="back-button">back</button>');
+            backButton = document.querySelector(".back-button");
             gsap.gsap.from(songs, {
               y: "100vh",
               stagger: 0.1,
@@ -11795,6 +11815,83 @@ if (chatBot) {
               delay: 0.5,
               ease: "power2"
             });
+            gsap.gsap.to(backButton, {
+              x: 180,
+              duration: 1.5,
+              delay: 0.5,
+              ease: "power1.inOut"
+            });
+            backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+              var submitButton, playlistButton;
+              return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                while (1) switch (_context3.prev = _context3.next) {
+                  case 0:
+                    submitButton = document.querySelector(".spotify-playlist-submit");
+                    playlistButton = document.querySelector(".open-playlist");
+                    gsap.gsap.to(songs, {
+                      x: "100vw",
+                      ease: "power1",
+                      duration: 0.5,
+                      stagger: {
+                        amount: 0.2,
+                        from: "end"
+                      }
+                    });
+                    gsap.gsap.to(playlistForm, {
+                      y: 0,
+                      duration: 0.5
+                    });
+                    gsap.gsap.to(splistTitle, {
+                      y: 0,
+                      duration: 0.5,
+                      ease: "power1.out",
+                      delay: 0.25
+                    });
+                    gsap.gsap.to(backButton, {
+                      x: 0,
+                      duration: 0.5,
+                      ease: "power3.in"
+                    });
+                    gsap.gsap.to(chatBot, {
+                      y: 0,
+                      ease: "power1.out",
+                      duration: 0.5,
+                      delay: 0.25
+                    });
+                    if (submitButton) {
+                      gsap.gsap.to(submitButton, {
+                        scale: 0,
+                        ease: "power2",
+                        duration: 0.5
+                      });
+                    }
+                    if (playlistButton) {
+                      gsap.gsap.to(playlistButton, {
+                        scale: 0,
+                        ease: "power2",
+                        duration: 0.5
+                      });
+                    }
+                    _context3.next = 11;
+                    return buffer(500);
+                  case 11:
+                    if (submitButton) {
+                      submitButton.remove();
+                    }
+                    playlist.remove();
+                    _context3.next = 15;
+                    return buffer(200);
+                  case 15:
+                    backButton.remove();
+                    if (playlistButton) {
+                      playlistButton.remove();
+                    }
+                  case 17:
+                  case "end":
+                    return _context3.stop();
+                }
+              }, _callee3);
+            })));
             songs.forEach(function (song, i) {
               var songDetails = song.children[1];
               var songsBelow = [];
@@ -11864,18 +11961,19 @@ if (chatBot) {
             name = "playlist01";
             playlistName.addEventListener("input", function (e) {
               name = e.target.value;
+              params.name = name;
             });
             params = {
               name: name,
               uris: uris
             };
-            _context3.next = 35;
+            _context4.next = 39;
             return spotify.sendPlaylist(params);
-          case 35:
+          case 39:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
-      }, _callee3);
+      }, _callee4);
     }));
     return function (_x2) {
       return _ref3.apply(this, arguments);
@@ -11919,7 +12017,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50792" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56957" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

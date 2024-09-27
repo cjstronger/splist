@@ -1,10 +1,18 @@
 const express = require("express");
 const viewsController = require("../../controllers/viewsController");
+const playlistController = require("../../controllers/playlistControllers");
+const authController = require("../../controllers/authControllers");
 
 const viewsRouter = express.Router();
 
 viewsRouter.get("/", viewsController.getHome);
 viewsRouter.get("/login", viewsController.getLogin);
 viewsRouter.get("/spotify-login", viewsController.getSpotify);
+viewsRouter.get(
+  "/playlists",
+  authController.verify,
+  playlistController.getPlaylists,
+  viewsController.getPlaylists
+);
 
 module.exports = viewsRouter;

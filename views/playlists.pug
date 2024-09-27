@@ -1,0 +1,8 @@
+extends base
+
+block content 
+    h1 Playlists
+    if playlists 
+        each playlist in playlists
+            each song in playlist 
+                p #{song}

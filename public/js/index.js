@@ -75,6 +75,15 @@ if (chatBot) {
     const splistTitle = document.querySelector(".title");
     const playlistForm = document.querySelector(".playlist-form");
 
+    document
+      .querySelector("main")
+      .insertAdjacentHTML(
+        "beforebegin",
+        '<button class="back-button">back</button>'
+      );
+
+    const backButton = document.querySelector(".back-button");
+
     gsap.gsap.from(songs, {
       y: "100vh",
       stagger: 0.1,
@@ -96,6 +105,73 @@ if (chatBot) {
       duration: 0.5,
       delay: 0.5,
       ease: "power2",
+    });
+    gsap.gsap.to(backButton, {
+      x: 180,
+      duration: 1.5,
+      delay: 0.5,
+      ease: "power1.inOut",
+    });
+
+    backButton.addEventListener("mousedown", async () => {
+      const submitButton = document.querySelector(".spotify-playlist-submit");
+      const playlistButton = document.querySelector(".open-playlist");
+
+      gsap.gsap.to(songs, {
+        x: "100vw",
+        ease: "power1",
+        duration: 0.5,
+        stagger: {
+          amount: 0.2,
+          from: "end",
+        },
+      });
+      gsap.gsap.to(playlistForm, {
+        y: 0,
+        duration: 0.5,
+      });
+      gsap.gsap.to(splistTitle, {
+        y: 0,
+        duration: 0.5,
+        ease: "power1.out",
+        delay: 0.25,
+      });
+      gsap.gsap.to(backButton, {
+        x: 0,
+        duration: 0.5,
+        ease: "power3.in",
+      });
+      gsap.gsap.to(chatBot, {
+        y: 0,
+        ease: "power1.out",
+        duration: 0.5,
+        delay: 0.25,
+      });
+      if (submitButton) {
+        gsap.gsap.to(submitButton, {
+          scale: 0,
+          ease: "power2",
+          duration: 0.5,
+        });
+      }
+      if (playlistButton) {
+        gsap.gsap.to(playlistButton, {
+          scale: 0,
+          ease: "power2",
+          duration: 0.5,
+        });
+      }
+
+      await buffer(500);
+      if (submitButton) {
+        submitButton.remove();
+      }
+      playlist.remove();
+      await buffer(200);
+      backButton.remove();
+      if (playlistButton) {
+        playlistButton.remove();
+      }
     });
 
     songs.forEach((song, i) => {
@@ -173,6 +249,7 @@ if (chatBot) {
 
     playlistName.addEventListener("input", (e) => {
       name = e.target.value;
+      params.name = name;
     });
 
     let params = { name, uris };

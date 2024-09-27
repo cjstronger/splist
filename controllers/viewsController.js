@@ -46,3 +46,11 @@ exports.getSpotify = async (req, res) => {
 
   res.redirect(spotifyAuthUrl);
 };
+
+exports.getPlaylists = (req, res) => {
+  const { playlists } = res;
+  res.render("playlists", {
+    title: "Playlists",
+    playlists,
+  });
+};

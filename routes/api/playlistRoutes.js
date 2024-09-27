@@ -10,4 +10,8 @@ playlistRouter.post("/generate", playlistController.generatePlaylist);
 
 playlistRouter.post("/create", playlistController.createPlaylist);
 
+playlistRouter.post("/save", playlistController.savePlaylist);
+
+playlistRouter.get("/getPlaylists", playlistController.getPlaylists);
+
 module.exports = playlistRouter;

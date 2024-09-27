@@ -39,11 +39,21 @@ exports.sendPlaylist = async (params) => {
     );
   });
   submitButton.addEventListener("mousedown", async () => {
+    try {
+      const { data: saveData } = await axios.post("/api/playlists/save", {
+        name: params.name,
+        songs: params.uris,
+      });
+      console.log(saveData);
+    } catch (err) {
+      return toast(err.response.data.message);
+    }
     gsap.to(submitButton, {
       scale: 0,
       ease: "sine",
       duration: 0.25,
     });
+    submitButton.remove();
     const { data } = await axios.post("/api/playlists/create", {
       name: params.name,
       uris: params.uris,

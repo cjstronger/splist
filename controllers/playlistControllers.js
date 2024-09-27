@@ -3,6 +3,7 @@ const OpenAI = require("openai");
 const catchAsync = require("../utils/catchAsync");
 const { default: axios } = require("axios");
 const cookieParser = require("cookie-parser");
+const Playlist = require("../models/playlistModel");
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
@@ -106,5 +107,42 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
     return next(
       new AppError("There was an error adding the songs to the playlist", 400)
     );
+  }
+});
+
+exports.savePlaylist = catchAsync(async (req, res, next) => {
+  const user = res.user._id;
+  const { name, songs } = req.body;
+  try {
+    const newPlaylist = await Playlist.create({
+      name,
+      songs,
+      user,
+    });
+    console.log(newPlaylist);
+    res.status(201).json({
+      status: "success",
+      newPlaylist,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+exports.getPlaylists = catchAsync(async (req, res, next) => {
+  const user = res.user._id;
+  console.log(user);
+  try {
+    const playlists = await Playlist.find({ user });
+    if (req.cookies.api === "true") {
+      res.status(200).json({
+        status: "success",
+        playlists,
+      });
+    }
+    return next();
+  } catch (err) {
+    console.log(err);
+    return next(err);
   }
 });
