@@ -33,7 +33,7 @@ exports.getSpotify = async (req, res) => {
     querystring.stringify({
       response_type: "code",
       client_id: process.env.SPOTIFY_ID,
-      scope: "user-read-private user-read-email",
+      scope: "playlist-modify-public playlist-modify-private",
       redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
       state: state,
     });

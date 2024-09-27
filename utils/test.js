@@ -187,4 +187,78 @@ var isAnagram = function (s, t) {
   return true;
 };
 
-isAnagram("aacc", "ccac");
+var twoSum = function (nums, target) {
+  const map = new Map();
+  for (let j = 0; j < nums.length; j++) {
+    let possible = target - nums[j];
+    if (map.has(possible)) {
+      if (map.get(possible) !== j) {
+        return [j, map.get(possible)];
+      }
+    }
+    map.set(nums[j], j);
+  }
+};
+
+var isHappy = function (n) {
+  const set = new Set();
+  const helper = (n) => {
+    let output = 0;
+    while (n > 0) {
+      let digit = n % 10;
+      output += digit * digit;
+      n = Math.floor(n / 10);
+    }
+    return output;
+  };
+
+  while (!set.has(n)) {
+    set.add(n);
+    if (n === 1) {
+      return true;
+    }
+    n = helper(n);
+  }
+  return false;
+};
+
+var containsNearbyDuplicate = function (nums, k) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    if (map.has(nums[i])) {
+      if (map.get(nums[i]) - i <= k) {
+        console.log(map.get(nums[i]) - i);
+        return true;
+      } else {
+        map.set(nums[i], i);
+      }
+    } else {
+      map.set(nums[i], i);
+    }
+  }
+  return false;
+};
+
+var summaryRanges = function (nums) {
+  const set = new Set();
+  let count = 0;
+  let start;
+  let temp = "";
+  for (let i = 0; i < nums.length; i++) {
+    start = nums[i];
+    if (nums[i + 1] === start + 1) {
+      count++;
+    } else {
+      if (count === 0) {
+        temp = `${nums[i - count]}`;
+      } else {
+        temp = `${nums[i - count]}->${start}`;
+        count = 0;
+      }
+      set.add(temp);
+    }
+  }
+  return Array.from(set);
+};
+
+console.log(summaryRanges([0, 1, 2, 4, 5, 7]));

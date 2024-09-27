@@ -56,6 +56,7 @@ if (chatBot) {
       return;
     }
     let songs = [];
+    let uris = [];
     const playlist = document.createElement("div");
     playlist.className = "playlist";
     document.querySelector("main").appendChild(playlist);
@@ -64,6 +65,7 @@ if (chatBot) {
       document
         .querySelector(".playlist")
         .insertAdjacentHTML("afterbegin", html);
+      uris = [...uris, item.id];
     });
 
     songs.push(document.querySelectorAll(".song"));
@@ -165,9 +167,15 @@ if (chatBot) {
       });
     });
 
-    const playlistName = playlistForm.querySelector(".playlist-name").value;
+    const playlistName = document.querySelector(".playlist-name");
 
-    let params = { playlistName };
+    let name = "playlist01";
+
+    playlistName.addEventListener("input", (e) => {
+      name = e.target.value;
+    });
+
+    let params = { name, uris };
 
     await spotify.sendPlaylist(params);
   });

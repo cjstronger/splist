@@ -33,11 +33,6 @@ a {
   cursor: pointer;
 }
 
-button:hover,
-a:hover {
-  background-color: var(--bg);
-}
-
 nav {
   position: fixed;
   top: 0;
@@ -294,6 +289,57 @@ a {
 }
 .artist-name {
   font-size: 13px;
+}
+
+.spotify-playlist-submit {
+  background-color: #1db954;
+  border-radius: 50px;
+  position: relative;
+  padding: 10px;
+  overflow: hidden;
+  transition: color 0.25s;
+  position: fixed;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+}
+.spotify-playlist-submit span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+.spotify-playlist-submit:hover {
+  color: white !important;
+}
+
+.spotify-playlist-submit::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  border-radius: 999px;
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  background-color: black;
+  transition: 1s, left 1s cubic-bezier(0.25, 1.5, 0.5, 1),
+    top 1s cubic-bezier(0.25, 1.5, 0.5, 1);
+  transform: translateY(-50%);
+}
+.spotify-playlist-submit:hover::before {
+  width: 150px;
+  height: 150px;
+}
+
+.open-playlist {
+  background-color: #1db954;
+  border-radius: 50px;
+  position: relative;
+  padding: 20px;
+  position: fixed;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
 }
 
 @media (max-width: 1650px) {

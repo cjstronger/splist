@@ -48,8 +48,6 @@ app.set("view engine", "pug");
 
 app.use(express.static(path.join(__dirname, "public")));
 
-console.log("Path: ", path.join(__dirname, "public"));
-
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/playlists", playlistRouter);

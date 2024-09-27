@@ -45,7 +45,7 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
       data: spotifySongs,
     });
   } catch (err) {
-    console.log(err.response.data.error);
+    // console.log(err.response.data.error);
     if (err.response.data.error.status === 401) {
       return next(
         new AppError(
@@ -62,20 +62,13 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
 
 exports.createPlaylist = catchAsync(async (req, res, next) => {
   const cookies = cookieParser.JSONCookies(req.cookies);
-
-  console.log(cookies);
-
   const { data, error } = await axios.get(`https://api.spotify.com/v1/me`, {
     headers: { Authorization: `Bearer ${cookies.spotify_token}` },
   });
-
   if (error)
     return next(new AppError("There was a problem getting your profile", 400));
-
   const { id } = data;
-
-  console.log(req.body.name);
-  const { data: playlistData, error: playlistError } = axios.post(
+  const { data: playlistData, error: playlistError } = await axios.post(
     `https://api.spotify.com/v1/users/${id}/playlists`,
     {
       name: req.body.name,
@@ -86,8 +79,32 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
       },
     }
   );
-  if (playlistError)
+  const link = playlistData.external_urls.spotify;
+  if (playlistError) {
     return next(new AppError("There was an error creating the playlist", 400));
-  console.log(playlistData);
-  return next();
+  }
+
+  const { href } = playlistData;
+
+  const trackUris = req.body.uris.map((id) => `spotify:track:${id}`);
+
+  try {
+    await axios.post(
+      `${href}/tracks`,
+      { uris: trackUris },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.spotify_token}`,
+        },
+      }
+    );
+    res.status(201).json({
+      status: "success",
+      link,
+    });
+  } catch (err) {
+    return next(
+      new AppError("There was an error adding the songs to the playlist", 400)
+    );
+  }
 });

@@ -4,7 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
 const querystring = require("querystring");
 const cookieParser = require("cookie-parser");
-const axios = require("axios");
+const { default: axios } = require("axios");
 
 exports.signUp = catchAsync(async function (req, res, next) {
   const { email, password, confirmPassword, name } = req.body;
@@ -90,19 +90,16 @@ exports.spotifyRedirect = (req, res, next) => {
 
   res.cookie("api", true);
 
-  const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.SPOTIFY_ID}&scope=playlist-modify-public%20playlist-modify-private&redirect_uri=http://127.0.0.1:3000/api/auth/callback&state=${state}`;
-
-  // res.redirect(
-  //   "https://accounts.spotify.com/authorize?" +
-  //     querystring.stringify({
-  //       response_type: "code",
-  //       client_id: process.env.SPOTIFY_ID,
-  //       scope,
-  //       redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
-  //       state: state,
-  //     })
-  // );
-  res.redirect(url);
+  res.redirect(
+    "https://accounts.spotify.com/authorize?" +
+      querystring.stringify({
+        response_type: "code",
+        client_id: process.env.SPOTIFY_ID,
+        scope,
+        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
+        state: state,
+      })
+  );
 };
 
 exports.spotifyCallback = async (req, res, next) => {
@@ -147,8 +144,6 @@ exports.spotifyCallback = async (req, res, next) => {
     });
 
     res.cookie("spotify_token", response.data.access_token);
-
-    console.log("Access token scopes:", response.data.scope);
 
     if (cookies.api == "true") {
       res.status(200).json({
