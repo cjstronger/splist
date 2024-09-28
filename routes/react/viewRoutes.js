@@ -14,5 +14,10 @@ viewsRouter.get(
   playlistController.getPlaylists,
   viewsController.getPlaylists
 );
+viewsRouter.get(
+  "/playlists/:name",
+  playlistController.getPlaylist,
+  viewsController.getPlaylist
+);
 
 module.exports = viewsRouter;

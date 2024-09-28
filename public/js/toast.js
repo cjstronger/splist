@@ -10,11 +10,11 @@ function remove() {
   setTimeout(() => document.querySelector("body").removeChild(toast), 1000);
 }
 
-function toast(message) {
+function toast(message, type) {
   if (document.querySelector(".app-notif")) {
     remove();
   }
-  const toast = `<div class="app-notif">${message}</div>`;
+  const toast = `<div class="app-notif toast-${type}">${message}</div>`;
   document.querySelector("body").insertAdjacentHTML("afterbegin", toast);
   const alert = document.querySelector(".app-notif");
   gsap.to(alert, {

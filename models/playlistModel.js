@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 //1) a playlist needs to link to the users _id
 //2) a playlist can have a length of songs
@@ -17,6 +18,13 @@ const playlistSchema = new mongoose.Schema({
     max: [500, "Max characters in a description is 500 characters"],
   },
   user: { type: mongoose.Schema.ObjectId, ref: "user" },
+  url: String,
+});
+
+playlistSchema.pre("save", function (next) {
+  const url = slugify(this.name);
+  this.url = url;
+  return next();
 });
 
 const Playlist = mongoose.model("playlist", playlistSchema);

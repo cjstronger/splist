@@ -1,6 +1,7 @@
 import axios from "axios";
 import toast from "./toast";
 import gsap from "gsap";
+import Playlist from "../../models/playlistModel";
 
 exports.spotifyLogin = () => {
   location.assign("/spotify-login");
@@ -13,7 +14,7 @@ exports.spotifyGenerate = async (params) => {
     const data = await axios.post("/api/playlists/generate", params);
     return { data, err };
   } catch (err) {
-    toast(err.response.data.message);
+    toast(err.response.data.message, "fail");
     return { data, err };
   }
 };
@@ -46,7 +47,7 @@ exports.sendPlaylist = async (params) => {
       });
       console.log(saveData);
     } catch (err) {
-      return toast(err.response.data.message);
+      return toast(err.response.data.message, "fail");
     }
     gsap.to(submitButton, {
       scale: 0,
@@ -74,4 +75,17 @@ exports.sendPlaylist = async (params) => {
       window.open(`${data.link}`, "_blank");
     });
   });
+};
+
+exports.savePlaylist = async (params) => {
+  try {
+    const { data } = await axios.post("/api/playlists/save", {
+      name: params.name,
+      songs: params.uris,
+    });
+    console.log(data);
+    return toast("Playlist created!", "success");
+  } catch (err) {
+    return toast(err.response.data.message, "fail");
+  }
 };

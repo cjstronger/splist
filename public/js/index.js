@@ -1,3 +1,4 @@
+const { default: slugify } = require("slugify");
 const { login } = require("./login");
 const spotify = require("./spotify");
 const toast = require("./toast");
@@ -79,7 +80,7 @@ if (chatBot) {
       .querySelector("main")
       .insertAdjacentHTML(
         "beforebegin",
-        '<button class="back-button">back</button>'
+        '<button class="back-button button">back</button>'
       );
 
     const backButton = document.querySelector(".back-button");
@@ -254,6 +255,11 @@ if (chatBot) {
 
     let params = { name, uris };
 
+    playlistForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await spotify.savePlaylist(params);
+    });
+
     await spotify.sendPlaylist(params);
   });
 }
@@ -277,3 +283,13 @@ if (lightDarkButton) {
     );
   });
 }
+
+const playlists = document.querySelectorAll(".playlist-group");
+
+playlists.forEach((playlist) => {
+  playlist.addEventListener("mousedown", () => {
+    const name = playlist.querySelector(".playlist-group-name");
+    const slug = slugify(name.textContent);
+    location.assign(`/playlists/${slug}`);
+  });
+});

@@ -2,7 +2,13 @@ extends base
 
 block content 
     h1 Playlists
-    if playlists 
+    if playlists
         each playlist in playlists
-            each song in playlist 
-                p #{song}
+            .playlist-group
+                h3.playlist-group-name= playlist.name
+                    .image-group
+                        img.playlist-image(src=`${playlist.tracks[0].img}`)
+                        img.playlist-image(src=`${playlist.tracks[1].img}`)
+                        img.playlist-image(src=`${playlist.tracks[2].img}`)
+    if !playlists
+        h2 You have not generated any playlists!

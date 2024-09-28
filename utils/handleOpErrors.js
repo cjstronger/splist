@@ -15,7 +15,7 @@ exports.syntaxError = (error) => {
 
 exports.duplicateError = (error) => {
   const key = Object.keys(error.keyPattern)[0];
-  const message = `The ${key} ${error.keyValue[key]} is already in use`;
+  const message = `The ${key} '${error.keyValue[key]}' is already in use`;
   error.message = message;
   return new AppError(message, 409);
 };

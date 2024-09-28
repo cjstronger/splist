@@ -12,9 +12,9 @@ html
     nav
       .user user
         .user-modal
-          button.spotify-login #{spotifyToken ? 'Spotify' : 'connect spotify'}
-          a(href="/login") login
-          button.light-dark-button light
+          button.spotify-login.button #{spotifyToken ? 'Spotify' : 'connect spotify'}
+          a.button(href="/login") login
+          button.light-dark-button.button light
     main
       block content
     script(src="/js/output.js")

@@ -31,6 +31,7 @@ a {
   font-size: 25px;
   transition: all 0.1s ease-in;
   cursor: pointer;
+  color: var(--text);
 }
 
 nav {
@@ -49,12 +50,38 @@ a {
   text-decoration: none;
 }
 
+input {
+  caret-color: var(--text);
+}
+
+.button {
+  transition: background-color 0.15s ease-in;
+}
+.button:hover {
+  background-color: var(--secondary);
+}
+
+.err-info {
+  width: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-120%);
+}
+.err-status {
+  font-size: 30px;
+  text-align: center;
+}
+.err-message {
+  text-align: center;
+  font-size: 30px;
+}
+
 .app-notif {
   width: 200px;
   height: auto;
   text-align: center;
   padding: 10px;
-  background-color: #d65a5a;
   color: var(--text);
   border-radius: 20px;
   position: absolute;
@@ -63,6 +90,12 @@ a {
   transform: translateX(-50%);
   font-size: medium;
   z-index: 10;
+}
+.toast-fail {
+  background-color: #d65a5a;
+}
+.toast-success {
+  background-color: var(--secondary);
 }
 
 .login-form {
@@ -321,6 +354,7 @@ a {
   align-items: center;
   gap: 10px;
   position: relative;
+  color: whitesmoke;
 }
 .spotify-playlist-submit:hover {
   color: white !important;
@@ -355,6 +389,49 @@ a {
   transform: translateX(-50%);
 }
 
+.playlist-group {
+  width: 200px;
+  height: 220px;
+  border-radius: 20px;
+  background-color: var(--accent);
+  padding: 0.5px 5px;
+}
+.playlist-group:hover {
+  cursor: pointer;
+}
+.image-group {
+  display: flex;
+  position: relative;
+}
+.playlist-group:hover .playlist-image:nth-of-type(2) {
+  transform: rotate(25deg) translateX(50px);
+  transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.playlist-group:hover .playlist-image:nth-of-type(1) {
+  transform: rotate(-25deg) translateX(-50px);
+  transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.playlist-image:nth-of-type(1) {
+  transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.playlist-image:nth-of-type(2) {
+  left: 50px;
+  top: 0px;
+  z-index: 5;
+  transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.playlist-image:nth-of-type(3) {
+  left: 25px;
+  top: 0px;
+  z-index: 2;
+}
+.playlist-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 20px;
+  position: absolute;
+}
+
 @media (max-width: 1650px) {
   .loaders {
     grid-template-columns: 200px 200px 200px 200px 200px !important;
@@ -379,11 +456,10 @@ a {
     font-size: 50px;
   }
   .playlist-save {
-    padding: 5px;
-    height: 40px;
+    padding: 10px;
   }
   .back-button {
-    padding: 5px;
+    padding: 10px;
   }
 }
 

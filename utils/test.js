@@ -261,4 +261,38 @@ var summaryRanges = function (nums) {
   return Array.from(set);
 };
 
-console.log(summaryRanges([0, 1, 2, 4, 5, 7]));
+var isValid = function (s) {
+  const stack = [s[0]];
+  let index = 0;
+  let front;
+  while (stack.length > 0) {
+    if (s[i] === ")") {
+      if (stack > 1 && stack[index] === "(") {
+        front = stack.shift();
+        if (front !== "(") {
+          return false;
+        }
+      }
+    }
+    if (s[i] === "}") {
+      front = stack.shift();
+      if (front !== "{") {
+        return false;
+      }
+      index++;
+    }
+    if (s[i] === "]") {
+      front = stack.shift();
+      if (front !== "[") {
+        return false;
+      }
+      index++;
+    }
+    if (s[i] === "[" || s[i] === "(" || s[i] == "{") {
+      stack.push(s[i]);
+    }
+  }
+  return true;
+};
+
+isValid("([])");

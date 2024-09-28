@@ -69,7 +69,13 @@ app.use((err, req, res, next) => {
     handleOpErrors.duplicateError(error);
   }
 
-  return res.status(error.statusCode).json({
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(error.statusCode).json({
+      status: error.status,
+      message: error.message || err.message,
+    });
+  }
+  return res.render("error", {
     status: error.status,
     message: error.message || err.message,
   });

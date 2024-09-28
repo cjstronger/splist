@@ -131,9 +131,12 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const user = res.user._id;
-  console.log(user);
   try {
     const playlists = await Playlist.find({ user });
+    const data = playlists.map((playlist) => {
+      return { songs: playlist.songs, name: playlist.name };
+    });
+    res.playlists = data;
     if (req.cookies.api === "true") {
       res.status(200).json({
         status: "success",
@@ -142,7 +145,12 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
     }
     return next();
   } catch (err) {
-    console.log(err);
     return next(err);
   }
+});
+
+exports.getPlaylist = catchAsync(async (req, res, next) => {
+  const playlist = await Playlist.find({ url: req.params.name });
+  console.log(playlist);
+  return next();
 });
