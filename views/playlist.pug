@@ -1,9 +1,12 @@
 extends base
 
-block content 
+block content
+    h1.playlist-title.hidden= playlistName
+    button.back-button back
     .playlist 
-        h1= title
         each song in playlist 
-            .song
-                img.album-cover(src='')
-                h1.song-name= playlist.name
+            .song.hidden
+                img.song-image(src=`${song.img}`)
+                .song-details
+                    p.song-name= song.name
+                    p.song-artist= song.artist

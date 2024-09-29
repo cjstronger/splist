@@ -1,14 +1,15 @@
 extends base
 
 block content 
-    h1 Playlists
+    h1.playlist-title.hidden Playlists
     if playlists
-        each playlist in playlists
-            .playlist-group
-                h3.playlist-group-name= playlist.name
-                    .image-group
-                        img.playlist-image(src=`${playlist.tracks[0].img}`)
-                        img.playlist-image(src=`${playlist.tracks[1].img}`)
-                        img.playlist-image(src=`${playlist.tracks[2].img}`)
+        .saved-playlists
+            each playlist in playlists
+                .playlist-group.hidden
+                    h3.playlist-group-name= playlist.name
+                        .image-group
+                            img.playlist-image(src=`${playlist.tracks[0].img}`)
+                            img.playlist-image(src=`${playlist.tracks[1].img}`)
+                            img.playlist-image(src=`${playlist.tracks[2].img}`)
     if !playlists
         h2 You have not generated any playlists!

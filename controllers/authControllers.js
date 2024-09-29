@@ -46,22 +46,30 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
-function signJWT(req, next) {
+function signJWT(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
-    return next(new AppError("You must be logged in", 401));
+    if (req.originalUrl.startsWith("/api")) {
+      return next(new AppError("You must be logged in", 401));
+    } else {
+      res.redirect("/login");
+    }
   }
   const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
   if (!verifiedToken) {
-    return next(
-      new AppError("Your login has expired, please login again", 401)
-    );
+    if (req.originalUrl.startsWith("/api")) {
+      return next(
+        new AppError("Your login has expired, please login again", 401)
+      );
+    } else {
+      res.redirect("/login");
+    }
   }
   return verifiedToken;
 }
 
 exports.verify = catchAsync(async (req, res, next) => {
-  const verifiedToken = await signJWT(req, next);
+  const verifiedToken = await signJWT(req, res, next);
 
   if (!verifiedToken) return;
 
@@ -107,7 +115,7 @@ exports.spotifyCallback = async (req, res, next) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   const originalState = cookies.state;
-  const verifiedToken = await signJWT(req, next);
+  const verifiedToken = await signJWT(req, res, next);
 
   if (originalState !== state)
     return next(

@@ -1,7 +1,6 @@
 import axios from "axios";
 import toast from "./toast";
 import gsap from "gsap";
-import Playlist from "../../models/playlistModel";
 
 exports.spotifyLogin = () => {
   location.assign("/spotify-login");

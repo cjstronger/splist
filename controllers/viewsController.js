@@ -50,50 +50,19 @@ exports.getSpotify = async (req, res) => {
 };
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
-  let { playlists } = res;
-  const cookies = req.cookies;
-  const uris = playlists.map((playlist) => {
-    return [
-      playlist.songs.reduce((acc, curr, index) => {
-        return index === 0 ? curr : `${acc},${curr}`;
-      }, ""),
-    ];
-  });
-  try {
-    const urisPromise = uris.map(async (uriList) => {
-      const res = await axios.get(
-        `https://api.spotify.com/v1/tracks?ids=${uriList[0]}`,
-        {
-          headers: { Authorization: `Bearer ${cookies.spotify_token}` },
-        }
-      );
-      return res;
-    });
+  const { playlists } = res;
+  await res.cookie("playlists", playlists);
 
-    const promise = await Promise.all(urisPromise);
-    playlists = promise.map((playlist, index) => {
-      const name = playlists[index].name;
-      return {
-        name,
-        tracks: playlist.data.tracks.map((track) => {
-          return {
-            img: track.album.images[1].url,
-            artist: track.artists[0].name,
-            name: track.name,
-          };
-        }),
-      };
-    });
-    res.render("playlists", {
-      title: "Playlists",
-      playlists,
-    });
-  } catch (err) {
-    console.log(err.response.data);
-    return next(err);
-  }
+  res.render("playlists", {
+    title: "Playlists",
+    playlists,
+  });
 });
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
-  res.render("saved-playlist");
+  const playlist = req.playlist;
+  res.render("playlist", {
+    playlist: playlist.tracks,
+    playlistName: playlist.name,
+  });
 });

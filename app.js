@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
 const helmet = require("helmet");
+const toast = require("./public/js/toast");
 
 const app = express();
 
@@ -62,11 +63,19 @@ app.use((err, req, res, next) => {
   if (err.name === "ValidationError") {
     handleOpErrors.validationError(error);
   }
-  if (err.name === "SyntaxError") {
+  if (
+    err.name === "SyntaxError" ||
+    err.name === "TypeError" ||
+    err.name === "ReferenceError"
+  ) {
     handleOpErrors.syntaxError(error);
   }
   if (err.code === 11000) {
     handleOpErrors.duplicateError(error);
+  }
+  const spotifyError = err.response?.data.error;
+  if (spotifyError && spotifyError.message === "Invalid access token") {
+    handleOpErrors.spotifyAuthError(error);
   }
 
   if (req.originalUrl.startsWith("/api")) {
@@ -75,6 +84,7 @@ app.use((err, req, res, next) => {
       message: error.message || err.message,
     });
   }
+
   return res.render("error", {
     status: error.status,
     message: error.message || err.message,

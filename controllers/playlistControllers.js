@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const { default: axios } = require("axios");
 const cookieParser = require("cookie-parser");
 const Playlist = require("../models/playlistModel");
+const { default: slugify } = require("slugify");
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
@@ -131,12 +132,57 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const user = res.user._id;
+  const cookies = req.cookies;
+  const arraysEqual = (a, b) => {
+    if (a.length !== b.length) return false;
+    return a.every((value, index) => value === by[index]);
+  };
   try {
-    const playlists = await Playlist.find({ user });
-    const data = playlists.map((playlist) => {
-      return { songs: playlist.songs, name: playlist.name };
+    let playlists = await Playlist.find({ user });
+
+    if (
+      cookies.dbPlaylists &&
+      cookies.playlists &&
+      arraysEqual(playlists[playlists.length - 1].songs, cookies.dbPlaylists)
+    ) {
+      res.playlists = cookies.playlists;
+      return next();
+    }
+    res.cookie("dbPlaylists", playlists[playlists.length - 1].songs);
+    const uris = playlists.map((playlist) => {
+      return [
+        playlist.songs.reduce((acc, curr, index) => {
+          return index === 0 ? curr : `${acc},${curr}`;
+        }, ""),
+      ];
     });
-    res.playlists = data;
+    const urisPromise = uris.map(async (uriList) => {
+      const res = await axios.get(
+        `https://api.spotify.com/v1/tracks?ids=${uriList[0]}`,
+        {
+          headers: { Authorization: `Bearer ${cookies.spotify_token}` },
+        }
+      );
+      return res;
+    });
+
+    const promise = await Promise.all(urisPromise);
+    playlists = promise.map((playlist, index) => {
+      const name = playlists[index].name;
+      return {
+        name,
+        tracks: playlist.data.tracks.map((track) => {
+          return {
+            img: track.album.images[1].url,
+            artist: track.artists[0].name,
+            name: track.name,
+          };
+        }),
+      };
+    });
+
+    res.playlists = playlists;
+
     if (req.cookies.api === "true") {
       res.status(200).json({
         status: "success",
@@ -145,12 +191,24 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
     }
     return next();
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 });
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
-  const playlist = await Playlist.find({ url: req.params.name });
-  console.log(playlist);
-  return next();
+  try {
+    let playlist = await Playlist.findOne({ url: slugify(req.params.name) });
+    if (!playlist)
+      return next(
+        new AppError(`You have no playlists with the name '${req.params.name}'`)
+      );
+    playlist = req.cookies.playlists.filter((el) => {
+      return el.name === playlist.name;
+    });
+    req.playlist = playlist[0];
+    next();
+  } catch (err) {
+    return next(err);
+  }
 });
