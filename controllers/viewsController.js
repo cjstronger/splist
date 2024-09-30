@@ -60,9 +60,11 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
 });
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
-  const playlist = req.playlist;
+  const { playlist, dbPlaylist } = req;
+  console.log(req.dbPlaylist);
   res.render("playlist", {
     playlist: playlist.tracks,
     playlistName: playlist.name,
+    dbPlaylist,
   });
 });

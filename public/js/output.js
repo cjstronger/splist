@@ -11761,7 +11761,9 @@ exports.savePlaylist = /*#__PURE__*/function () {
     return _ref4.apply(this, arguments);
   };
 }();
-},{"axios":"../../node_modules/axios/index.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js"}],"../../node_modules/helmet/index.cjs":[function(require,module,exports) {
+module.exports = "/helmet.8eb89d3d.cjs";
+},{}],"index.js":[function(require,module,exports) {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -11779,6 +11781,10 @@ var _require2 = require("./login"),
 var spotify = require("./spotify");
 var toast = require("./toast");
 var gsap = require("gsap");
+var _require3 = require("axios"),
+  axios = _require3.default;
+var _require4 = require("helmet"),
+  crossOriginResourcePolicy = _require4.crossOriginResourcePolicy;
 var loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", /*#__PURE__*/function () {
@@ -11847,10 +11853,10 @@ function handleGenerationAnimation(_x2) {
   return _handleGenerationAnimation.apply(this, arguments);
 }
 function _handleGenerationAnimation() {
-  _handleGenerationAnimation = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(io) {
-    var splistTitle, playlistForm, songs, savedPlaylists, backButton, playlist, playlistTitle, submitButton, playlistButton;
-    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-      while (1) switch (_context11.prev = _context11.next) {
+  _handleGenerationAnimation = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12(io) {
+    var splistTitle, playlistForm, songs, savedPlaylists, backButton, playlist, playlistTitle, switcher, _submitButton, playlistButton;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
         case 0:
           splistTitle = document.querySelector(".title");
           playlistForm = document.querySelector(".playlist-form");
@@ -11859,8 +11865,9 @@ function _handleGenerationAnimation() {
           backButton = document.querySelector(".back-button");
           playlist = document.querySelector(".playlist");
           playlistTitle = document.querySelector(".playlist-title");
+          switcher = document.querySelector(".switch-previews");
           if (!io) {
-            _context11.next = 15;
+            _context12.next = 17;
             break;
           }
           if (songs.length) {
@@ -11870,23 +11877,23 @@ function _handleGenerationAnimation() {
               duration: 0.5,
               ease: "sine",
               onStart: function () {
-                var _onStart = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-                  return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-                    while (1) switch (_context8.prev = _context8.next) {
+                var _onStart = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+                  return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+                    while (1) switch (_context9.prev = _context9.next) {
                       case 0:
-                        _context8.next = 2;
+                        _context9.next = 2;
                         return buffer(100);
                       case 2:
-                        _context8.t0 = _context8.sent;
-                        _context8.t1 = songs.forEach(function (song) {
+                        _context9.t0 = _context9.sent;
+                        _context9.t1 = songs.forEach(function (song) {
                           return song.classList.remove("hidden");
                         });
-                        return _context8.abrupt("return", _context8.t0 & _context8.t1);
+                        return _context9.abrupt("return", _context9.t0 & _context9.t1);
                       case 5:
                       case "end":
-                        return _context8.stop();
+                        return _context9.stop();
                     }
-                  }, _callee8);
+                  }, _callee9);
                 }));
                 function onStart() {
                   return _onStart.apply(this, arguments);
@@ -11901,23 +11908,23 @@ function _handleGenerationAnimation() {
               duration: 0.5,
               ease: "sine",
               onStart: function () {
-                var _onStart2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-                  return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-                    while (1) switch (_context9.prev = _context9.next) {
+                var _onStart2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+                  return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+                    while (1) switch (_context10.prev = _context10.next) {
                       case 0:
-                        _context9.next = 2;
+                        _context10.next = 2;
                         return buffer(100);
                       case 2:
-                        _context9.t0 = _context9.sent;
-                        _context9.t1 = savedPlaylists.forEach(function (playlist) {
+                        _context10.t0 = _context10.sent;
+                        _context10.t1 = savedPlaylists.forEach(function (playlist) {
                           return playlist.classList.remove("hidden");
                         });
-                        return _context9.abrupt("return", _context9.t0 & _context9.t1);
+                        return _context10.abrupt("return", _context10.t0 & _context10.t1);
                       case 5:
                       case "end":
-                        return _context9.stop();
+                        return _context10.stop();
                     }
-                  }, _callee9);
+                  }, _callee10);
                 }));
                 function onStart() {
                   return _onStart2.apply(this, arguments);
@@ -11945,21 +11952,21 @@ function _handleGenerationAnimation() {
               duration: 0.5,
               ease: "power3.out",
               onStart: function () {
-                var _onStart3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-                  return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-                    while (1) switch (_context10.prev = _context10.next) {
+                var _onStart3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+                  return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+                    while (1) switch (_context11.prev = _context11.next) {
                       case 0:
-                        _context10.next = 2;
+                        _context11.next = 2;
                         return buffer(100);
                       case 2:
-                        _context10.t0 = _context10.sent;
-                        _context10.t1 = playlistTitle.classList.remove("hidden");
-                        return _context10.abrupt("return", _context10.t0 & _context10.t1);
+                        _context11.t0 = _context11.sent;
+                        _context11.t1 = playlistTitle.classList.remove("hidden");
+                        return _context11.abrupt("return", _context11.t0 & _context11.t1);
                       case 5:
                       case "end":
-                        return _context10.stop();
+                        return _context11.stop();
                     }
-                  }, _callee10);
+                  }, _callee11);
                 }));
                 function onStart() {
                   return _onStart3.apply(this, arguments);
@@ -11980,10 +11987,15 @@ function _handleGenerationAnimation() {
             delay: 0.5,
             ease: "power1.inOut"
           });
-          _context11.next = 32;
+          gsap.gsap.to(switcher, {
+            x: -150,
+            duration: 0.5,
+            delay: 0.5
+          });
+          _context12.next = 35;
           break;
-        case 15:
-          submitButton = document.querySelector(".spotify-playlist-submit");
+        case 17:
+          _submitButton = document.querySelector(".spotify-playlist-submit");
           playlistButton = document.querySelector(".open-playlist");
           if (songs.length) {
             gsap.gsap.to(songs, {
@@ -12030,14 +12042,19 @@ function _handleGenerationAnimation() {
             duration: 0.5,
             ease: "power3.in"
           });
+          gsap.gsap.to(switcher, {
+            x: 0,
+            duration: 0.5,
+            ease: "power3.in"
+          });
           gsap.gsap.to(chatBot, {
             y: 0,
             ease: "power1.out",
             duration: 0.5,
             delay: 0.25
           });
-          if (submitButton) {
-            gsap.gsap.to(submitButton, {
+          if (_submitButton) {
+            gsap.gsap.to(_submitButton, {
               scale: 0,
               ease: "power2",
               duration: 0.5
@@ -12050,25 +12067,25 @@ function _handleGenerationAnimation() {
               duration: 0.5
             });
           }
-          _context11.next = 26;
+          _context12.next = 29;
           return buffer(500);
-        case 26:
-          if (submitButton) {
-            submitButton.remove();
+        case 29:
+          if (_submitButton) {
+            _submitButton.remove();
           }
           playlist.remove();
-          _context11.next = 30;
+          _context12.next = 33;
           return buffer(200);
-        case 30:
+        case 33:
           backButton.remove();
           if (playlistButton) {
             playlistButton.remove();
           }
-        case 32:
+        case 35:
         case "end":
-          return _context11.stop();
+          return _context12.stop();
       }
-    }, _callee11);
+    }, _callee12);
   }));
   return _handleGenerationAnimation.apply(this, arguments);
 }
@@ -12293,7 +12310,192 @@ playlists.forEach(function (playlist) {
     }, _callee7);
   })));
 });
-},{"slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var switchPreviews = document.querySelector(".switch-previews");
+if (switchPreviews) {
+  var songs = document.querySelectorAll(".song");
+  var playlistList = document.querySelector(".playlist-list");
+  var switcher = switchPreviews.querySelector(".previews-switch");
+  var gridIcon = switchPreviews.querySelector(".grid-icon");
+  var textIcon = switchPreviews.querySelector(".text-icon");
+  var songList = document.querySelectorAll(".hidden-details > p");
+  var songSeparators = document.querySelectorAll(".list-separator");
+  var switched = false;
+  gsap.gsap.set(songList, {
+    y: 50
+  });
+  switchPreviews.addEventListener("mousedown", function () {
+    switchPreviews.style.pointerEvents = "none";
+    if (!switched) {
+      switched = true;
+      gsap.gsap.to(songList, {
+        y: 0,
+        ease: "sine",
+        duration: 0.35,
+        stagger: 0.04,
+        onStart: function onStart() {
+          return playlistList.style.visibility = "visible";
+        }
+      });
+      gsap.gsap.to(songs, {
+        x: "100vw",
+        ease: "power1",
+        duration: 0.5,
+        stagger: {
+          amount: 0.2,
+          from: "end"
+        },
+        onComplete: function onComplete() {
+          return songs.forEach(function (song) {
+            return song.style.transform = "translate(0, 100vh)";
+          });
+        }
+      });
+      gsap.gsap.to(songSeparators, {
+        scaleX: function scaleX() {
+          return "".concat(window.innerWidth * 0.9);
+        },
+        ease: "sine",
+        duration: 0.8,
+        stagger: 0.08,
+        delay: 0.25,
+        onStart: function onStart() {
+          return songSeparators.forEach(function (sep) {
+            return sep.style.opacity = 0.75;
+          });
+        },
+        onComplete: function onComplete() {
+          return switchPreviews.style.pointerEvents = "";
+        }
+      });
+      gsap.gsap.to(textIcon, {
+        opacity: 0,
+        ease: "power1",
+        duration: 0.25
+      });
+      gsap.gsap.to(gridIcon, {
+        opacity: 0.75,
+        ease: "power1",
+        duration: 0.5
+      });
+      gsap.gsap.to(switcher, {
+        x: 32,
+        ease: "power1",
+        duration: 0.5
+      });
+    } else {
+      switched = false;
+      var timeline = gsap.gsap.timeline();
+      timeline.to(songs, {
+        x: 0,
+        ease: "power1",
+        duration: 0.5,
+        stagger: {
+          amount: 0.3,
+          from: "start"
+        },
+        delay: 1,
+        onComplete: function onComplete() {
+          return (playlistList.style.visibility = "hidden") & (switchPreviews.style.pointerEvents = "");
+        }
+      });
+      gsap.gsap.to(songList, {
+        y: -50,
+        ease: "sine",
+        duration: 0.35,
+        stagger: 0.04,
+        delay: 0.5
+      });
+      gsap.gsap.to(songSeparators, {
+        scaleX: 0,
+        ease: "sine",
+        duration: 0.3,
+        stagger: 0.09,
+        onComplete: function onComplete() {
+          return songSeparators.forEach(function (sep) {
+            return sep.style.opacity = 0;
+          });
+        }
+      });
+      gsap.gsap.to(textIcon, {
+        opacity: 0.75,
+        ease: "power1",
+        duration: 0.5
+      });
+      gsap.gsap.to(gridIcon, {
+        opacity: 0,
+        ease: "power1",
+        duration: 0.25
+      });
+      gsap.gsap.to(switcher, {
+        x: 0,
+        ease: "power1",
+        duration: 0.5
+      });
+    }
+  });
+}
+var siteTitle = document.querySelector(".site-title");
+if (location.pathname !== "/") {
+  gsap.gsap.from(siteTitle, {
+    y: -55
+  });
+} else {
+  gsap.gsap.to(siteTitle, {
+    y: -55
+  });
+}
+var submitButton = document.querySelector(".spotify-playlist-submit");
+if (submitButton && location.pathname !== "/") {
+  gsap.gsap.from(submitButton, {
+    scale: 0,
+    ease: "elastic",
+    duration: 1.5,
+    delay: 1
+  });
+  submitButton.addEventListener("mousemove", function (e) {
+    submitButton.style.setProperty("--x", "".concat(e.pageX - submitButton.offsetLeft, "px"));
+    submitButton.style.setProperty("--y", "".concat(e.pageY - submitButton.offsetTop, "px"));
+  });
+  var uris = document.querySelector(".dbPlaylist p").innerHTML.split(",");
+  var url = slugify(location.pathname.split("/playlists/")[1]);
+  var name = document.querySelector(".playlist-title").innerHTML;
+  submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+    var _yield$axios$post, data, playlistButton;
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          gsap.gsap.to(submitButton, {
+            scale: 0,
+            ease: "sine",
+            duration: 0.25
+          });
+          submitButton.remove();
+          _context8.next = 4;
+          return axios.post("/api/playlists/create", {
+            url: url,
+            uris: uris,
+            name: name
+          });
+        case 4:
+          _yield$axios$post = _context8.sent;
+          data = _yield$axios$post.data;
+          playlistButton = document.querySelector(".open-spotify");
+          gsap.gsap.to(playlistButton, {
+            scale: 1,
+            ease: "elastic",
+            duration: 1
+          });
+          playlistButton.addEventListener("mousedown", function () {
+            window.open("".concat(data.link), "_blank");
+          });
+        case 9:
+        case "end":
+          return _context8.stop();
+      }
+    }, _callee8);
+  })));
+}
+},{"slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js","axios":"../../node_modules/axios/index.js","helmet":"../../node_modules/helmet/index.cjs"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -12318,7 +12520,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59760" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55813" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

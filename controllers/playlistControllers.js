@@ -100,11 +100,18 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
         },
       }
     );
+    const { url } = req.body;
+    await Playlist.findOneAndUpdate(
+      { url },
+      { created: true, createdUrl: link }
+    );
+    res.cookie("dbPlaylists", "");
     res.status(201).json({
       status: "success",
       link,
     });
   } catch (err) {
+    console.log(err.response.data);
     return next(
       new AppError("There was an error adding the songs to the playlist", 400)
     );
@@ -120,7 +127,6 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
       songs,
       user,
     });
-    console.log(newPlaylist);
     res.status(201).json({
       status: "success",
       newPlaylist,
@@ -135,7 +141,7 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
   const cookies = req.cookies;
   const arraysEqual = (a, b) => {
     if (a.length !== b.length) return false;
-    return a.every((value, index) => value === by[index]);
+    return a.every((value, index) => value === b[index]);
   };
   try {
     let playlists = await Playlist.find({ user });
@@ -199,6 +205,7 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
 exports.getPlaylist = catchAsync(async (req, res, next) => {
   try {
     let playlist = await Playlist.findOne({ url: slugify(req.params.name) });
+    req.dbPlaylist = playlist;
     if (!playlist)
       return next(
         new AppError(`You have no playlists with the name '${req.params.name}'`)

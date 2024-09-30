@@ -14,7 +14,9 @@ html
         .user-modal
           button.spotify-login.button #{spotifyToken ? 'Spotify' : 'connect spotify'}
           a.button(href="/login") login
+          a.button(href='/playlists') playlists
           button.light-dark-button.button light
+      a(href='/').site-title splist
     main
       block content
     script(src="/js/output.js")

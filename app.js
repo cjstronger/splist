@@ -56,6 +56,7 @@ app.use("/api/playlists", playlistRouter);
 app.use("/", viewsRouter);
 
 app.use((err, req, res, next) => {
+  console.log(err.response.data);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 

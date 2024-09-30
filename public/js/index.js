@@ -3,6 +3,8 @@ const { login } = require("./login");
 const spotify = require("./spotify");
 const toast = require("./toast");
 const gsap = require("gsap");
+const { default: axios } = require("axios");
+const { crossOriginResourcePolicy } = require("helmet");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -55,6 +57,7 @@ async function handleGenerationAnimation(io) {
   const backButton = document.querySelector(".back-button");
   const playlist = document.querySelector(".playlist");
   const playlistTitle = document.querySelector(".playlist-title");
+  const switcher = document.querySelector(".switch-previews");
 
   if (io) {
     if (songs.length) {
@@ -114,6 +117,11 @@ async function handleGenerationAnimation(io) {
       delay: 0.5,
       ease: "power1.inOut",
     });
+    gsap.gsap.to(switcher, {
+      x: -150,
+      duration: 0.5,
+      delay: 0.5,
+    });
   } else {
     const submitButton = document.querySelector(".spotify-playlist-submit");
     const playlistButton = document.querySelector(".open-playlist");
@@ -159,6 +167,11 @@ async function handleGenerationAnimation(io) {
       });
     }
     gsap.gsap.to(backButton, {
+      x: 0,
+      duration: 0.5,
+      ease: "power3.in",
+    });
+    gsap.gsap.to(switcher, {
       x: 0,
       duration: 0.5,
       ease: "power3.in",
@@ -384,3 +397,170 @@ playlists.forEach((playlist) => {
     location.assign(`/playlists/${slug}`);
   });
 });
+
+const switchPreviews = document.querySelector(".switch-previews");
+
+if (switchPreviews) {
+  const songs = document.querySelectorAll(".song");
+  const playlistList = document.querySelector(".playlist-list");
+  const switcher = switchPreviews.querySelector(".previews-switch");
+  const gridIcon = switchPreviews.querySelector(".grid-icon");
+  const textIcon = switchPreviews.querySelector(".text-icon");
+  const songList = document.querySelectorAll(".hidden-details > p");
+  const songSeparators = document.querySelectorAll(".list-separator");
+  let switched = false;
+  gsap.gsap.set(songList, { y: 50 });
+  switchPreviews.addEventListener("mousedown", () => {
+    switchPreviews.style.pointerEvents = "none";
+    if (!switched) {
+      switched = true;
+      gsap.gsap.to(songList, {
+        y: 0,
+        ease: "sine",
+        duration: 0.35,
+        stagger: 0.04,
+        onStart: () => (playlistList.style.visibility = "visible"),
+      });
+      gsap.gsap.to(songs, {
+        x: "100vw",
+        ease: "power1",
+        duration: 0.5,
+        stagger: {
+          amount: 0.2,
+          from: "end",
+        },
+        onComplete: () =>
+          songs.forEach(
+            (song) => (song.style.transform = "translate(0, 100vh)")
+          ),
+      });
+      gsap.gsap.to(songSeparators, {
+        scaleX: () => `${window.innerWidth * 0.9}`,
+        ease: "sine",
+        duration: 0.8,
+        stagger: 0.08,
+        delay: 0.25,
+        onStart: () =>
+          songSeparators.forEach((sep) => (sep.style.opacity = 0.75)),
+        onComplete: () => (switchPreviews.style.pointerEvents = ""),
+      });
+      gsap.gsap.to(textIcon, {
+        opacity: 0,
+        ease: "power1",
+        duration: 0.25,
+      });
+      gsap.gsap.to(gridIcon, {
+        opacity: 0.75,
+        ease: "power1",
+        duration: 0.5,
+      });
+      gsap.gsap.to(switcher, {
+        x: 32,
+        ease: "power1",
+        duration: 0.5,
+      });
+    } else {
+      switched = false;
+      let timeline = gsap.gsap.timeline();
+      timeline.to(songs, {
+        x: 0,
+        ease: "power1",
+        duration: 0.5,
+        stagger: {
+          amount: 0.3,
+          from: "start",
+        },
+        delay: 1,
+        onComplete: () =>
+          (playlistList.style.visibility = "hidden") &
+          (switchPreviews.style.pointerEvents = ""),
+      });
+      gsap.gsap.to(songList, {
+        y: -50,
+        ease: "sine",
+        duration: 0.35,
+        stagger: 0.04,
+        delay: 0.5,
+      });
+      gsap.gsap.to(songSeparators, {
+        scaleX: 0,
+        ease: "sine",
+        duration: 0.3,
+        stagger: 0.09,
+        onComplete: () =>
+          songSeparators.forEach((sep) => (sep.style.opacity = 0)),
+      });
+      gsap.gsap.to(textIcon, {
+        opacity: 0.75,
+        ease: "power1",
+        duration: 0.5,
+      });
+      gsap.gsap.to(gridIcon, {
+        opacity: 0,
+        ease: "power1",
+        duration: 0.25,
+      });
+      gsap.gsap.to(switcher, {
+        x: 0,
+        ease: "power1",
+        duration: 0.5,
+      });
+    }
+  });
+}
+
+const siteTitle = document.querySelector(".site-title");
+if (location.pathname !== "/") {
+  gsap.gsap.from(siteTitle, {
+    y: -55,
+  });
+} else {
+  gsap.gsap.to(siteTitle, {
+    y: -55,
+  });
+}
+
+const submitButton = document.querySelector(".spotify-playlist-submit");
+if (submitButton && location.pathname !== "/") {
+  gsap.gsap.from(submitButton, {
+    scale: 0,
+    ease: "elastic",
+    duration: 1.5,
+    delay: 1,
+  });
+  submitButton.addEventListener("mousemove", (e) => {
+    submitButton.style.setProperty(
+      "--x",
+      `${e.pageX - submitButton.offsetLeft}px`
+    );
+    submitButton.style.setProperty(
+      "--y",
+      `${e.pageY - submitButton.offsetTop}px`
+    );
+  });
+  const uris = document.querySelector(".dbPlaylist p").innerHTML.split(",");
+  const url = slugify(location.pathname.split("/playlists/")[1]);
+  const name = document.querySelector(".playlist-title").innerHTML;
+  submitButton.addEventListener("mousedown", async () => {
+    gsap.gsap.to(submitButton, {
+      scale: 0,
+      ease: "sine",
+      duration: 0.25,
+    });
+    submitButton.remove();
+    const { data } = await axios.post("/api/playlists/create", {
+      url,
+      uris,
+      name,
+    });
+    const playlistButton = document.querySelector(".open-spotify");
+    gsap.gsap.to(playlistButton, {
+      scale: 1,
+      ease: "elastic",
+      duration: 1,
+    });
+    playlistButton.addEventListener("mousedown", () => {
+      window.open(`${data.link}`, "_blank");
+    });
+  });
+}

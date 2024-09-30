@@ -19,6 +19,8 @@ const playlistSchema = new mongoose.Schema({
   },
   user: { type: mongoose.Schema.ObjectId, ref: "user" },
   url: String,
+  created: { type: Boolean, default: false },
+  createdUrl: String,
 });
 
 playlistSchema.pre("save", function (next) {

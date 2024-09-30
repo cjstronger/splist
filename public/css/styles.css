@@ -17,6 +17,7 @@ body {
   margin: 0px;
   background-color: var(--bg);
   color: var(--text);
+  overflow: hidden;
 }
 
 main {
@@ -52,6 +53,15 @@ a {
 
 input {
   caret-color: var(--text);
+}
+
+.site-title {
+  position: absolute;
+  top: 20px;
+  left: 43.5%;
+  transform: translate(-50% -50%);
+  font-size: 45px;
+  line-height: 0;
 }
 
 .button {
@@ -295,7 +305,50 @@ input {
 .song {
   position: relative;
 }
-.song:hover {
+.playlist-list {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 160px;
+  visibility: hidden;
+}
+.song-list {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 90vw;
+  gap: 5px;
+}
+.hidden-details {
+  overflow: hidden;
+}
+.list-image {
+  position: absolute !important;
+  top: 0px;
+  right: 50px;
+  visibility: hidden;
+  z-index: 5;
+  transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.song-list:hover .list-image {
+  visibility: visible;
+  transform: translateY(-25px);
+}
+.list-separator {
+  transform-origin: left;
+  width: 1px;
+  height: 2px;
+  background-color: var(--text);
+  opacity: 0;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  transform: translateY(20px);
+}
+.song:hover,
+.song-list {
   cursor: pointer;
 }
 
@@ -315,6 +368,38 @@ input {
   position: absolute;
   top: 60px;
   left: -150px;
+}
+
+.switch-previews {
+  width: 65px;
+  height: 30px;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px inset rgba(0, 0, 0, 0.15);
+  position: absolute;
+  right: -100px;
+  top: 100px;
+  background-color: var(--text);
+}
+.previews-switch {
+  width: 40%;
+  height: 80%;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--accent);
+}
+.switch-icon {
+  color: var(--accent);
+  position: absolute;
+  top: 3px;
+  width: 25px;
+  height: 25px;
+  opacity: 0.75;
+}
+.grid-icon {
+  left: 5px;
+}
+.text-icon {
+  right: 5px;
 }
 
 .song-image {
@@ -393,11 +478,29 @@ input {
   background-color: #1db954;
   border-radius: 50px;
   position: relative;
+  padding: 10px;
+  position: fixed;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+}
+.open-playlist span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  color: whitesmoke;
+}
+.open-spotify {
+  background-color: #1db954;
+  border-radius: 50px;
+  position: relative;
   padding: 20px;
   position: fixed;
   left: 50%;
   bottom: 10%;
   transform: translateX(-50%);
+  scale: 0;
 }
 
 .saved-playlists {
@@ -511,4 +614,8 @@ input {
   .playlist {
     grid-template-columns: 150px 150px !important;
   }
+}
+
+.dbPlaylist {
+  visibility: hidden;
 }
