@@ -51,7 +51,9 @@ exports.getSpotify = async (req, res) => {
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const { playlists } = res;
-  await res.cookie("playlists", playlists);
+  res.cookie("playlists", playlists, {
+    httpOnly: true,
+  });
 
   res.render("playlists", {
     title: "Playlists",
@@ -61,7 +63,6 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
   const { playlist, dbPlaylist } = req;
-  console.log(req.dbPlaylist);
   res.render("playlist", {
     playlist: playlist.tracks,
     playlistName: playlist.name,

@@ -139,22 +139,19 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const user = res.user._id;
   const cookies = req.cookies;
-  const arraysEqual = (a, b) => {
-    if (a.length !== b.length) return false;
-    return a.every((value, index) => value === b[index]);
-  };
   try {
     let playlists = await Playlist.find({ user });
 
     if (
       cookies.dbPlaylists &&
       cookies.playlists &&
-      arraysEqual(playlists[playlists.length - 1].songs, cookies.dbPlaylists)
+      playlists[playlists.length - 1].name === cookies.dbPlaylists
     ) {
       res.playlists = cookies.playlists;
       return next();
     }
-    res.cookie("dbPlaylists", playlists[playlists.length - 1].songs);
+    if (!playlists.length) return next();
+    res.cookie("dbPlaylists", playlists[playlists.length - 1].name);
     const uris = playlists.map((playlist) => {
       return [
         playlist.songs.reduce((acc, curr, index) => {
@@ -216,6 +213,23 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
     req.playlist = playlist[0];
     next();
   } catch (err) {
+    return next(err);
+  }
+});
+
+exports.deletePlaylist = catchAsync(async (req, res, next) => {
+  const name = req.body.name;
+  console.log(name);
+  const user = res.user._id;
+  try {
+    const deleted = await Playlist.findOneAndDelete({ name });
+    const playlists = await Playlist.find({ user });
+    res.cookie("dbPlaylists", "");
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
     return next(err);
   }
 });

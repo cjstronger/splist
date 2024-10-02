@@ -299,8 +299,88 @@ if (location.pathname.startsWith("/playlists/")) {
   });
 }
 
+function addDeleteListeners() {
+  const playlists = document.querySelectorAll(".playlist-group");
+  playlists.forEach((playlist) => {
+    const name = playlist.querySelector(".playlist-group-name").textContent;
+    const deleteButton = playlist.querySelector(".delete-button");
+    const deleteContainer = playlist.querySelector(".delete-container");
+    deleteButton.addEventListener("mousedown", async () => {
+      playlist.classList.add("removing");
+      gsap.gsap.to(playlist, {
+        scale: 0,
+        duration: 0.5,
+        ease: "back.in",
+      });
+      await buffer(500);
+      playlist.remove();
+      // try {
+      //   await axios.delete("/api/playlists/delete", {
+      //     data: {
+      //       name,
+      //     },
+      //   });
+      // } catch (err) {
+      //   console.log(err);
+      // }
+    });
+    deleteButton.addEventListener("mouseenter", () => {
+      gsap.gsap.to(deleteContainer, {
+        opacity: 0.8,
+      });
+    });
+    deleteButton.addEventListener("mouseleave", () => {
+      gsap.gsap.to(deleteContainer, {
+        opacity: 0.5,
+      });
+    });
+  });
+}
+
+function handlePlaylistEdit(io, clicked) {
+  if (!clicked) addDeleteListeners();
+
+  const deleteContainers = document.querySelectorAll(".delete-container");
+  const deleteButtons = document.querySelectorAll(".delete-button");
+
+  if (io) {
+    gsap.gsap.to(deleteContainers, {
+      stagger: 0.05,
+      opacity: 0.5,
+      onStart: () => playlistEventListeners(false),
+    });
+    gsap.gsap.to(deleteButtons, {
+      scale: 1,
+      stagger: 0.05,
+    });
+  } else {
+    gsap.gsap.to(deleteContainers, {
+      stagger: 0.05,
+      opacity: 0,
+      onStart: () => playlistEventListeners(true),
+    });
+    gsap.gsap.to(deleteButtons, {
+      scale: 0,
+      stagger: 0.05,
+    });
+  }
+}
+
 if (location.pathname === "/playlists") {
   handleGenerationAnimation(true);
+  const editButton = document.querySelector(".edit-button");
+  let editClicked = false;
+  let clicked = false;
+  editButton.addEventListener("mousedown", () => {
+    if (!editClicked) {
+      handlePlaylistEdit(true, clicked);
+      clicked = true;
+      editClicked = true;
+    } else {
+      handlePlaylistEdit(false, clicked);
+      editClicked = false;
+    }
+  });
 }
 
 if (chatBot) {
@@ -388,15 +468,32 @@ if (lightDarkButton) {
 
 const playlists = document.querySelectorAll(".playlist-group");
 
-playlists.forEach((playlist) => {
-  playlist.addEventListener("mousedown", async () => {
-    const name = playlist.querySelector(".playlist-group-name");
-    const slug = slugify(name.textContent);
-    handleGenerationAnimation(false);
-    await buffer(500);
-    location.assign(`/playlists/${slug}`);
-  });
-});
+async function handlePlaylistRoute(playlist) {
+  const name = playlist.querySelector(".playlist-group-name");
+  const slug = slugify(name.textContent);
+  handleGenerationAnimation(false);
+  await buffer(500);
+  location.assign(`/playlists/${slug}`);
+}
+
+const handlePlaylistClick = (event) => {
+  const playlist = event.currentTarget;
+  handlePlaylistRoute(playlist);
+};
+
+function playlistEventListeners(io) {
+  if (io) {
+    playlists.forEach((playlist) => {
+      playlist.addEventListener("mousedown", handlePlaylistClick);
+    });
+  } else {
+    playlists.forEach((playlist) => {
+      playlist.removeEventListener("mousedown", handlePlaylistClick);
+    });
+  }
+}
+
+playlistEventListeners(true);
 
 const switchPreviews = document.querySelector(".switch-previews");
 

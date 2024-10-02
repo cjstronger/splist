@@ -14,4 +14,6 @@ playlistRouter.post("/save", playlistController.savePlaylist);
 
 playlistRouter.get("/getPlaylists", playlistController.getPlaylists);
 
+playlistRouter.delete("/delete", playlistController.deletePlaylist);
+
 module.exports = playlistRouter;
