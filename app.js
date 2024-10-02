@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
 const helmet = require("helmet");
-const toast = require("./public/js/toast");
 
 const app = express();
 

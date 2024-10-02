@@ -1,10 +1,8 @@
 const { default: slugify } = require("slugify");
 const { login } = require("./login");
 const spotify = require("./spotify");
-const toast = require("./toast");
 const gsap = require("gsap");
 const { default: axios } = require("axios");
-const { crossOriginResourcePolicy } = require("helmet");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -32,22 +30,22 @@ const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const chatBot = document.querySelector(".chat-bot");
 
-function handleLoaders(loading) {
-  if (loading) {
-    const loaders =
-      '<div class="loaders">' +
-      '<div class="loader"></div>'.repeat(21) +
-      "</div>";
-    document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
-    const loaderElements = document.querySelectorAll(".loader");
-    loaderElements.forEach((loader) => {
-      const random = Math.random() * 2;
-      loader.style.animationDelay = `${random}s`;
-    });
-  } else {
-    document.querySelector(".loaders").remove();
-  }
-}
+// function handleLoaders(loading) {
+//   if (loading) {
+//     const loaders =
+//       '<div class="loaders">' +
+//       '<div class="loader"></div>'.repeat(21) +
+//       "</div>";
+//     document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
+//     const loaderElements = document.querySelectorAll(".loader");
+//     loaderElements.forEach((loader) => {
+//       const random = Math.random() * 2;
+//       loader.style.animationDelay = `${random}s`;
+//     });
+//   } else {
+//     document.querySelector(".loaders").remove();
+//   }
+// }
 
 async function handleGenerationAnimation(io) {
   const splistTitle = document.querySelector(".title");
@@ -66,9 +64,10 @@ async function handleGenerationAnimation(io) {
         stagger: 0.1,
         duration: 0.5,
         ease: "sine",
-        onStart: async () =>
-          (await buffer(100)) &
-          songs.forEach((song) => song.classList.remove("hidden")),
+        onStart: async () => {
+          await buffer(100);
+          songs.forEach((song) => song.classList.remove("hidden"));
+        },
       });
     } else if (savedPlaylists.length) {
       gsap.gsap.from(savedPlaylists, {
@@ -76,11 +75,12 @@ async function handleGenerationAnimation(io) {
         stagger: 0.1,
         duration: 0.5,
         ease: "sine",
-        onStart: async () =>
-          (await buffer(100)) &
+        onStart: async () => {
+          await buffer(100);
           savedPlaylists.forEach((playlist) =>
             playlist.classList.remove("hidden")
-          ),
+          );
+        },
       });
     }
     if (chatBot) {

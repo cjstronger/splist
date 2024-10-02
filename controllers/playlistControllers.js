@@ -5,6 +5,7 @@ const { default: axios } = require("axios");
 const cookieParser = require("cookie-parser");
 const Playlist = require("../models/playlistModel");
 const { default: slugify } = require("slugify");
+const { store, addPlaylist } = require("../public/js/store");
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
@@ -105,7 +106,6 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
       { url },
       { created: true, createdUrl: link }
     );
-    res.cookie("dbPlaylists", "");
     res.status(201).json({
       status: "success",
       link,
@@ -142,16 +142,6 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
   try {
     let playlists = await Playlist.find({ user });
 
-    if (
-      cookies.dbPlaylists &&
-      cookies.playlists &&
-      playlists[playlists.length - 1].name === cookies.dbPlaylists
-    ) {
-      res.playlists = cookies.playlists;
-      return next();
-    }
-    if (!playlists.length) return next();
-    res.cookie("dbPlaylists", playlists[playlists.length - 1].name);
     const uris = playlists.map((playlist) => {
       return [
         playlist.songs.reduce((acc, curr, index) => {
@@ -184,6 +174,16 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
       };
     });
 
+    playlists.forEach((playlist) => {
+      store.dispatch(
+        addPlaylist({ name: playlist.name, songs: playlist.tracks })
+      );
+    });
+
+    store.subscribe(() => {
+      console.log("state updated:", store.getState());
+    });
+
     res.playlists = playlists;
 
     if (req.cookies.api === "true") {
@@ -207,6 +207,8 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
       return next(
         new AppError(`You have no playlists with the name '${req.params.name}'`)
       );
+    if (!req.cookies.playlists) {
+    }
     playlist = req.cookies.playlists.filter((el) => {
       return el.name === playlist.name;
     });
@@ -224,7 +226,6 @@ exports.deletePlaylist = catchAsync(async (req, res, next) => {
   try {
     const deleted = await Playlist.findOneAndDelete({ name });
     const playlists = await Playlist.find({ user });
-    res.cookie("dbPlaylists", "");
     res.status(200).json({
       status: "success",
     });

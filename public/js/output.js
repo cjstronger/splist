@@ -11761,9 +11761,7 @@ exports.savePlaylist = /*#__PURE__*/function () {
     return _ref4.apply(this, arguments);
   };
 }();
-},{"axios":"../../node_modules/axios/index.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js"}],"../../node_modules/helmet/index.cjs":[function(require,module,exports) {
-module.exports = "/helmet.8eb89d3d.cjs";
-},{}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js"}],"index.js":[function(require,module,exports) {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -11779,12 +11777,9 @@ var _require = require("slugify"),
 var _require2 = require("./login"),
   login = _require2.login;
 var spotify = require("./spotify");
-var toast = require("./toast");
 var gsap = require("gsap");
 var _require3 = require("axios"),
   axios = _require3.default;
-var _require4 = require("helmet"),
-  crossOriginResourcePolicy = _require4.crossOriginResourcePolicy;
 var loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", /*#__PURE__*/function () {
@@ -11836,19 +11831,23 @@ var buffer = function buffer(ms) {
   });
 };
 var chatBot = document.querySelector(".chat-bot");
-function handleLoaders(loading) {
-  if (loading) {
-    var loaders = '<div class="loaders">' + '<div class="loader"></div>'.repeat(21) + "</div>";
-    document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
-    var loaderElements = document.querySelectorAll(".loader");
-    loaderElements.forEach(function (loader) {
-      var random = Math.random() * 2;
-      loader.style.animationDelay = "".concat(random, "s");
-    });
-  } else {
-    document.querySelector(".loaders").remove();
-  }
-}
+
+// function handleLoaders(loading) {
+//   if (loading) {
+//     const loaders =
+//       '<div class="loaders">' +
+//       '<div class="loader"></div>'.repeat(21) +
+//       "</div>";
+//     document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
+//     const loaderElements = document.querySelectorAll(".loader");
+//     loaderElements.forEach((loader) => {
+//       const random = Math.random() * 2;
+//       loader.style.animationDelay = `${random}s`;
+//     });
+//   } else {
+//     document.querySelector(".loaders").remove();
+//   }
+// }
 function handleGenerationAnimation(_x2) {
   return _handleGenerationAnimation.apply(this, arguments);
 }
@@ -11884,12 +11883,10 @@ function _handleGenerationAnimation() {
                         _context9.next = 2;
                         return buffer(100);
                       case 2:
-                        _context9.t0 = _context9.sent;
-                        _context9.t1 = songs.forEach(function (song) {
+                        songs.forEach(function (song) {
                           return song.classList.remove("hidden");
                         });
-                        return _context9.abrupt("return", _context9.t0 & _context9.t1);
-                      case 5:
+                      case 3:
                       case "end":
                         return _context9.stop();
                     }
@@ -11915,12 +11912,10 @@ function _handleGenerationAnimation() {
                         _context10.next = 2;
                         return buffer(100);
                       case 2:
-                        _context10.t0 = _context10.sent;
-                        _context10.t1 = savedPlaylists.forEach(function (playlist) {
+                        savedPlaylists.forEach(function (playlist) {
                           return playlist.classList.remove("hidden");
                         });
-                        return _context10.abrupt("return", _context10.t0 & _context10.t1);
-                      case 5:
+                      case 3:
                       case "end":
                         return _context10.stop();
                     }
@@ -12605,7 +12600,7 @@ if (submitButton && location.pathname !== "/") {
     }, _callee8);
   })));
 }
-},{"slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","./toast":"toast.js","gsap":"../../node_modules/gsap/index.js","axios":"../../node_modules/axios/index.js","helmet":"../../node_modules/helmet/index.cjs"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","gsap":"../../node_modules/gsap/index.js","axios":"../../node_modules/axios/index.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -12630,7 +12625,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61617" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49762" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

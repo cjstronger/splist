@@ -527,12 +527,6 @@ input {
   border-radius: 20px;
   background-color: var(--accent);
   padding: 0.5px 5px;
-  transition: margin 0.5s cubic-bezier(0.075, 0.82, 0.165, 1),
-    transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-}
-.playlist-group.removing {
-  margin-top: -220px;
-  transform: translateY(-220px);
 }
 .playlist-group:hover {
   cursor: pointer;

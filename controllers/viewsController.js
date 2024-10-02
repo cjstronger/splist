@@ -62,7 +62,9 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
 });
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
+  console.log("_erererere");
   const { playlist, dbPlaylist } = req;
+  console.log(playlist);
   res.render("playlist", {
     playlist: playlist.tracks,
     playlistName: playlist.name,
