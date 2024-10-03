@@ -5,7 +5,7 @@ const { default: axios } = require("axios");
 const cookieParser = require("cookie-parser");
 const Playlist = require("../models/playlistModel");
 const { default: slugify } = require("slugify");
-const { store, addPlaylist } = require("../public/js/store");
+const { store, addPlaylist, addPlaylists } = require("../public/js/store");
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
@@ -174,11 +174,7 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
       };
     });
 
-    playlists.forEach((playlist) => {
-      store.dispatch(
-        addPlaylist({ name: playlist.name, songs: playlist.tracks })
-      );
-    });
+    store.dispatch(addPlaylists(playlists));
 
     store.subscribe(() => {
       console.log("state updated:", store.getState());
@@ -194,7 +190,6 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
     }
     return next();
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -207,11 +202,15 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
       return next(
         new AppError(`You have no playlists with the name '${req.params.name}'`)
       );
-    if (!req.cookies.playlists) {
+
+    const currentState = store.getState();
+    console.log("current state:", currentState);
+    if (currentState) {
+      playlist = currentState.lister.playlists.filter((playlist) => {
+        return playlist.name === req.params.name;
+      });
     }
-    playlist = req.cookies.playlists.filter((el) => {
-      return el.name === playlist.name;
-    });
+    console.log(playlist);
     req.playlist = playlist[0];
     next();
   } catch (err) {
@@ -221,7 +220,6 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
 
 exports.deletePlaylist = catchAsync(async (req, res, next) => {
   const name = req.body.name;
-  console.log(name);
   const user = res.user._id;
   try {
     const deleted = await Playlist.findOneAndDelete({ name });

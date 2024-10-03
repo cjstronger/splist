@@ -11797,9 +11797,8 @@ if (loginForm) {
           case 6:
             _yield$login = _context.sent;
             error = _yield$login.error;
-            console.log(error);
             if (error) formError.innerHTML = error;
-          case 10:
+          case 9:
           case "end":
             return _context.stop();
         }
@@ -12625,7 +12624,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49762" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50938" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

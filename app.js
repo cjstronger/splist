@@ -73,7 +73,7 @@ app.use((err, req, res, next) => {
     handleOpErrors.duplicateError(error);
   }
   const spotifyError = err.response?.data.error;
-  if (spotifyError && spotifyError.message === "Invalid access token") {
+  if (spotifyError && spotifyError.status === 401) {
     handleOpErrors.spotifyAuthError(error);
   }
 

@@ -13,7 +13,6 @@ if (loginForm) {
     const password = loginForm.querySelector(".password").value;
     const formError = loginForm.querySelector(".error");
     const { error } = await login(email, password);
-    console.log(error);
     if (error) formError.innerHTML = error;
   });
 }

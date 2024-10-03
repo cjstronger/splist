@@ -1,9 +1,9 @@
 extends base
 
 block content 
-    h1.playlist-title.hidden playlists
-    button.edit-button.button edit
-    if playlists
+    if playlists.length
+        h1.playlist-title.hidden playlists
+        button.edit-button.button edit
         .saved-playlists
             each playlist in playlists
                 .playlist-group.hidden
@@ -25,5 +25,7 @@ block content
                             img.playlist-image(src=`${playlist.tracks[2].img}`)
                         else
                             .song-fake
-    if !playlists
-        h2 You have not generated any playlists!
+    if !playlists.length
+        .no-playlists
+            h2 You have not generated any playlists!
+            a(href="/").button home
