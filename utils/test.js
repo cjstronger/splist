@@ -294,3 +294,40 @@ var isValid = function (s) {
   }
   return true;
 };
+
+var addBinary = function (a, b) {
+  let first = a.length - 1;
+  let second = b.length - 1;
+  let carry = 0;
+  let ans = "";
+  while (first >= 0) {
+    if (carry == 0) {
+      if (first == 0) return ans;
+      if (a[first] == "1" && b[second] == "1") {
+        ans = "0" + ans;
+        carry++;
+      } else if ((a[first] == "1") | (b[second] == "1")) {
+        ans = "1" + ans;
+      } else {
+        ans = "0" + ans;
+      }
+      first--;
+      second--;
+    } else {
+      if (a[first] == "1" && b[second] == "1") {
+        ans = "1" + ans;
+        a = "0" + a;
+        carry++;
+      } else if ((a[first] == "1") | (b[second] == "1")) {
+        ans = "0" + ans;
+        a = "0" + a;
+      } else {
+        carry--;
+        ans = "1" + ans;
+      }
+    }
+  }
+  return ans;
+};
+
+var reverseBits = function (n) {};

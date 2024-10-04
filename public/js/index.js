@@ -305,7 +305,6 @@ function addDeleteListeners() {
     const deleteButton = playlist.querySelector(".delete-button");
     const deleteContainer = playlist.querySelector(".delete-container");
     deleteButton.addEventListener("mousedown", async () => {
-      playlist.classList.add("removing");
       gsap.gsap.to(playlist, {
         scale: 0,
         duration: 0.5,
@@ -325,12 +324,16 @@ function addDeleteListeners() {
     });
     deleteButton.addEventListener("mouseenter", () => {
       gsap.gsap.to(deleteContainer, {
-        opacity: 0.8,
+        background: "rgba(234, 100, 100, 0.8)",
+        duration: 0.1,
+        ease: "power1",
       });
     });
     deleteButton.addEventListener("mouseleave", () => {
       gsap.gsap.to(deleteContainer, {
-        opacity: 0.5,
+        background: "rgba(234, 100, 100, 0.5)",
+        duration: 0.1,
+        ease: "power1",
       });
     });
   });
@@ -344,8 +347,9 @@ function handlePlaylistEdit(io, clicked) {
 
   if (io) {
     gsap.gsap.to(deleteContainers, {
-      stagger: 0.05,
-      opacity: 0.5,
+      stagger: 0.08,
+      background: "rgba(234, 100, 100, 0.5)",
+      duration: 0.1,
       onStart: () => playlistEventListeners(false),
     });
     gsap.gsap.to(deleteButtons, {
@@ -355,7 +359,8 @@ function handlePlaylistEdit(io, clicked) {
   } else {
     gsap.gsap.to(deleteContainers, {
       stagger: 0.05,
-      opacity: 0,
+      background: "transparent",
+      duration: 0.1,
       onStart: () => playlistEventListeners(true),
     });
     gsap.gsap.to(deleteButtons, {

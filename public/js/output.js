@@ -12185,15 +12185,14 @@ function addDeleteListeners() {
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            playlist.classList.add("removing");
             gsap.gsap.to(playlist, {
               scale: 0,
               duration: 0.5,
               ease: "back.in"
             });
-            _context4.next = 4;
+            _context4.next = 3;
             return buffer(500);
-          case 4:
+          case 3:
             playlist.remove();
             // try {
             //   await axios.delete("/api/playlists/delete", {
@@ -12204,7 +12203,7 @@ function addDeleteListeners() {
             // } catch (err) {
             //   console.log(err);
             // }
-          case 5:
+          case 4:
           case "end":
             return _context4.stop();
         }
@@ -12212,12 +12211,16 @@ function addDeleteListeners() {
     })));
     deleteButton.addEventListener("mouseenter", function () {
       gsap.gsap.to(deleteContainer, {
-        opacity: 0.8
+        background: "rgba(234, 100, 100, 0.8)",
+        duration: 0.1,
+        ease: "power1"
       });
     });
     deleteButton.addEventListener("mouseleave", function () {
       gsap.gsap.to(deleteContainer, {
-        opacity: 0.5
+        background: "rgba(234, 100, 100, 0.5)",
+        duration: 0.1,
+        ease: "power1"
       });
     });
   });
@@ -12228,8 +12231,9 @@ function handlePlaylistEdit(io, clicked) {
   var deleteButtons = document.querySelectorAll(".delete-button");
   if (io) {
     gsap.gsap.to(deleteContainers, {
-      stagger: 0.05,
-      opacity: 0.5,
+      stagger: 0.08,
+      background: "rgba(234, 100, 100, 0.5)",
+      duration: 0.1,
       onStart: function onStart() {
         return playlistEventListeners(false);
       }
@@ -12241,7 +12245,8 @@ function handlePlaylistEdit(io, clicked) {
   } else {
     gsap.gsap.to(deleteContainers, {
       stagger: 0.05,
-      opacity: 0,
+      background: "transparent",
+      duration: 0.1,
       onStart: function onStart() {
         return playlistEventListeners(true);
       }
@@ -12624,7 +12629,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50938" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53417" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

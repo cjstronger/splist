@@ -5,7 +5,12 @@ const { default: axios } = require("axios");
 const cookieParser = require("cookie-parser");
 const Playlist = require("../models/playlistModel");
 const { default: slugify } = require("slugify");
-const { store, addPlaylist, addPlaylists } = require("../public/js/store");
+const localStorage = require("localStorage");
+const jsonStorage = require("json-storage").JsonStorage;
+
+const store = jsonStorage.create(localStorage, "storage", {
+  stringify: true,
+});
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
@@ -111,7 +116,6 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
       link,
     });
   } catch (err) {
-    console.log(err.response.data);
     return next(
       new AppError("There was an error adding the songs to the playlist", 400)
     );
@@ -122,6 +126,7 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
   const user = res.user._id;
   const { name, songs } = req.body;
   try {
+    store.set("playlists", null);
     const newPlaylist = await Playlist.create({
       name,
       songs,
@@ -139,6 +144,11 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const user = res.user._id;
   const cookies = req.cookies;
+  const storedPlaylists = store.get("playlists");
+  if (storedPlaylists !== null) {
+    res.playlists = storedPlaylists;
+    return next();
+  }
   try {
     let playlists = await Playlist.find({ user });
 
@@ -174,11 +184,7 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
       };
     });
 
-    store.dispatch(addPlaylists(playlists));
-
-    store.subscribe(() => {
-      console.log("state updated:", store.getState());
-    });
+    store.set("playlists", playlists);
 
     res.playlists = playlists;
 
@@ -203,14 +209,16 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
         new AppError(`You have no playlists with the name '${req.params.name}'`)
       );
 
-    const currentState = store.getState();
-    console.log("current state:", currentState);
-    if (currentState) {
-      playlist = currentState.lister.playlists.filter((playlist) => {
-        return playlist.name === req.params.name;
-      });
+    const playlists = store.get("playlists");
+
+    if (!playlists) {
+      res.redirect("/playlists");
     }
-    console.log(playlist);
+
+    playlist = playlists.filter((playlist) => {
+      return playlist.name === req.params.name;
+    });
+
     req.playlist = playlist[0];
     next();
   } catch (err) {
@@ -221,7 +229,14 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
 exports.deletePlaylist = catchAsync(async (req, res, next) => {
   const name = req.body.name;
   const user = res.user._id;
+  let storedPlaylists = store.get("playlists");
   try {
+    if (storedPlaylists !== null) {
+      storedPlaylists = storedPlaylists.filter((playlist) => {
+        return playlist.name !== name;
+      });
+      store.set("playlists", storedPlaylists);
+    }
     const deleted = await Playlist.findOneAndDelete({ name });
     const playlists = await Playlist.find({ user });
     res.status(200).json({
