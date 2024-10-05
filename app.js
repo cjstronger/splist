@@ -77,6 +77,8 @@ app.use((err, req, res, next) => {
     handleOpErrors.spotifyAuthError(error);
   }
 
+  res.error = error;
+
   if (req.originalUrl.startsWith("/api")) {
     return res.status(error.statusCode).json({
       status: error.status,
@@ -84,10 +86,11 @@ app.use((err, req, res, next) => {
     });
   }
 
-  return res.render("error", {
-    status: error.status,
-    message: error.message || err.message,
-  });
+  res.redirect(
+    `/error?status=${error.status}&message=${encodeURIComponent(
+      error.message || err.message
+    )}`
+  );
 });
 
 module.exports = app;

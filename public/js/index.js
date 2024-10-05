@@ -3,6 +3,7 @@ const { login } = require("./login");
 const spotify = require("./spotify");
 const gsap = require("gsap");
 const { default: axios } = require("axios");
+const cookieParser = require("cookie-parser");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -29,22 +30,22 @@ const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const chatBot = document.querySelector(".chat-bot");
 
-// function handleLoaders(loading) {
-//   if (loading) {
-//     const loaders =
-//       '<div class="loaders">' +
-//       '<div class="loader"></div>'.repeat(21) +
-//       "</div>";
-//     document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
-//     const loaderElements = document.querySelectorAll(".loader");
-//     loaderElements.forEach((loader) => {
-//       const random = Math.random() * 2;
-//       loader.style.animationDelay = `${random}s`;
-//     });
-//   } else {
-//     document.querySelector(".loaders").remove();
-//   }
-// }
+function handleLoaders(loading) {
+  if (loading) {
+    const loaders =
+      '<div class="loaders">' +
+      '<div class="loader"></div>'.repeat(21) +
+      "</div>";
+    document.querySelector("main").insertAdjacentHTML("beforeend", loaders);
+    const loaderElements = document.querySelectorAll(".loader");
+    loaderElements.forEach((loader) => {
+      const random = Math.random() * 2;
+      loader.style.animationDelay = `${random}s`;
+    });
+  } else {
+    document.querySelector(".loaders").remove();
+  }
+}
 
 async function handleGenerationAnimation(io) {
   const splistTitle = document.querySelector(".title");
@@ -67,6 +68,8 @@ async function handleGenerationAnimation(io) {
           await buffer(100);
           songs.forEach((song) => song.classList.remove("hidden"));
         },
+        onComplete: () =>
+          document.querySelector("body").classList.remove("overflow-hidden"),
       });
     } else if (savedPlaylists.length) {
       gsap.gsap.from(savedPlaylists, {
@@ -80,6 +83,8 @@ async function handleGenerationAnimation(io) {
             playlist.classList.remove("hidden")
           );
         },
+        onComplete: () =>
+          document.querySelector("body").classList.remove("overflow-hidden"),
       });
     }
     if (chatBot) {
@@ -450,25 +455,105 @@ if (chatBot) {
   });
 }
 
+const root = document.documentElement;
+
+function setDarkMode() {
+  root.style.setProperty("--bg", "#414141");
+  root.style.setProperty("--accent", "#282828");
+  root.style.setProperty("--text", "#e8e8e8");
+  root.style.setProperty("--secondary", "black");
+}
+
+function setLightMode() {
+  root.style.setProperty("--bg", "#f7f7f7");
+  root.style.setProperty("--accent", "#dbdbdb");
+  root.style.setProperty("--text", "#414141");
+  root.style.setProperty("--secondary", "white");
+}
+
+window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+  ? setDarkMode()
+  : setLightMode();
+
+let cookieDark = document.cookie.split("; ").includes("darkMode=true");
+let cookieLight = document.cookie.split("; ").includes("darkMode=false");
+if (!cookieLight) {
+  cookieDark = true;
+}
+
+cookieDark ? setDarkMode() : setLightMode();
+
 const lightDarkButton = document.querySelector(".light-dark-button");
 
 if (lightDarkButton) {
-  lightDarkButton.addEventListener("click", (e) => {
-    const root = document.documentElement;
-    const bg = getComputedStyle(root).getPropertyValue("--bg");
-    const accent = getComputedStyle(root).getPropertyValue("--accent");
-    const text = getComputedStyle(root).getPropertyValue("--text");
-    root.style.setProperty("--bg", bg === "#bfcdd9" ? "#414141" : "#bfcdd9");
-    root.style.setProperty(
-      "--accent",
-      accent === "#e8e8e8" ? "#282828" : "#e8e8e8"
-    );
-    root.style.setProperty(
-      "--text",
-      text === "#414141" ? "#e8e8e8" : "#414141"
-    );
+  lightDarkButton.addEventListener("click", async () => {
+    document.querySelector("body").classList.add("transition");
+    cookieDark = !cookieDark;
+    document.cookie = `darkMode=${cookieDark}`;
+    cookieDark ? setDarkMode() : setLightMode();
+    await buffer(550);
+    document.querySelector("body").classList.remove("transition");
   });
 }
+
+const menuButton = document.querySelector(".modal-svg");
+const modal = document.querySelector(".user-modal");
+
+menuButton.addEventListener("mousedown", () => {
+  modal.style.opacity = "1";
+  gsap.gsap.to(modal, {
+    duration: 1,
+    ease: "power4.out",
+    y: "-100vh",
+  });
+});
+
+const closeMenu = document.querySelector(".close-menu");
+
+closeMenu.addEventListener("mousedown", () => {
+  gsap.gsap.to(modal, {
+    duration: 1,
+    ease: "power4.out",
+    y: "-200vh",
+    onComplete: () => {
+      gsap.gsap.to(modal, {
+        opacity: 0,
+        duration: 0.01,
+        onComplete: () =>
+          gsap.gsap.to(modal, {
+            y: "100vh",
+            duration: 0.01,
+          }),
+      });
+    },
+  });
+});
+
+const menuLinks = document.querySelectorAll(".menu-links");
+
+menuLinks.forEach((link) => {
+  link.addEventListener("click", async (e) => {
+    e.preventDefault();
+    gsap.gsap.to(modal, {
+      duration: 1,
+      ease: "power4.out",
+      y: "-200vh",
+      onComplete: () => {
+        gsap.gsap.to(modal, {
+          opacity: 0,
+          duration: 0.01,
+          onComplete: () =>
+            gsap.gsap.to(modal, {
+              y: "100vh",
+              duration: 0.01,
+            }),
+        });
+      },
+    });
+    await buffer(500);
+    location.assign(e.target.href);
+  });
+});
 
 const playlists = document.querySelectorAll(".playlist-group");
 
@@ -610,7 +695,7 @@ if (switchPreviews) {
   });
 }
 
-const siteTitle = document.querySelector(".site-title");
+const siteTitle = document.querySelector(".site-title-container");
 if (location.pathname !== "/") {
   gsap.gsap.from(siteTitle, {
     y: -55,

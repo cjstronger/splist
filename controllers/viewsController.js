@@ -28,7 +28,7 @@ const generateRandomString = (length) => {
   return values.reduce((acc, x) => acc + possible[x % possible.length], "");
 };
 
-exports.getSpotify = async (req, res) => {
+exports.getSpotify = catchAsync(async (req, res) => {
   const state = generateRandomString(16);
   const spotifyAuthUrl =
     "https://accounts.spotify.com/authorize?" +
@@ -47,7 +47,7 @@ exports.getSpotify = async (req, res) => {
   res.cookie("api", false);
 
   res.redirect(spotifyAuthUrl);
-};
+});
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const { playlists } = res;
@@ -69,3 +69,11 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
     dbPlaylist,
   });
 });
+
+exports.getError = (req, res) => {
+  const { status, message } = req.query;
+  res.render("error", {
+    status,
+    message,
+  });
+};

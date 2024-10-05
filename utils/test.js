@@ -330,4 +330,12 @@ var addBinary = function (a, b) {
   return ans;
 };
 
-var reverseBits = function (n) {};
+var hammingWeight = function (n) {
+  let binary = n.toString(2);
+  let count = 0;
+  for (let i = 0; i < binary.length; i++) {
+    if ((n & 1) === 1) count++;
+    n >>= 1;
+  }
+  return count;
+};

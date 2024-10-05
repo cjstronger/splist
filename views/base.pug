@@ -8,14 +8,20 @@ html
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet")
-  body
+  body.overflow-hidden
     nav
-      .user user
+      .user
+        svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor").modal-svg
+          path(fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd")
         .user-modal
-          button.spotify-login.button #{spotifyToken ? 'Spotify' : 'connect spotify'}
-          a.button(href="/login") login
-          a.button(href='/playlists') playlists
-          button.light-dark-button.button light
+          button.close-menu
+            svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor")
+              path(fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd")
+          .modal-items
+            a.menu-links(href="/login") login
+            a.menu-links(href='/playlists') playlists
+            button.spotify-login #{spotifyToken ? 'spotify' : 'connect spotify'}
+            button.light-dark-button light
       .site-title-container
         a(href='/').site-title splist
     main

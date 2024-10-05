@@ -19,5 +19,6 @@ viewsRouter.get(
   playlistController.getPlaylist,
   viewsController.getPlaylist
 );
+viewsRouter.get("/error", viewsController.getError);
 
 module.exports = viewsRouter;

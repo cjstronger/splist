@@ -110,7 +110,7 @@ exports.spotifyRedirect = (req, res, next) => {
   );
 };
 
-exports.spotifyCallback = async (req, res, next) => {
+exports.spotifyCallback = catchAsync(async (req, res, next) => {
   const cookies = cookieParser.JSONCookies(req.cookies);
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -164,4 +164,4 @@ exports.spotifyCallback = async (req, res, next) => {
   } catch (err) {
     return next(new AppError(err.message, err.statusCode));
   }
-};
+});
