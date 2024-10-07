@@ -4,7 +4,7 @@ const authController = require("../../controllers/authControllers");
 const authRouter = express.Router();
 
 authRouter.post("/login", authController.login);
-authRouter.post("/logout");
+authRouter.post("/logout", authController.logout);
 authRouter.post("/signup", authController.signUp, authController.login);
 
 authRouter.get("/spotify", authController.spotifyRedirect);

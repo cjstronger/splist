@@ -339,3 +339,60 @@ var hammingWeight = function (n) {
   }
   return count;
 };
+
+var plusOne = function (digits) {
+  for (let i = digits.length - 1; i >= 0; i++) {
+    if (digits[i] + 1 !== 10) {
+      digits[i] += 1;
+      return digits;
+    }
+    digits[i] = 0;
+    if (i == 0) return [1] + digits;
+  }
+  return digits;
+};
+
+var mySqrt = function (x) {
+  if (x * x === x) return x;
+  function helper(num) {
+    let shift = (num >>= 1);
+    if (shift * shift === x) {
+      return shift;
+    }
+    if (shift * shift < x) {
+      return shift;
+    }
+    return helper(shift);
+  }
+  return helper(x);
+};
+
+var climbStairs = function (n) {
+  let firstCount = 0;
+  let secondCount = 0;
+  function second(num) {
+    if (num - 2 >= 2) {
+      second(num - 2);
+      first(num - 2);
+    } else if (num - 2 >= -1) {
+      if (num === 2) secondCount++;
+      first(num - 2);
+    }
+    return secondCount;
+  }
+  function first(num) {
+    if (num - 1 >= 2) {
+      second(num - 1);
+      first(num - 1);
+    } else if (num - 1 >= 0) {
+      if (num === 1) firstCount++;
+      first(num - 1);
+    }
+    return firstCount;
+  }
+  first(n);
+  second(n);
+  console.log(firstCount + secondCount);
+};
+
+climbStairs(44);

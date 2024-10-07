@@ -29,7 +29,7 @@ block content
                     p.song-artist= song.artist + " | "
                 hr.list-separator
     .dbPlaylist
-        p= dbPlaylist.song
+        p= dbPlaylist.songs
     if dbPlaylist.created === true
         a.open-playlist(href=`${dbPlaylist.createdUrl}` target="_blank")
             span open

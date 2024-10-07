@@ -55,6 +55,7 @@ app.use("/api/playlists", playlistRouter);
 app.use("/", viewsRouter);
 
 app.use((err, req, res, next) => {
+  console.log(err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
@@ -79,7 +80,10 @@ app.use((err, req, res, next) => {
 
   res.error = error;
 
-  if (req.originalUrl.startsWith("/api")) {
+  if (
+    req.originalUrl.startsWith("/api") &&
+    !req.originalUrl.includes("callback?code=")
+  ) {
     return res.status(error.statusCode).json({
       status: error.status,
       message: error.message || err.message,

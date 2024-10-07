@@ -2,10 +2,6 @@ import axios from "axios";
 import toast from "./toast";
 import gsap from "gsap";
 
-exports.spotifyLogin = () => {
-  location.assign("/spotify-login");
-};
-
 exports.spotifyGenerate = async (params) => {
   let err = null;
   let data = null;

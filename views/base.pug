@@ -8,7 +8,7 @@ html
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet")
-  body.overflow-hidden
+  body
     nav
       .user
         svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor").modal-svg
@@ -18,10 +18,18 @@ html
             svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor")
               path(fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd")
           .modal-items
-            a.menu-links(href="/login") login
-            a.menu-links(href='/playlists') playlists
-            button.spotify-login #{spotifyToken ? 'spotify' : 'connect spotify'}
-            button.light-dark-button light
+            if !user
+              a.menu-links(href="/login").overflow-hidden
+                p login
+            else
+              button.logout.overflow-hidden
+                p logout
+            a.menu-links(href='/playlists').overflow-hidden
+              p playlists
+            a.spotify-login.overflow-hidden(href='/spotify-login')
+              p #{spotifyToken ? 'spotify connected' : 'connect spotify'}
+            button.light-dark-button.overflow-hidden
+              p light
       .site-title-container
         a(href='/').site-title splist
     main

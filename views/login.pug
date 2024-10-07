@@ -1,10 +1,53 @@
 extends base
 
 block content 
-    div
-        form.login-form
-            h1 splist login
-            input.login-input.email(type="email" placeholder="email")
-            input.login-input.password(type="password" placeholder="password")
-            p.error
-            button(type="submit").button submit
+    //- .account
+    //-     .account-forms
+    //-         form.login-form
+    //-             h1 splist login
+    //-             input.login-input.email(type="email" placeholder="email")
+    //-             input.login-input.password(type="password" placeholder="password")
+    //-             p.error
+    //-             button(type="submit").button submit
+    //-     .account-forms
+    //-         form.signup-form
+    //-             h1 splist signup
+    //-             input.signup-input.email(type="email" placeholder="email")
+    //-             input.signup-input.password(type="password" placeholder="password")
+    //-             p.error
+    //-             button(type="submit").button submit
+    .account-forms
+        .account-wrapper 
+            .form-box.login 
+                h2 splist login
+                form.login-form
+                    .input-box 
+                        input.email(type="email" required)
+                        label email
+                    .input-box 
+                        input.password(type="password" required)
+                        label password
+                    p.error
+                    .forget 
+                        a(href="/forget-password") forgot password?
+                    button.form-button(type="submit") login
+                    .login-register 
+                        p don't have an account?
+                            a  register
+            .form-box.register 
+                h2 splist register
+                form.register-form
+                    .input-box 
+                        input.email(type="email" required)
+                        label email
+                    .input-box 
+                        input.password(type="password" required)
+                        label password
+                    .input-box 
+                        input.confirm-password(type="password" required)
+                        label confirm password
+                    p.error
+                    button.form-button(type="submit") sign up
+                    .login-register 
+                        p already have an account?
+                            a  login

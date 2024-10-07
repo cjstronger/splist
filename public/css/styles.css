@@ -12,7 +12,8 @@
 }
 
 .transition {
-  transition: background-color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: background-color 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+    color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 body {
@@ -36,6 +37,7 @@ a {
   transition: all 0.1s ease-in;
   cursor: pointer;
   color: var(--text);
+  font-size: 25px;
 }
 
 nav {
@@ -103,7 +105,7 @@ input {
   left: 50%;
   transform: translateX(-50%);
   font-size: medium;
-  z-index: 10;
+  z-index: 20;
 }
 .toast-fail {
   background-color: #d65a5a;
@@ -111,24 +113,110 @@ input {
 .toast-success {
   background-color: var(--secondary);
 }
-
-.login-form {
-  width: 80vw;
-  max-width: 800px;
-  height: 60vh;
-  background-color: var(--accent);
-  margin: 0 auto;
-  margin-top: 10vh;
+.account-forms {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 50px;
+}
+.account-wrapper {
+  position: relative;
+  width: 90vw;
+  max-width: 500px;
+  height: 600px;
   border-radius: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--accent);
+  overflow: hidden;
+  margin-bottom: 50px;
+}
+.account-wraper .form-box {
+  width: 100%;
+  padding: 40px;
+  font-size: 15px !important;
+}
+.account-wrapper .form-box.register {
+  position: absolute;
+  transform: translateX(500px);
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: center;
-  padding-top: 50px;
+  justify-content: center;
 }
-
-.login-input {
-  width: 60%;
+.form-box h2 {
+  font-size: 40px;
+  text-align: center;
+}
+.input-box {
+  position: relative;
+  max-width: 420px;
+  width: 80vw;
+  height: 50px;
+  border-bottom: 2px solid var(--text);
+  margin: 30px 0px;
+}
+.input-box label {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.5s;
+}
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+  top: -5px;
+}
+.input-box input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 35px 0 5px;
+  font-size: 18px;
+  color: var(--text);
+}
+.forget a {
+  font-size: 15px;
+}
+.forget {
+  line-height: 1;
+  text-align: right;
+}
+.login-register {
+  margin: 25px 0 10px;
+}
+.login-register p {
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+.login-register a {
+  font-size: 15px;
+}
+.form-box a:hover {
+  color: var(--secondary);
+}
+.form-button {
+  max-width: 420px;
+  width: 80vw;
+  height: 45px;
+  background: var(--bg);
+  border-radius: 20px;
+  margin-top: 20px;
+  transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.form-button:hover {
+  background: var(--secondary);
+  transform: translateY(2px);
+}
+.login-input,
+.signup-input {
+  width: 100%;
   height: 40px;
   border-radius: 30px;
   background-color: var(--bg);
@@ -136,12 +224,10 @@ input {
   font-size: 15px;
   padding: 0px 10px;
 }
-
 .error {
   color: #d65a5a;
   z-index: 10;
 }
-
 .login-input:focus {
   outline: none;
 }
@@ -213,16 +299,21 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 25%;
-  gap: 10px;
-  font-size: 40px !important;
+  margin-top: 25vh;
 }
-.modal-items button {
+.overflow-hidden > p {
   font-size: 40px !important;
 }
 .modal-items button:hover,
 .modal-items a:hover {
   color: var(--secondary);
+}
+.modal-items a p,
+.modal-items button p {
+  line-height: 1;
+  margin: 0;
+  padding: 2px 0px;
+  transform: translateY(100px);
 }
 .close-menu {
   width: 65px;
@@ -712,7 +803,7 @@ input {
 
 ::-webkit-scrollbar {
   width: 10px;
-  background: var(--accent);
+  background: var(--text);
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.55);
 }
 
@@ -732,6 +823,6 @@ input {
 } */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: var(--accent);
+  background: var(--text);
   width: 5px;
 }

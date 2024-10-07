@@ -8,6 +8,9 @@ const viewsRouter = express.Router();
 viewsRouter.get("/", viewsController.getHome);
 viewsRouter.get("/login", viewsController.getLogin);
 viewsRouter.get("/spotify-login", viewsController.getSpotify);
+
+viewsRouter.get("/error", viewsController.getError);
+
 viewsRouter.get(
   "/playlists",
   authController.verify,
@@ -16,9 +19,9 @@ viewsRouter.get(
 );
 viewsRouter.get(
   "/playlists/:name",
+  authController.verify,
   playlistController.getPlaylist,
   viewsController.getPlaylist
 );
-viewsRouter.get("/error", viewsController.getError);
 
 module.exports = viewsRouter;

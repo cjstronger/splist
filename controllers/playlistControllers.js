@@ -53,7 +53,6 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
       data: spotifySongs,
     });
   } catch (err) {
-    // console.log(err.response.data.error);
     if (err.response.data.error.status === 401) {
       return next(
         new AppError(

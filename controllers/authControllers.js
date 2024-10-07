@@ -7,24 +7,29 @@ const cookieParser = require("cookie-parser");
 const { default: axios } = require("axios");
 
 exports.signUp = catchAsync(async function (req, res, next) {
-  const { email, password, confirmPassword, name } = req.body;
-  await User.create({
-    password,
-    email,
-    confirmPassword,
-    name,
-  });
-
-  next();
+  const { email, password, confirmPassword, name } = req.body.data;
+  console.log(req.body.data);
+  try {
+    await User.create({
+      password,
+      email,
+      confirmPassword,
+      name,
+    });
+    next();
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body.data;
   if (!email || !password)
     return next(new AppError("An email and password is required", 401));
   const user = await User.findOne({ email }).select("+password");
   if (!user) return next(new AppError("Account not found with this email"));
-  const verifiedUser = await user.verify(req.body.password, user.password);
+  const verifiedUser = await user.verify(req.body.data.password, user.password);
   if (!verifiedUser)
     return next(new AppError("The email or password is incorrect", 401));
 
@@ -46,13 +51,21 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.logout = (req, res) => {
+  res.cookie("jwt", "");
+  res.user = null;
+  res.status(200).json({
+    status: "success",
+  });
+};
+
 function signJWT(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
     if (req.originalUrl.startsWith("/api")) {
-      return next(new AppError("You must be logged in", 401));
+      return next(new AppError("Login with splist to continue", 401));
     } else {
-      res.redirect("/login");
+      return null;
     }
   }
   const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
@@ -62,7 +75,7 @@ function signJWT(req, res, next) {
         new AppError("Your login has expired, please login again", 401)
       );
     } else {
-      res.redirect("/login");
+      return null;
     }
   }
   return verifiedToken;
@@ -71,7 +84,9 @@ function signJWT(req, res, next) {
 exports.verify = catchAsync(async (req, res, next) => {
   const verifiedToken = await signJWT(req, res, next);
 
-  if (!verifiedToken) return;
+  if (!verifiedToken) {
+    return res.redirect("/login");
+  }
 
   const freshUser = await User.findById(verifiedToken.id);
 
@@ -96,8 +111,6 @@ exports.spotifyRedirect = (req, res, next) => {
     //add secure to true for live app
   });
 
-  res.cookie("api", true);
-
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -116,6 +129,10 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
   var state = req.query.state || null;
   const originalState = cookies.state;
   const verifiedToken = await signJWT(req, res, next);
+
+  if (!verifiedToken) {
+    return res.redirect("/login");
+  }
 
   if (originalState !== state)
     return next(
@@ -153,14 +170,7 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
 
     res.cookie("spotify_token", response.data.access_token);
 
-    if (cookies.api == "true") {
-      res.status(200).json({
-        status: "success",
-        data: response.data,
-      });
-    } else {
-      res.redirect("/");
-    }
+    res.redirect("/");
   } catch (err) {
     return next(new AppError(err.message, err.statusCode));
   }

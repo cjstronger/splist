@@ -1,9 +1,18 @@
+import toast from "./toast";
+
 const { default: slugify } = require("slugify");
-const { login } = require("./login");
+const { login, logout, signUp } = require("./login");
 const spotify = require("./spotify");
 const gsap = require("gsap");
 const { default: axios } = require("axios");
-const cookieParser = require("cookie-parser");
+const {
+  handleSwitchPreviews,
+  handleCloseMenu,
+  handleSongsAnimation,
+  handleGenerationAnimation,
+  handlePlaylistEdit,
+  handleLoginForm,
+} = require("./animations");
 
 const loginForm = document.querySelector(".login-form");
 
@@ -18,17 +27,30 @@ if (loginForm) {
   });
 }
 
-const spotifyLink = document.querySelector(".spotify-login");
+const registerForm = document.querySelector(".register-form");
 
-if (spotifyLink) {
-  spotifyLink.addEventListener("click", async () => {
-    await spotify.spotifyLogin();
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const password = registerForm.querySelector(".password").value;
+    const confirmPassword =
+      registerForm.querySelector(".confirm-password").value;
+    const email = registerForm.querySelector(".email").value;
+    const formError = registerForm.querySelector(".error");
+    const { error } = await signUp(email, password, confirmPassword);
+    if (error) formError.innerHTML = error;
+  });
+}
+
+const logoutButton = document.querySelector(".logout");
+
+if (logoutButton) {
+  logoutButton.addEventListener("mousedown", async () => {
+    await logout();
   });
 }
 
 const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const chatBot = document.querySelector(".chat-bot");
 
 function handleLoaders(loading) {
   if (loading) {
@@ -47,247 +69,6 @@ function handleLoaders(loading) {
   }
 }
 
-async function handleGenerationAnimation(io) {
-  const splistTitle = document.querySelector(".title");
-  const playlistForm = document.querySelector(".playlist-form");
-  const songs = document.querySelectorAll(".song");
-  const savedPlaylists = document.querySelectorAll(".playlist-group");
-  const backButton = document.querySelector(".back-button");
-  const playlist = document.querySelector(".playlist");
-  const playlistTitle = document.querySelector(".playlist-title");
-  const switcher = document.querySelector(".switch-previews");
-
-  if (io) {
-    if (songs.length) {
-      gsap.gsap.from(songs, {
-        y: "100vh",
-        stagger: 0.1,
-        duration: 0.5,
-        ease: "sine",
-        onStart: async () => {
-          await buffer(100);
-          songs.forEach((song) => song.classList.remove("hidden"));
-        },
-        onComplete: () =>
-          document.querySelector("body").classList.remove("overflow-hidden"),
-      });
-    } else if (savedPlaylists.length) {
-      gsap.gsap.from(savedPlaylists, {
-        y: "100vh",
-        stagger: 0.1,
-        duration: 0.5,
-        ease: "sine",
-        onStart: async () => {
-          await buffer(100);
-          savedPlaylists.forEach((playlist) =>
-            playlist.classList.remove("hidden")
-          );
-        },
-        onComplete: () =>
-          document.querySelector("body").classList.remove("overflow-hidden"),
-      });
-    }
-    if (chatBot) {
-      gsap.gsap.to(chatBot, {
-        y: "100vh",
-        duration: 3.5,
-        ease: "power3.out",
-      });
-    }
-    if (splistTitle) {
-      gsap.gsap.to(splistTitle, {
-        y: "-100vh",
-        duration: 3.5,
-        ease: "power3.out",
-      });
-    } else {
-      gsap.gsap.from(playlistTitle, {
-        y: "-100vh",
-        duration: 0.5,
-        ease: "power3.out",
-        onStart: async () =>
-          (await buffer(100)) & playlistTitle.classList.remove("hidden"),
-      });
-    }
-    gsap.gsap.to(playlistForm, {
-      y: 200,
-      duration: 0.5,
-      delay: 0.5,
-      ease: "power2",
-    });
-    gsap.gsap.to(backButton, {
-      x: 180,
-      duration: 0.5,
-      delay: 0.5,
-      ease: "power1.inOut",
-    });
-    gsap.gsap.to(switcher, {
-      x: -150,
-      duration: 0.5,
-      delay: 0.5,
-    });
-  } else {
-    const submitButton = document.querySelector(".spotify-playlist-submit");
-    const playlistButton = document.querySelector(".open-playlist");
-
-    if (songs.length) {
-      gsap.gsap.to(songs, {
-        x: "100vw",
-        ease: "power1",
-        duration: 0.5,
-        stagger: {
-          amount: 0.2,
-          from: "end",
-        },
-      });
-    } else {
-      gsap.gsap.to(savedPlaylists, {
-        x: "100vw",
-        ease: "power1",
-        duration: 0.5,
-        stagger: {
-          amount: 0.2,
-          from: "end",
-        },
-      });
-    }
-    gsap.gsap.to(playlistForm, {
-      y: 0,
-      duration: 0.5,
-    });
-    if (splistTitle) {
-      gsap.gsap.to(splistTitle, {
-        y: 0,
-        duration: 0.5,
-        ease: "power1.out",
-        delay: 0.25,
-      });
-    } else {
-      gsap.gsap.to(playlistTitle, {
-        y: "-100vh",
-        duration: 3.5,
-        ease: "power1.out",
-        delay: 0.25,
-      });
-    }
-    gsap.gsap.to(backButton, {
-      x: 0,
-      duration: 0.5,
-      ease: "power3.in",
-    });
-    gsap.gsap.to(switcher, {
-      x: 0,
-      duration: 0.5,
-      ease: "power3.in",
-    });
-    gsap.gsap.to(chatBot, {
-      y: 0,
-      ease: "power1.out",
-      duration: 0.5,
-      delay: 0.25,
-    });
-    if (submitButton) {
-      gsap.gsap.to(submitButton, {
-        scale: 0,
-        ease: "power2",
-        duration: 0.5,
-      });
-    }
-    if (playlistButton) {
-      gsap.gsap.to(playlistButton, {
-        scale: 0,
-        ease: "power2",
-        duration: 0.5,
-      });
-    }
-
-    await buffer(500);
-    if (submitButton) {
-      submitButton.remove();
-    }
-    playlist.remove();
-    await buffer(200);
-    backButton.remove();
-    if (playlistButton) {
-      playlistButton.remove();
-    }
-  }
-}
-
-function handleSongsAnimation() {
-  const songs = document.querySelectorAll(".song");
-  const playlist = document.querySelector(".playlist");
-
-  songs.forEach((song, i) => {
-    const songDetails = song.children[1];
-    let songsBelow = [];
-    window.addEventListener("resize", () => {
-      triggerSongs();
-    });
-    function triggerSongs() {
-      const gridLength =
-        getComputedStyle(playlist).gridTemplateColumns.split(" ").length;
-      songsBelow = [];
-      for (let j = i + gridLength; j < songs.length; j += gridLength) {
-        songsBelow = [...songsBelow, songs[j]];
-      }
-    }
-    triggerSongs();
-    song.dataset.clicked = "false";
-
-    song.addEventListener("mousedown", () => {
-      if (song.dataset.clicked === "false") {
-        song.dataset.clicked = "true"; // Set clicked to true
-        gsap.gsap.to(songDetails, {
-          y: songDetails.clientHeight - 15,
-          ease: "sine",
-          duration: 0.25,
-        });
-        if (songsBelow.length) {
-          gsap.gsap.to(songsBelow, {
-            y: songDetails.clientHeight - 15,
-            ease: "sine",
-            duration: 0.25,
-            delay: 0.05,
-            stagger: 0.05,
-          });
-        }
-      } else {
-        song.dataset.clicked = "false"; // Set clicked to false
-        gsap.gsap.to(songDetails, {
-          y: 0,
-          ease: "sine",
-          duration: 0.15,
-        });
-        if (songsBelow.length) {
-          gsap.gsap.to(songsBelow, {
-            y: 0,
-            ease: "sine",
-            delay: 0.15,
-            duration: 0.15,
-            stagger: 0.05,
-          });
-        }
-      }
-    });
-
-    song.addEventListener("mouseenter", () => {
-      gsap.gsap.to(songDetails, {
-        y: 10,
-        ease: "sine",
-        duration: 0.1,
-      });
-    });
-    song.addEventListener("mouseleave", () => {
-      gsap.gsap.to(songDetails, {
-        y: 0,
-        ease: "sine",
-        duration: 0.1,
-      });
-    });
-  });
-}
-
 if (location.pathname === "/playlists/") {
   location.assign("/playlists");
 }
@@ -301,78 +82,6 @@ if (location.pathname.startsWith("/playlists/")) {
     await buffer(500);
     location.assign("/playlists");
   });
-}
-
-function addDeleteListeners() {
-  const playlists = document.querySelectorAll(".playlist-group");
-  playlists.forEach((playlist) => {
-    const name = playlist.querySelector(".playlist-group-name").textContent;
-    const deleteButton = playlist.querySelector(".delete-button");
-    const deleteContainer = playlist.querySelector(".delete-container");
-    deleteButton.addEventListener("mousedown", async () => {
-      gsap.gsap.to(playlist, {
-        scale: 0,
-        duration: 0.5,
-        ease: "back.in",
-      });
-      await buffer(500);
-      playlist.remove();
-      // try {
-      //   await axios.delete("/api/playlists/delete", {
-      //     data: {
-      //       name,
-      //     },
-      //   });
-      // } catch (err) {
-      //   console.log(err);
-      // }
-    });
-    deleteButton.addEventListener("mouseenter", () => {
-      gsap.gsap.to(deleteContainer, {
-        background: "rgba(234, 100, 100, 0.8)",
-        duration: 0.1,
-        ease: "power1",
-      });
-    });
-    deleteButton.addEventListener("mouseleave", () => {
-      gsap.gsap.to(deleteContainer, {
-        background: "rgba(234, 100, 100, 0.5)",
-        duration: 0.1,
-        ease: "power1",
-      });
-    });
-  });
-}
-
-function handlePlaylistEdit(io, clicked) {
-  if (!clicked) addDeleteListeners();
-
-  const deleteContainers = document.querySelectorAll(".delete-container");
-  const deleteButtons = document.querySelectorAll(".delete-button");
-
-  if (io) {
-    gsap.gsap.to(deleteContainers, {
-      stagger: 0.08,
-      background: "rgba(234, 100, 100, 0.5)",
-      duration: 0.1,
-      onStart: () => playlistEventListeners(false),
-    });
-    gsap.gsap.to(deleteButtons, {
-      scale: 1,
-      stagger: 0.05,
-    });
-  } else {
-    gsap.gsap.to(deleteContainers, {
-      stagger: 0.05,
-      background: "transparent",
-      duration: 0.1,
-      onStart: () => playlistEventListeners(true),
-    });
-    gsap.gsap.to(deleteButtons, {
-      scale: 0,
-      stagger: 0.05,
-    });
-  }
 }
 
 if (location.pathname === "/playlists") {
@@ -391,6 +100,8 @@ if (location.pathname === "/playlists") {
     }
   });
 }
+
+const chatBot = document.querySelector(".chat-bot");
 
 if (chatBot) {
   const parameters = document.querySelector(".chat-input");
@@ -434,18 +145,13 @@ if (chatBot) {
     handleSongsAnimation();
 
     const playlistName = document.querySelector(".playlist-name");
-
     let name = "playlist01";
-
     playlistName.addEventListener("input", (e) => {
       name = e.target.value;
       params.name = name;
     });
-
     let params = { name, uris };
-
     const playlistForm = document.querySelector(".playlist-form");
-
     playlistForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       await spotify.savePlaylist(params);
@@ -456,12 +162,14 @@ if (chatBot) {
 }
 
 const root = document.documentElement;
+const lightDarkButton = document.querySelector(".light-dark-button");
 
 function setDarkMode() {
   root.style.setProperty("--bg", "#414141");
   root.style.setProperty("--accent", "#282828");
   root.style.setProperty("--text", "#e8e8e8");
   root.style.setProperty("--secondary", "black");
+  lightDarkButton.childNodes[0].innerHTML = "dark";
 }
 
 function setLightMode() {
@@ -469,6 +177,7 @@ function setLightMode() {
   root.style.setProperty("--accent", "#dbdbdb");
   root.style.setProperty("--text", "#414141");
   root.style.setProperty("--secondary", "white");
+  lightDarkButton.childNodes[0].innerHTML = "light";
 }
 
 window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -482,8 +191,6 @@ if (!cookieLight) {
 }
 
 cookieDark ? setDarkMode() : setLightMode();
-
-const lightDarkButton = document.querySelector(".light-dark-button");
 
 if (lightDarkButton) {
   lightDarkButton.addEventListener("click", async () => {
@@ -501,32 +208,13 @@ const modal = document.querySelector(".user-modal");
 
 menuButton.addEventListener("mousedown", () => {
   modal.style.opacity = "1";
-  gsap.gsap.to(modal, {
-    duration: 1,
-    ease: "power4.out",
-    y: "-100vh",
-  });
+  handleCloseMenu(false);
 });
 
 const closeMenu = document.querySelector(".close-menu");
 
 closeMenu.addEventListener("mousedown", () => {
-  gsap.gsap.to(modal, {
-    duration: 1,
-    ease: "power4.out",
-    y: "-200vh",
-    onComplete: () => {
-      gsap.gsap.to(modal, {
-        opacity: 0,
-        duration: 0.01,
-        onComplete: () =>
-          gsap.gsap.to(modal, {
-            y: "100vh",
-            duration: 0.01,
-          }),
-      });
-    },
-  });
+  handleCloseMenu(true);
 });
 
 const menuLinks = document.querySelectorAll(".menu-links");
@@ -534,26 +222,50 @@ const menuLinks = document.querySelectorAll(".menu-links");
 menuLinks.forEach((link) => {
   link.addEventListener("click", async (e) => {
     e.preventDefault();
-    gsap.gsap.to(modal, {
-      duration: 1,
-      ease: "power4.out",
-      y: "-200vh",
-      onComplete: () => {
-        gsap.gsap.to(modal, {
-          opacity: 0,
-          duration: 0.01,
-          onComplete: () =>
-            gsap.gsap.to(modal, {
-              y: "100vh",
-              duration: 0.01,
-            }),
+    const target = e.target;
+    const href = target.parentElement.href;
+    if (href.includes("playlists")) {
+      const spotifyToken = document.cookie
+        .split("; ")
+        .filter((cookie) => {
+          return cookie.startsWith("spotify_token");
+        })[0]
+        .split("=")[1];
+      if (!spotifyToken) {
+        return toast("Login with Spotify", "fail");
+      }
+      try {
+        await axios.get(`https://api.spotify.com/v1/me`, {
+          headers: { Authorization: `Bearer ${spotifyToken}` },
         });
-      },
-    });
+      } catch (err) {
+        const { status, message } = err.response?.data?.error;
+        if (
+          status === 401 ||
+          message === "Only valid bearer authentication supported"
+        ) {
+          toast("Your Spotify login has expired, login again please", "fail");
+          return document.cookie("spotify_token", "");
+        }
+      }
+    }
+    handleCloseMenu(true);
     await buffer(500);
-    location.assign(e.target.href);
+    location.assign(href);
   });
 });
+
+const loginRegister = document.querySelectorAll(".login-register");
+
+if (loginRegister.length) {
+  let clicked = false;
+  loginRegister.forEach((button) =>
+    button.addEventListener("mousedown", () => {
+      clicked = !clicked;
+      handleLoginForm(clicked);
+    })
+  );
+}
 
 const playlists = document.querySelectorAll(".playlist-group");
 
@@ -570,7 +282,7 @@ const handlePlaylistClick = (event) => {
   handlePlaylistRoute(playlist);
 };
 
-function playlistEventListeners(io) {
+export function playlistEventListeners(io) {
   if (io) {
     playlists.forEach((playlist) => {
       playlist.addEventListener("mousedown", handlePlaylistClick);
@@ -587,112 +299,7 @@ playlistEventListeners(true);
 const switchPreviews = document.querySelector(".switch-previews");
 
 if (switchPreviews) {
-  const songs = document.querySelectorAll(".song");
-  const playlistList = document.querySelector(".playlist-list");
-  const switcher = switchPreviews.querySelector(".previews-switch");
-  const gridIcon = switchPreviews.querySelector(".grid-icon");
-  const textIcon = switchPreviews.querySelector(".text-icon");
-  const songList = document.querySelectorAll(".hidden-details > p");
-  const songSeparators = document.querySelectorAll(".list-separator");
-  let switched = false;
-  gsap.gsap.set(songList, { y: 50 });
-  switchPreviews.addEventListener("mousedown", () => {
-    switchPreviews.style.pointerEvents = "none";
-    if (!switched) {
-      switched = true;
-      gsap.gsap.to(songList, {
-        y: 0,
-        ease: "sine",
-        duration: 0.35,
-        stagger: 0.04,
-        onStart: () => (playlistList.style.visibility = "visible"),
-      });
-      gsap.gsap.to(songs, {
-        x: "100vw",
-        ease: "power1",
-        duration: 0.5,
-        stagger: {
-          amount: 0.2,
-          from: "end",
-        },
-        onComplete: () =>
-          songs.forEach(
-            (song) => (song.style.transform = "translate(0, 100vh)")
-          ),
-      });
-      gsap.gsap.to(songSeparators, {
-        scaleX: () => `${window.innerWidth * 0.9}`,
-        ease: "sine",
-        duration: 0.8,
-        stagger: 0.08,
-        delay: 0.25,
-        onStart: () =>
-          songSeparators.forEach((sep) => (sep.style.opacity = 0.75)),
-        onComplete: () => (switchPreviews.style.pointerEvents = ""),
-      });
-      gsap.gsap.to(textIcon, {
-        opacity: 0,
-        ease: "power1",
-        duration: 0.25,
-      });
-      gsap.gsap.to(gridIcon, {
-        opacity: 0.75,
-        ease: "power1",
-        duration: 0.5,
-      });
-      gsap.gsap.to(switcher, {
-        x: 32,
-        ease: "power1",
-        duration: 0.5,
-      });
-    } else {
-      switched = false;
-      let timeline = gsap.gsap.timeline();
-      timeline.to(songs, {
-        x: 0,
-        ease: "power1",
-        duration: 0.5,
-        stagger: {
-          amount: 0.3,
-          from: "start",
-        },
-        delay: 1,
-        onComplete: () =>
-          (playlistList.style.visibility = "hidden") &
-          (switchPreviews.style.pointerEvents = ""),
-      });
-      gsap.gsap.to(songList, {
-        y: -50,
-        ease: "sine",
-        duration: 0.35,
-        stagger: 0.04,
-        delay: 0.5,
-      });
-      gsap.gsap.to(songSeparators, {
-        scaleX: 0,
-        ease: "sine",
-        duration: 0.3,
-        stagger: 0.09,
-        onComplete: () =>
-          songSeparators.forEach((sep) => (sep.style.opacity = 0)),
-      });
-      gsap.gsap.to(textIcon, {
-        opacity: 0.75,
-        ease: "power1",
-        duration: 0.5,
-      });
-      gsap.gsap.to(gridIcon, {
-        opacity: 0,
-        ease: "power1",
-        duration: 0.25,
-      });
-      gsap.gsap.to(switcher, {
-        x: 0,
-        ease: "power1",
-        duration: 0.5,
-      });
-    }
-  });
+  handleSwitchPreviews(switchPreviews);
 }
 
 const siteTitle = document.querySelector(".site-title-container");
@@ -733,6 +340,7 @@ if (submitButton && location.pathname !== "/") {
       ease: "sine",
       duration: 0.25,
     });
+    await buffer(250);
     submitButton.remove();
     const { data } = await axios.post("/api/playlists/create", {
       url,
