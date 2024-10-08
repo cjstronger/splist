@@ -1,35 +1,16 @@
 const querystring = require("querystring");
 const cookieParser = require("cookie-parser");
 const catchAsync = require("../utils/catchAsync");
-const { default: axios } = require("axios");
 
 exports.getHome = (req, res) => {
-  const cookies = cookieParser.JSONCookies(req.cookies);
-  let spotifyToken = false;
-  let user = false;
-  if (cookies.spotify_token) {
-    spotifyToken = true;
-  }
-  if (cookies.jwt) user = true;
   res.render("home", {
     title: "Home",
-    spotifyToken,
-    user,
   });
 };
 
 exports.getLogin = (req, res) => {
-  let spotifyToken = false;
-  let user = false;
-  const { spotify_token } = req.cookies;
-  if (spotify_token) {
-    spotifyToken = true;
-  }
-  if (res?.user) user = true;
   res.render("login", {
     title: "Login",
-    spotifyToken,
-    user,
   });
 };
 
@@ -50,6 +31,7 @@ exports.getSpotify = catchAsync(async (req, res) => {
       scope: "playlist-modify-public playlist-modify-private",
       redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
       state: state,
+      show_dialog: true,
     });
 
   res.cookie("state", state, {
@@ -63,57 +45,36 @@ exports.getSpotify = catchAsync(async (req, res) => {
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const { playlists } = res;
-  let spotifyToken = false;
-  const { spotify_token } = req.cookies;
-  if (spotify_token) {
-    spotifyToken = true;
-  }
-  res.cookie("playlists", playlists, {
-    httpOnly: true,
-  });
-  if (res.user) user = true;
+
+  // res.cookie("playlists", playlists, {
+  //   httpOnly: true,
+  // });
 
   res.render("playlists", {
     title: "Playlists",
     playlists,
-    spotifyToken,
-    user,
   });
 });
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
-  let spotifyToken = false;
-  const { spotify_token } = req.cookies;
-  if (spotify_token) {
-    spotifyToken = true;
-  }
-  if (res.user) user = true;
   const { playlist, dbPlaylist } = req;
+  if (playlist.name.length > 20) {
+    playlist.name = `${playlist.name.slice(0, 19)}...`;
+  }
   res.render("playlist", {
     playlist: playlist.tracks,
     playlistName: playlist.name,
     dbPlaylist,
-    spotifyToken,
     title: playlist.name,
-    user,
   });
 });
 
 exports.getError = (req, res) => {
-  let spotifyToken = false;
-  let user = false;
-  const { spotify_token } = req.cookies;
-  if (spotify_token) {
-    spotifyToken = true;
-  }
   const { status, message } = req.query;
-  if (res.user) user = true;
   res.render("error", {
     status,
     message,
     title: "Error",
-    spotifyToken,
-    user,
   });
 };
 

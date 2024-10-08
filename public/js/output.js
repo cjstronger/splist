@@ -11573,35 +11573,34 @@ function _login() {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          console.log(email, password);
           error = false;
-          _context.prev = 2;
-          _context.next = 5;
+          _context.prev = 1;
+          _context.next = 4;
           return _axios.default.post("/api/auth/login", {
             data: {
               email: email,
               password: password
             }
           });
-        case 5:
+        case 4:
           res = _context.sent;
           if (res.data.status === "success") location.assign("/");
           return _context.abrupt("return", {
             error: error
           });
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](2);
+        case 9:
+          _context.prev = 9;
+          _context.t0 = _context["catch"](1);
           console.log(_context.t0);
           error = _context.t0.response.data.message;
           return _context.abrupt("return", {
             error: error
           });
-        case 15:
+        case 14:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[2, 10]]);
+    }, _callee, null, [[1, 9]]);
   }));
   return _login.apply(this, arguments);
 }
@@ -11643,9 +11642,10 @@ function _signUp() {
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
+          console.log("here at the signup function");
           error = false;
-          _context3.prev = 1;
-          _context3.next = 4;
+          _context3.prev = 2;
+          _context3.next = 5;
           return _axios.default.post("/api/auth/signup", {
             data: {
               email: email,
@@ -11653,24 +11653,24 @@ function _signUp() {
               confirmPassword: confirmPassword
             }
           });
-        case 4:
+        case 5:
           res = _context3.sent;
           if (res.data.status === "success") location.assign("/");
           return _context3.abrupt("return", {
             error: error
           });
-        case 9:
-          _context3.prev = 9;
-          _context3.t0 = _context3["catch"](1);
+        case 10:
+          _context3.prev = 10;
+          _context3.t0 = _context3["catch"](2);
           error = _context3.t0.response.data.message;
           return _context3.abrupt("return", {
             error: error
           });
-        case 13:
+        case 14:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[1, 9]]);
+    }, _callee3, null, [[2, 10]]);
   }));
   return _signUp.apply(this, arguments);
 }
@@ -12095,13 +12095,12 @@ function _handleGenerationAnimation() {
             ease: "power2"
           });
           _gsap.default.to(backButton, {
-            x: 180,
+            x: 0,
             duration: 0.5,
-            delay: 0.5,
-            ease: "power1.inOut"
+            delay: 0.5
           });
           _gsap.default.to(switcher, {
-            x: -150,
+            x: 0,
             duration: 0.5,
             delay: 0.5
           });
@@ -12151,12 +12150,12 @@ function _handleGenerationAnimation() {
             });
           }
           _gsap.default.to(backButton, {
-            x: 0,
+            x: "-50vw",
             duration: 0.5,
             ease: "power3.in"
           });
           _gsap.default.to(switcher, {
-            x: 0,
+            x: "50vw",
             duration: 0.5,
             ease: "power3.in"
           });
@@ -12627,8 +12626,11 @@ if (loginForm) {
           case 6:
             _yield$login = _context.sent;
             error = _yield$login.error;
+            gsap.gsap.from(formError, {
+              opacity: 0
+            });
             if (error) formError.innerHTML = error;
-          case 9:
+          case 10:
           case "end":
             return _context.stop();
         }
@@ -12781,20 +12783,25 @@ if (location.pathname.startsWith("/playlists/")) {
   })));
 }
 if (location.pathname === "/playlists") {
-  handleGenerationAnimation(true);
+  var savedPlaylists = document.querySelectorAll(".playlist-group");
+  if (savedPlaylists.length) {
+    handleGenerationAnimation(true);
+  }
   var editButton = document.querySelector(".edit-button");
   var editClicked = false;
   var clicked = false;
-  editButton.addEventListener("mousedown", function () {
-    if (!editClicked) {
-      handlePlaylistEdit(true, clicked);
-      clicked = true;
-      editClicked = true;
-    } else {
-      handlePlaylistEdit(false, clicked);
-      editClicked = false;
-    }
-  });
+  if (editButton) {
+    editButton.addEventListener("mousedown", function () {
+      if (!editClicked) {
+        handlePlaylistEdit(true, clicked);
+        clicked = true;
+        editClicked = true;
+      } else {
+        handlePlaylistEdit(false, clicked);
+        editClicked = false;
+      }
+    });
+  }
 }
 var chatBot = document.querySelector(".chat-bot");
 if (chatBot) {
@@ -13167,7 +13174,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61992" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54340" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

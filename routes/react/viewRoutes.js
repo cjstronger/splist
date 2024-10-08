@@ -5,6 +5,8 @@ const authController = require("../../controllers/authControllers");
 
 const viewsRouter = express.Router();
 
+viewsRouter.use(authController.isLoggedIn);
+
 viewsRouter.get("/", viewsController.getHome);
 viewsRouter.get("/login", viewsController.getLogin);
 viewsRouter.get("/reset-password:token", viewsController.getResetPassword);

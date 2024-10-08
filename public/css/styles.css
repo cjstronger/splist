@@ -34,7 +34,7 @@ button,
 a {
   background-color: transparent;
   border: none;
-  transition: all 0.1s ease-in;
+  transition: background-color 0.1s ease-in;
   cursor: pointer;
   color: var(--text);
   font-size: 25px;
@@ -245,6 +245,7 @@ input:-webkit-autofill:focus {
   color: #d65a5a;
   z-index: 10;
   padding: 5px 0;
+  text-align: center;
 }
 .login-input:focus {
   outline: none;
@@ -274,6 +275,7 @@ input:-webkit-autofill:focus {
 }
 .playlist-name {
   background-color: var(--accent);
+  color: var(--text);
   border: none;
   font-size: 75px;
   width: 80vw;
@@ -487,24 +489,25 @@ input:-webkit-autofill:focus {
   justify-content: center;
 }
 
+.playlist-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 10px;
+}
 .back-button {
   border-radius: 20px;
   background-color: var(--accent);
   padding: 10px;
-  position: absolute;
-  top: 60px;
-  left: -150px;
+  transform: translateX(-50vw);
 }
-
 .switch-previews {
   width: 65px;
   height: 30px;
   border-radius: 5px;
   box-shadow: 0 3px 5px inset rgba(0, 0, 0, 0.15);
-  position: absolute;
-  right: -100px;
-  top: 100px;
   background-color: var(--text);
+  transform: translateX(50vw);
 }
 .previews-switch {
   width: 40%;
@@ -740,6 +743,7 @@ input:-webkit-autofill:focus {
   position: absolute;
   left: 0;
   top: 0;
+  transition: background-color 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .delete-button {
   position: absolute;
@@ -757,6 +761,9 @@ input:-webkit-autofill:focus {
   }
   .playlist {
     grid-template-columns: 200px 200px 200px 200px 200px !important;
+  }
+  .playlist-title {
+    font-size: 50px;
   }
 }
 
@@ -779,6 +786,9 @@ input:-webkit-autofill:focus {
   }
   .back-button {
     padding: 10px;
+  }
+  .playlist-title {
+    font-size: 40px;
   }
 }
 
@@ -804,6 +814,14 @@ input:-webkit-autofill:focus {
     width: 150px;
     height: 150px;
   }
+  .playlist-title {
+    font-size: 35px;
+    margin-top: 10px;
+  }
+  body,
+  main {
+    overflow-x: hidden;
+  }
 }
 
 @media (max-width: 600px) {
@@ -812,6 +830,10 @@ input:-webkit-autofill:focus {
   }
   .playlist {
     grid-template-columns: 150px 150px !important;
+  }
+  .playlist-title {
+    font-size: 30px;
+    margin-top: 20px;
   }
 }
 

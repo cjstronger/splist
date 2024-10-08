@@ -211,7 +211,7 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
     const playlists = store.get("playlists");
 
     if (!playlists) {
-      res.redirect("/playlists");
+      return res.redirect("/playlists");
     }
 
     playlist = playlists.filter((playlist) => {

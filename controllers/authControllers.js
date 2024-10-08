@@ -10,7 +10,6 @@ const { sendEmail } = require("../utils/mailer");
 
 exports.signUp = catchAsync(async function (req, res, next) {
   const { email, password, confirmPassword, name } = req.body.data;
-  console.log(req.body.data);
   try {
     await User.create({
       password,
@@ -20,7 +19,6 @@ exports.signUp = catchAsync(async function (req, res, next) {
     });
     next();
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 });
@@ -30,12 +28,11 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password)
     return next(new AppError("An email and password is required", 401));
   const user = await User.findOne({ email }).select("+password");
-  if (!user) return next(new AppError("Account not found with this email"));
-  const verifiedUser = await user.verify(req.body.data.password, user.password);
-  if (!verifiedUser)
-    return next(new AppError("The email or password is incorrect", 401));
 
-  user.password = undefined;
+  const correct = await user.verify(req.body.data.password, user.password);
+
+  if (!user || !correct)
+    return next(new AppError("The email or password is incorrect", 401));
 
   const token = user.generateToken(user._id);
   const cookieOptions = {
@@ -45,6 +42,8 @@ exports.login = catchAsync(async (req, res, next) => {
   };
 
   res.cookie("jwt", token, cookieOptions);
+
+  res.user = user;
 
   res.status(201).json({
     status: "success",
@@ -61,39 +60,37 @@ exports.logout = (req, res) => {
   });
 };
 
-function signJWT(req, res, next) {
-  const token = req.cookies.jwt;
-  if (!token) {
-    if (req.originalUrl.startsWith("/api")) {
-      return next(new AppError("Login with splist to continue", 401));
-    } else {
-      return null;
-    }
-  }
-  const verifiedToken = jwt.verify(token, process.env.JWT_KEY);
-  if (!verifiedToken) {
-    if (req.originalUrl.startsWith("/api")) {
-      return next(
-        new AppError("Your login has expired, please login again", 401)
-      );
-    } else {
-      return null;
-    }
-  }
-  return verifiedToken;
+function signJWT(id) {
+  return jwt.sign({ id }, process.env.JWT_KEY, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 }
 
 exports.verify = catchAsync(async (req, res, next) => {
-  const verifiedToken = await signJWT(req, res, next);
+  if (req.cookies.jwt) {
+    const verifiedToken = jwt.verify(req.cookies.jwt, process.env.JWT_KEY);
 
-  if (!verifiedToken) {
-    return res.redirect("/login");
+    const freshUser = await User.findById(verifiedToken.id);
+    if (!freshUser)
+      return next(new AppError("There was a problem verifying the user", 401));
+
+    res.user = freshUser;
   }
+  next();
+});
 
-  const freshUser = await User.findById(verifiedToken.id);
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    const verifiedToken = jwt.verify(req.cookies.jwt, process.env.JWT_KEY);
 
-  res.user = freshUser;
+    const freshUser = await User.findById(verifiedToken.id);
 
+    if (!freshUser) return next();
+
+    res.locals.user = freshUser;
+
+    if (req.cookies.spotify_token) res.locals.spotifyToken = true;
+  }
   next();
 });
 
@@ -121,6 +118,7 @@ exports.spotifyRedirect = (req, res, next) => {
         scope,
         redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
         state: state,
+        show_dialog: true,
       })
   );
 };
@@ -130,7 +128,7 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   const originalState = cookies.state;
-  const verifiedToken = await signJWT(req, res, next);
+  const verifiedToken = signJWT(res.user.id);
 
   if (!verifiedToken) {
     return res.redirect("/login");
@@ -171,6 +169,8 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
     });
 
     res.cookie("spotify_token", response.data.access_token);
+
+    res.locals.spotifyToken = response.data.access_token;
 
     res.redirect("/");
   } catch (err) {
@@ -235,7 +235,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.resetTokenExpires = undefined;
   await user.save();
 
-  const token = await signJWT(user._id);
+  const token = signJWT(user._id);
 
   res.status(200).json({
     status: "success",

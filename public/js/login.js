@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export async function login(email, password) {
-  console.log(email, password);
   let error = false;
   let data;
   try {
@@ -30,6 +29,7 @@ export async function logout() {
 }
 
 export async function signUp(email, password, confirmPassword) {
+  console.log("here at the signup function");
   let error = false;
   try {
     const res = await axios.post("/api/auth/signup", {

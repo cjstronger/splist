@@ -76,13 +76,12 @@ export async function handleGenerationAnimation(io) {
       ease: "power2",
     });
     gsap.to(backButton, {
-      x: 180,
+      x: 0,
       duration: 0.5,
       delay: 0.5,
-      ease: "power1.inOut",
     });
     gsap.to(switcher, {
-      x: -150,
+      x: 0,
       duration: 0.5,
       delay: 0.5,
     });
@@ -131,12 +130,12 @@ export async function handleGenerationAnimation(io) {
       });
     }
     gsap.to(backButton, {
-      x: 0,
+      x: "-50vw",
       duration: 0.5,
       ease: "power3.in",
     });
     gsap.to(switcher, {
-      x: 0,
+      x: "50vw",
       duration: 0.5,
       ease: "power3.in",
     });

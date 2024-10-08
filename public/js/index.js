@@ -30,6 +30,9 @@ if (loginForm) {
     const password = loginForm.querySelector(".password").value;
     const formError = loginForm.querySelector(".error");
     const { error } = await login(email, password);
+    gsap.gsap.from(formError, {
+      opacity: 0,
+    });
     if (error) formError.innerHTML = error;
   });
 }
@@ -118,20 +121,25 @@ if (location.pathname.startsWith("/playlists/")) {
 }
 
 if (location.pathname === "/playlists") {
-  handleGenerationAnimation(true);
+  const savedPlaylists = document.querySelectorAll(".playlist-group");
+  if (savedPlaylists.length) {
+    handleGenerationAnimation(true);
+  }
   const editButton = document.querySelector(".edit-button");
   let editClicked = false;
   let clicked = false;
-  editButton.addEventListener("mousedown", () => {
-    if (!editClicked) {
-      handlePlaylistEdit(true, clicked);
-      clicked = true;
-      editClicked = true;
-    } else {
-      handlePlaylistEdit(false, clicked);
-      editClicked = false;
-    }
-  });
+  if (editButton) {
+    editButton.addEventListener("mousedown", () => {
+      if (!editClicked) {
+        handlePlaylistEdit(true, clicked);
+        clicked = true;
+        editClicked = true;
+      } else {
+        handlePlaylistEdit(false, clicked);
+        editClicked = false;
+      }
+    });
+  }
 }
 
 const chatBot = document.querySelector(".chat-bot");
