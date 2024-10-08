@@ -395,4 +395,33 @@ var climbStairs = function (n) {
   console.log(firstCount + secondCount);
 };
 
-climbStairs(44);
+// var removeDuplicates = function (nums) {
+//   let count = 0;
+//   for (let i = 0; i < nums.length; i++) {
+//     if (nums[i] === nums[i - 1]) {
+//       count++;
+//     } else {
+//       count = 0;
+//     }
+//     if (count > 1) {
+//       if (nums[i] !== nums[i + 1]) {
+//         count = 0;
+//       }
+//       nums.splice(i, 1);
+//       i--;
+//     }
+//   }
+//   return nums;
+// };
+
+var removeDuplicates = function (nums) {
+  let j = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== nums[j - 2]) {
+      nums[j] = nums[i];
+      j++;
+    }
+  }
+  return nums;
+  return j;
+};

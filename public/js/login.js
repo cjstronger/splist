@@ -46,3 +46,32 @@ export async function signUp(email, password, confirmPassword) {
     return { error };
   }
 }
+
+export async function forgotPassword(email) {
+  let error = false;
+  try {
+    const { data } = await axios.post("/api/auth/forgot-password", {
+      email,
+    });
+    if (data.status === "success") return { error };
+  } catch (err) {
+    console.log(err);
+    error = err.response.data.message;
+    return { error };
+  }
+}
+
+export async function resetPassword(password, confirmPassword, token) {
+  let error = false;
+  console.log(token);
+  try {
+    const { data } = await axios.patch(`/api/auth/reset-password/${token}`, {
+      password,
+      confirmPassword,
+    });
+    if (data.status === "success") return { error };
+  } catch (err) {
+    error = err.response.data.error;
+    return { error };
+  }
+}

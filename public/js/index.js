@@ -1,7 +1,13 @@
 import toast from "./toast";
 
 const { default: slugify } = require("slugify");
-const { login, logout, signUp } = require("./login");
+const {
+  login,
+  logout,
+  signUp,
+  forgotPassword,
+  resetPassword,
+} = require("./login");
 const spotify = require("./spotify");
 const gsap = require("gsap");
 const { default: axios } = require("axios");
@@ -12,6 +18,7 @@ const {
   handleGenerationAnimation,
   handlePlaylistEdit,
   handleLoginForm,
+  handleForgetPasswordForm,
 } = require("./animations");
 
 const loginForm = document.querySelector(".login-form");
@@ -39,6 +46,32 @@ if (registerForm) {
     const formError = registerForm.querySelector(".error");
     const { error } = await signUp(email, password, confirmPassword);
     if (error) formError.innerHTML = error;
+  });
+}
+
+const forgotPasswordForm = document.querySelector(".forgot-form");
+
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener("submit", async (e) => {
+    const email = forgotPasswordForm.querySelector(".email").value;
+    const success = forgotPasswordForm.querySelector(".success");
+    const formError = forgotPasswordForm.querySelector(".error");
+    e.preventDefault();
+    const { error } = await forgotPassword(email);
+    if (!error) success.innerHTML = `Password reset sent to '${email}'`;
+    if (error) formError.innerHTML = error;
+  });
+}
+
+const resetPasswordForm = document.querySelector(".reset-password");
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const token = window.location.href.split("&token=")[1];
+    const password = resetPasswordForm.querySelector(".password").value;
+    const confirmPassword =
+      resetPasswordForm.querySelector(".confirm-password").value;
+    await resetPassword(password, confirmPassword, token);
   });
 }
 
@@ -206,14 +239,25 @@ if (lightDarkButton) {
 const menuButton = document.querySelector(".modal-svg");
 const modal = document.querySelector(".user-modal");
 
-menuButton.addEventListener("mousedown", () => {
+function modalEvent() {
   modal.style.opacity = "1";
   handleCloseMenu(false);
-});
+}
+
+export function handleModalListener(io) {
+  if (io) {
+    menuButton.addEventListener("mousedown", modalEvent);
+  } else {
+    menuButton.removeEventListener("mousedown", modalEvent);
+  }
+}
+
+handleModalListener(true);
 
 const closeMenu = document.querySelector(".close-menu");
 
 closeMenu.addEventListener("mousedown", () => {
+  handleModalListener(false);
   handleCloseMenu(true);
 });
 
@@ -226,11 +270,11 @@ menuLinks.forEach((link) => {
     const href = target.parentElement.href;
     if (href.includes("playlists")) {
       const spotifyToken = document.cookie
-        .split("; ")
-        .filter((cookie) => {
+        ?.split("; ")
+        ?.filter((cookie) => {
           return cookie.startsWith("spotify_token");
         })[0]
-        .split("=")[1];
+        ?.split("=")[1];
       if (!spotifyToken) {
         return toast("Login with Spotify", "fail");
       }
@@ -265,6 +309,18 @@ if (loginRegister.length) {
       handleLoginForm(clicked);
     })
   );
+}
+
+const forgetLogin = document.querySelectorAll(".forget");
+
+if (forgetLogin.length) {
+  let clicked = false;
+  forgetLogin.forEach((button) => {
+    button.addEventListener("mousedown", () => {
+      clicked = !clicked;
+      handleForgetPasswordForm(clicked);
+    });
+  });
 }
 
 const playlists = document.querySelectorAll(".playlist-group");

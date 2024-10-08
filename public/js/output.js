@@ -11553,8 +11553,10 @@ exports.Axios = Axios;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.forgotPassword = forgotPassword;
 exports.login = login;
 exports.logout = logout;
+exports.resetPassword = resetPassword;
 exports.signUp = signUp;
 var _axios = _interopRequireDefault(require("axios"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -11671,6 +11673,95 @@ function _signUp() {
     }, _callee3, null, [[1, 9]]);
   }));
   return _signUp.apply(this, arguments);
+}
+function forgotPassword(_x6) {
+  return _forgotPassword.apply(this, arguments);
+}
+function _forgotPassword() {
+  _forgotPassword = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(email) {
+    var error, _yield$axios$post, data;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          error = false;
+          _context4.prev = 1;
+          _context4.next = 4;
+          return _axios.default.post("/api/auth/forgot-password", {
+            email: email
+          });
+        case 4:
+          _yield$axios$post = _context4.sent;
+          data = _yield$axios$post.data;
+          if (!(data.status === "success")) {
+            _context4.next = 8;
+            break;
+          }
+          return _context4.abrupt("return", {
+            error: error
+          });
+        case 8:
+          _context4.next = 15;
+          break;
+        case 10:
+          _context4.prev = 10;
+          _context4.t0 = _context4["catch"](1);
+          console.log(_context4.t0);
+          error = _context4.t0.response.data.message;
+          return _context4.abrupt("return", {
+            error: error
+          });
+        case 15:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4, null, [[1, 10]]);
+  }));
+  return _forgotPassword.apply(this, arguments);
+}
+function resetPassword(_x7, _x8, _x9) {
+  return _resetPassword.apply(this, arguments);
+}
+function _resetPassword() {
+  _resetPassword = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(password, confirmPassword, token) {
+    var error, _yield$axios$patch, data;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          error = false;
+          console.log(token);
+          _context5.prev = 2;
+          _context5.next = 5;
+          return _axios.default.patch("/api/auth/reset-password/".concat(token), {
+            password: password,
+            confirmPassword: confirmPassword
+          });
+        case 5:
+          _yield$axios$patch = _context5.sent;
+          data = _yield$axios$patch.data;
+          if (!(data.status === "success")) {
+            _context5.next = 9;
+            break;
+          }
+          return _context5.abrupt("return", {
+            error: error
+          });
+        case 9:
+          _context5.next = 15;
+          break;
+        case 11:
+          _context5.prev = 11;
+          _context5.t0 = _context5["catch"](2);
+          error = _context5.t0.response.data.error;
+          return _context5.abrupt("return", {
+            error: error
+          });
+        case 15:
+        case "end":
+          return _context5.stop();
+      }
+    }, _callee5, null, [[2, 11]]);
+  }));
+  return _resetPassword.apply(this, arguments);
 }
 },{"axios":"../../node_modules/axios/index.js"}],"spotify.js":[function(require,module,exports) {
 "use strict";
@@ -11837,6 +11928,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.handleCloseMenu = handleCloseMenu;
+exports.handleForgetPasswordForm = handleForgetPasswordForm;
 exports.handleGenerationAnimation = handleGenerationAnimation;
 exports.handleLoginForm = handleLoginForm;
 exports.handlePlaylistEdit = handlePlaylistEdit;
@@ -12413,7 +12505,10 @@ function handleCloseMenu(io) {
           onComplete: function onComplete() {
             return _gsap.default.to(modal, {
               y: "100vh",
-              duration: 0.01
+              duration: 0.01,
+              onComplete: function onComplete() {
+                return (0, _index.handleModalListener)(true);
+              }
             });
           }
         });
@@ -12434,9 +12529,10 @@ function handleCloseMenu(io) {
 }
 function handleLoginForm(io) {
   var _document$querySelect = document.querySelectorAll(".form-box"),
-    _document$querySelect2 = _slicedToArray(_document$querySelect, 2),
-    loginForm = _document$querySelect2[0],
-    registerForm = _document$querySelect2[1];
+    _document$querySelect2 = _slicedToArray(_document$querySelect, 3),
+    passwordForm = _document$querySelect2[0],
+    loginForm = _document$querySelect2[1],
+    registerForm = _document$querySelect2[2];
   if (io) {
     _gsap.default.to(loginForm, {
       x: -600
@@ -12453,12 +12549,34 @@ function handleLoginForm(io) {
     });
   }
 }
+function handleForgetPasswordForm(io) {
+  var _document$querySelect3 = document.querySelectorAll(".form-box"),
+    _document$querySelect4 = _slicedToArray(_document$querySelect3, 2),
+    passwordForm = _document$querySelect4[0],
+    loginForm = _document$querySelect4[1];
+  if (io) {
+    _gsap.default.to(passwordForm, {
+      x: 0
+    });
+    _gsap.default.to(loginForm, {
+      x: 500
+    });
+  } else {
+    _gsap.default.to(loginForm, {
+      x: 0
+    });
+    _gsap.default.to(passwordForm, {
+      x: -500
+    });
+  }
+}
 },{"gsap":"../../node_modules/gsap/index.js","./index":"index.js","axios":"../../node_modules/axios/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.handleModalListener = handleModalListener;
 exports.playlistEventListeners = playlistEventListeners;
 var _toast = _interopRequireDefault(require("./toast"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -12477,7 +12595,9 @@ var _require = require("slugify"),
 var _require2 = require("./login"),
   login = _require2.login,
   logout = _require2.logout,
-  signUp = _require2.signUp;
+  signUp = _require2.signUp,
+  forgotPassword = _require2.forgotPassword,
+  resetPassword = _require2.resetPassword;
 var spotify = require("./spotify");
 var gsap = require("gsap");
 var _require3 = require("axios"),
@@ -12488,7 +12608,8 @@ var _require4 = require("./animations"),
   handleSongsAnimation = _require4.handleSongsAnimation,
   handleGenerationAnimation = _require4.handleGenerationAnimation,
   handlePlaylistEdit = _require4.handlePlaylistEdit,
-  handleLoginForm = _require4.handleLoginForm;
+  handleLoginForm = _require4.handleLoginForm,
+  handleForgetPasswordForm = _require4.handleForgetPasswordForm;
 var loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", /*#__PURE__*/function () {
@@ -12548,19 +12669,74 @@ if (registerForm) {
     };
   }());
 }
+var forgotPasswordForm = document.querySelector(".forgot-form");
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener("submit", /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
+      var email, success, formError, _yield$forgotPassword, error;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            email = forgotPasswordForm.querySelector(".email").value;
+            success = forgotPasswordForm.querySelector(".success");
+            formError = forgotPasswordForm.querySelector(".error");
+            e.preventDefault();
+            _context3.next = 6;
+            return forgotPassword(email);
+          case 6:
+            _yield$forgotPassword = _context3.sent;
+            error = _yield$forgotPassword.error;
+            if (!error) success.innerHTML = "Password reset sent to '".concat(email, "'");
+            if (error) formError.innerHTML = error;
+          case 10:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3);
+    }));
+    return function (_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }());
+}
+var resetPasswordForm = document.querySelector(".reset-password");
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener("submit", /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
+      var token, password, confirmPassword;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            e.preventDefault();
+            token = window.location.href.split("&token=")[1];
+            password = resetPasswordForm.querySelector(".password").value;
+            confirmPassword = resetPasswordForm.querySelector(".confirm-password").value;
+            _context4.next = 6;
+            return resetPassword(password, confirmPassword, token);
+          case 6:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4);
+    }));
+    return function (_x4) {
+      return _ref4.apply(this, arguments);
+    };
+  }());
+}
 var logoutButton = document.querySelector(".logout");
 if (logoutButton) {
-  logoutButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
+  logoutButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
         case 0:
-          _context3.next = 2;
+          _context5.next = 2;
           return logout();
         case 2:
         case "end":
-          return _context3.stop();
+          return _context5.stop();
       }
-    }, _callee3);
+    }, _callee5);
   })));
 }
 var buffer = function buffer(ms) {
@@ -12588,20 +12764,20 @@ if (location.pathname.startsWith("/playlists/")) {
   handleGenerationAnimation(true);
   handleSongsAnimation();
   var backButton = document.querySelector(".back-button");
-  backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-      while (1) switch (_context4.prev = _context4.next) {
+  backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
         case 0:
           handleGenerationAnimation(false);
-          _context4.next = 3;
+          _context6.next = 3;
           return buffer(500);
         case 3:
           location.assign("/playlists");
         case 4:
         case "end":
-          return _context4.stop();
+          return _context6.stop();
       }
-    }, _callee4);
+    }, _callee6);
   })));
 }
 if (location.pathname === "/playlists") {
@@ -12625,28 +12801,28 @@ if (chatBot) {
   var parameters = document.querySelector(".chat-input");
   parameters.focus();
   chatBot.addEventListener("submit", /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(e) {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(e) {
       var _yield$spotify$spotif, data, err, uris, playlist, backButton, playlistName, name, params, playlistForm;
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-        while (1) switch (_context7.prev = _context7.next) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+        while (1) switch (_context9.prev = _context9.next) {
           case 0:
             e.preventDefault();
             handleLoaders(true);
-            _context7.next = 4;
+            _context9.next = 4;
             return buffer(1000);
           case 4:
-            _context7.next = 6;
+            _context9.next = 6;
             return spotify.spotifyGenerate(parameters.value);
           case 6:
-            _yield$spotify$spotif = _context7.sent;
+            _yield$spotify$spotif = _context9.sent;
             data = _yield$spotify$spotif.data;
             err = _yield$spotify$spotif.err;
             handleLoaders(false);
             if (!err) {
-              _context7.next = 12;
+              _context9.next = 12;
               break;
             }
-            return _context7.abrupt("return");
+            return _context9.abrupt("return");
           case 12:
             uris = [];
             playlist = document.createElement("div");
@@ -12660,16 +12836,16 @@ if (chatBot) {
             document.querySelector("main").insertAdjacentHTML("beforebegin", '<button class="back-button button">back</button>');
             backButton = document.querySelector(".back-button");
             handleGenerationAnimation(true);
-            backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-              return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-                while (1) switch (_context5.prev = _context5.next) {
+            backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+              return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+                while (1) switch (_context7.prev = _context7.next) {
                   case 0:
                     handleGenerationAnimation(false);
                   case 1:
                   case "end":
-                    return _context5.stop();
+                    return _context7.stop();
                 }
-              }, _callee5);
+              }, _callee7);
             })));
             handleSongsAnimation();
             playlistName = document.querySelector(".playlist-name");
@@ -12684,33 +12860,33 @@ if (chatBot) {
             };
             playlistForm = document.querySelector(".playlist-form");
             playlistForm.addEventListener("submit", /*#__PURE__*/function () {
-              var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(e) {
-                return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-                  while (1) switch (_context6.prev = _context6.next) {
+              var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(e) {
+                return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+                  while (1) switch (_context8.prev = _context8.next) {
                     case 0:
                       e.preventDefault();
-                      _context6.next = 3;
+                      _context8.next = 3;
                       return spotify.savePlaylist(params);
                     case 3:
                     case "end":
-                      return _context6.stop();
+                      return _context8.stop();
                   }
-                }, _callee6);
+                }, _callee8);
               }));
-              return function (_x4) {
-                return _ref7.apply(this, arguments);
+              return function (_x6) {
+                return _ref9.apply(this, arguments);
               };
             }());
-            _context7.next = 30;
+            _context9.next = 30;
             return spotify.sendPlaylist(params);
           case 30:
           case "end":
-            return _context7.stop();
+            return _context9.stop();
         }
-      }, _callee7);
+      }, _callee9);
     }));
-    return function (_x3) {
-      return _ref5.apply(this, arguments);
+    return function (_x5) {
+      return _ref7.apply(this, arguments);
     };
   }());
 }
@@ -12738,93 +12914,102 @@ if (!cookieLight) {
 }
 cookieDark ? setDarkMode() : setLightMode();
 if (lightDarkButton) {
-  lightDarkButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-      while (1) switch (_context8.prev = _context8.next) {
+  lightDarkButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
         case 0:
           document.querySelector("body").classList.add("transition");
           cookieDark = !cookieDark;
           document.cookie = "darkMode=".concat(cookieDark);
           cookieDark ? setDarkMode() : setLightMode();
-          _context8.next = 6;
+          _context10.next = 6;
           return buffer(550);
         case 6:
           document.querySelector("body").classList.remove("transition");
         case 7:
         case "end":
-          return _context8.stop();
+          return _context10.stop();
       }
-    }, _callee8);
+    }, _callee10);
   })));
 }
 var menuButton = document.querySelector(".modal-svg");
 var modal = document.querySelector(".user-modal");
-menuButton.addEventListener("mousedown", function () {
+function modalEvent() {
   modal.style.opacity = "1";
   handleCloseMenu(false);
-});
+}
+function handleModalListener(io) {
+  if (io) {
+    menuButton.addEventListener("mousedown", modalEvent);
+  } else {
+    menuButton.removeEventListener("mousedown", modalEvent);
+  }
+}
+handleModalListener(true);
 var closeMenu = document.querySelector(".close-menu");
 closeMenu.addEventListener("mousedown", function () {
+  handleModalListener(false);
   handleCloseMenu(true);
 });
 var menuLinks = document.querySelectorAll(".menu-links");
 menuLinks.forEach(function (link) {
   link.addEventListener("click", /*#__PURE__*/function () {
-    var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(e) {
-      var target, href, spotifyToken, _err$response, _err$response$data$er, status, message;
-      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-        while (1) switch (_context9.prev = _context9.next) {
+    var _ref11 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(e) {
+      var target, href, _document$cookie, spotifyToken, _err$response, _err$response$data$er, status, message;
+      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+        while (1) switch (_context11.prev = _context11.next) {
           case 0:
             e.preventDefault();
             target = e.target;
             href = target.parentElement.href;
             if (!href.includes("playlists")) {
-              _context9.next = 18;
+              _context11.next = 18;
               break;
             }
-            spotifyToken = document.cookie.split("; ").filter(function (cookie) {
+            spotifyToken = (_document$cookie = document.cookie) === null || _document$cookie === void 0 || (_document$cookie = _document$cookie.split("; ")) === null || _document$cookie === void 0 || (_document$cookie = _document$cookie.filter(function (cookie) {
               return cookie.startsWith("spotify_token");
-            })[0].split("=")[1];
+            })[0]) === null || _document$cookie === void 0 ? void 0 : _document$cookie.split("=")[1];
             if (spotifyToken) {
-              _context9.next = 7;
+              _context11.next = 7;
               break;
             }
-            return _context9.abrupt("return", (0, _toast.default)("Login with Spotify", "fail"));
+            return _context11.abrupt("return", (0, _toast.default)("Login with Spotify", "fail"));
           case 7:
-            _context9.prev = 7;
-            _context9.next = 10;
+            _context11.prev = 7;
+            _context11.next = 10;
             return axios.get("https://api.spotify.com/v1/me", {
               headers: {
                 Authorization: "Bearer ".concat(spotifyToken)
               }
             });
           case 10:
-            _context9.next = 18;
+            _context11.next = 18;
             break;
           case 12:
-            _context9.prev = 12;
-            _context9.t0 = _context9["catch"](7);
-            _err$response$data$er = (_err$response = _context9.t0.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.error, status = _err$response$data$er.status, message = _err$response$data$er.message;
+            _context11.prev = 12;
+            _context11.t0 = _context11["catch"](7);
+            _err$response$data$er = (_err$response = _context11.t0.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.error, status = _err$response$data$er.status, message = _err$response$data$er.message;
             if (!(status === 401 || message === "Only valid bearer authentication supported")) {
-              _context9.next = 18;
+              _context11.next = 18;
               break;
             }
             (0, _toast.default)("Your Spotify login has expired, login again please", "fail");
-            return _context9.abrupt("return", document.cookie("spotify_token", ""));
+            return _context11.abrupt("return", document.cookie("spotify_token", ""));
           case 18:
             handleCloseMenu(true);
-            _context9.next = 21;
+            _context11.next = 21;
             return buffer(500);
           case 21:
             location.assign(href);
           case 22:
           case "end":
-            return _context9.stop();
+            return _context11.stop();
         }
-      }, _callee9, null, [[7, 12]]);
+      }, _callee11, null, [[7, 12]]);
     }));
-    return function (_x5) {
-      return _ref9.apply(this, arguments);
+    return function (_x7) {
+      return _ref11.apply(this, arguments);
     };
   }());
 });
@@ -12838,28 +13023,38 @@ if (loginRegister.length) {
     });
   });
 }
+var forgetLogin = document.querySelectorAll(".forget");
+if (forgetLogin.length) {
+  var _clicked2 = false;
+  forgetLogin.forEach(function (button) {
+    button.addEventListener("mousedown", function () {
+      _clicked2 = !_clicked2;
+      handleForgetPasswordForm(_clicked2);
+    });
+  });
+}
 var playlists = document.querySelectorAll(".playlist-group");
-function handlePlaylistRoute(_x6) {
+function handlePlaylistRoute(_x8) {
   return _handlePlaylistRoute.apply(this, arguments);
 }
 function _handlePlaylistRoute() {
-  _handlePlaylistRoute = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(playlist) {
+  _handlePlaylistRoute = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(playlist) {
     var name, slug;
-    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-      while (1) switch (_context11.prev = _context11.next) {
+    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+      while (1) switch (_context13.prev = _context13.next) {
         case 0:
           name = playlist.querySelector(".playlist-group-name");
           slug = slugify(name.textContent);
           handleGenerationAnimation(false);
-          _context11.next = 5;
+          _context13.next = 5;
           return buffer(500);
         case 5:
           location.assign("/playlists/".concat(slug));
         case 6:
         case "end":
-          return _context11.stop();
+          return _context13.stop();
       }
-    }, _callee11);
+    }, _callee13);
   }));
   return _handlePlaylistRoute.apply(this, arguments);
 }
@@ -12908,28 +13103,28 @@ if (submitButton && location.pathname !== "/") {
   var uris = document.querySelector(".dbPlaylist p").innerHTML.split(",");
   var url = slugify(location.pathname.split("/playlists/")[1]);
   var name = document.querySelector(".playlist-title").innerHTML;
-  submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+  submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
     var _yield$axios$post, data, playlistButton;
-    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-      while (1) switch (_context10.prev = _context10.next) {
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
         case 0:
           gsap.gsap.to(submitButton, {
             scale: 0,
             ease: "sine",
             duration: 0.25
           });
-          _context10.next = 3;
+          _context12.next = 3;
           return buffer(250);
         case 3:
           submitButton.remove();
-          _context10.next = 6;
+          _context12.next = 6;
           return axios.post("/api/playlists/create", {
             url: url,
             uris: uris,
             name: name
           });
         case 6:
-          _yield$axios$post = _context10.sent;
+          _yield$axios$post = _context12.sent;
           data = _yield$axios$post.data;
           playlistButton = document.querySelector(".open-spotify");
           gsap.gsap.to(playlistButton, {
@@ -12942,9 +13137,9 @@ if (submitButton && location.pathname !== "/") {
           });
         case 11:
         case "end":
-          return _context10.stop();
+          return _context12.stop();
       }
-    }, _callee10);
+    }, _callee12);
   })));
 }
 },{"./toast":"toast.js","slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","gsap":"../../node_modules/gsap/index.js","axios":"../../node_modules/axios/index.js","./animations":"animations.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {

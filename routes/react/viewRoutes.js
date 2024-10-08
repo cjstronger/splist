@@ -7,6 +7,7 @@ const viewsRouter = express.Router();
 
 viewsRouter.get("/", viewsController.getHome);
 viewsRouter.get("/login", viewsController.getLogin);
+viewsRouter.get("/reset-password:token", viewsController.getResetPassword);
 viewsRouter.get("/spotify-login", viewsController.getSpotify);
 
 viewsRouter.get("/error", viewsController.getError);

@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import { playlistEventListeners } from "./index";
+import { handleModalListener, playlistEventListeners } from "./index";
 import axios from "axios";
 
 const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -455,6 +455,7 @@ export function handleCloseMenu(io) {
             gsap.to(modal, {
               y: "100vh",
               duration: 0.01,
+              onComplete: () => handleModalListener(true),
             }),
         });
       },
@@ -474,7 +475,8 @@ export function handleCloseMenu(io) {
 }
 
 export function handleLoginForm(io) {
-  const [loginForm, registerForm] = document.querySelectorAll(".form-box");
+  const [passwordForm, loginForm, registerForm] =
+    document.querySelectorAll(".form-box");
   if (io) {
     gsap.to(loginForm, {
       x: -600,
@@ -488,6 +490,25 @@ export function handleLoginForm(io) {
     });
     gsap.to(registerForm, {
       x: 600,
+    });
+  }
+}
+
+export function handleForgetPasswordForm(io) {
+  const [passwordForm, loginForm] = document.querySelectorAll(".form-box");
+  if (io) {
+    gsap.to(passwordForm, {
+      x: 0,
+    });
+    gsap.to(loginForm, {
+      x: 500,
+    });
+  } else {
+    gsap.to(loginForm, {
+      x: 0,
+    });
+    gsap.to(passwordForm, {
+      x: -500,
     });
   }
 }

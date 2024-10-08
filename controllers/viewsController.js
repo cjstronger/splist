@@ -116,3 +116,9 @@ exports.getError = (req, res) => {
     user,
   });
 };
+
+exports.getResetPassword = (req, res, next) => {
+  res.render("reset-password", {
+    title: "Reset Password",
+  });
+};

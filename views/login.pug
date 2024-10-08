@@ -1,23 +1,20 @@
 extends base
 
 block content 
-    //- .account
-    //-     .account-forms
-    //-         form.login-form
-    //-             h1 splist login
-    //-             input.login-input.email(type="email" placeholder="email")
-    //-             input.login-input.password(type="password" placeholder="password")
-    //-             p.error
-    //-             button(type="submit").button submit
-    //-     .account-forms
-    //-         form.signup-form
-    //-             h1 splist signup
-    //-             input.signup-input.email(type="email" placeholder="email")
-    //-             input.signup-input.password(type="password" placeholder="password")
-    //-             p.error
-    //-             button(type="submit").button submit
     .account-forms
         .account-wrapper 
+            .form-box.forgot-password 
+                h2 forgot password
+                form.forgot-form
+                    .input-box 
+                        input.email(type="email" required)
+                        label email
+                    p.error
+                    p.success
+                    button.form-button(type="submit") send email
+                    .forget 
+                        p have an account?
+                            a  login
             .form-box.login 
                 h2 splist login
                 form.login-form
@@ -29,7 +26,7 @@ block content
                         label password
                     p.error
                     .forget 
-                        a(href="/forget-password") forgot password?
+                        a forgot password?
                     button.form-button(type="submit") login
                     .login-register 
                         p don't have an account?

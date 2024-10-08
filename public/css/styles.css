@@ -58,6 +58,13 @@ a {
 input {
   caret-color: var(--text);
 }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  background-color: transparent !important;
+  color: var(--text);
+  transition: background-color 5000s ease-in-out 0s !important;
+}
 
 .site-title-container {
   position: absolute;
@@ -129,8 +136,8 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--accent);
   overflow: hidden;
+  background: var(--accent);
   margin-bottom: 50px;
 }
 .account-wraper .form-box {
@@ -145,6 +152,17 @@ input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+.account-wrapper .form-box.forgot-password {
+  position: absolute;
+  transform: translateX(-500px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.forgot-password .forget {
+  text-align: center !important;
 }
 .form-box h2 {
   font-size: 40px;
@@ -191,7 +209,6 @@ input {
   margin: 25px 0 10px;
 }
 .login-register p {
-  font-size: 12px;
   line-height: 1;
   text-align: center;
 }
@@ -227,6 +244,7 @@ input {
 .error {
   color: #d65a5a;
   z-index: 10;
+  padding: 5px 0;
 }
 .login-input:focus {
   outline: none;

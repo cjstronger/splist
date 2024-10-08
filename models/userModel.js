@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: "A password is required",
     select: false,
+    min: 8,
   },
   confirmPassword: {
     type: String,
@@ -27,7 +29,7 @@ const userSchema = new mongoose.Schema({
       },
       "Email must be valid",
     ],
-    unique: [true, "email already in use"],
+    unique: [true, "Email already in use"],
   },
   name: {
     type: String,
@@ -41,11 +43,14 @@ const userSchema = new mongoose.Schema({
   platforms: {
     type: [String],
   },
+  resetToken: String,
+  resetTokenExpires: Date,
 });
 
 userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   this.confirmPassword = undefined;
-  this.password = await bcrypt.hash(this.password, 5);
+  this.password = bcrypt.hash(this.password, 5);
   next();
 });
 
@@ -59,6 +64,19 @@ userSchema.method("generateToken", function (id) {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
   return token;
+});
+
+userSchema.method("generateResetToken", function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  const encryptedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest();
+
+  this.resetToken = encryptedToken;
+  this.resetTokenExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 });
 
 const User = mongoose.model("User", userSchema);

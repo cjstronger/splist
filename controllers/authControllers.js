@@ -4,7 +4,9 @@ const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
 const querystring = require("querystring");
 const cookieParser = require("cookie-parser");
+const crypto = require("crypto");
 const { default: axios } = require("axios");
+const { sendEmail } = require("../utils/mailer");
 
 exports.signUp = catchAsync(async function (req, res, next) {
   const { email, password, confirmPassword, name } = req.body.data;
@@ -174,4 +176,69 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
   } catch (err) {
     return next(new AppError(err.message, err.statusCode));
   }
+});
+
+exports.sendResetEmail = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user)
+    return next(
+      new AppError(`There is no user with the email '${email}'`, 404)
+    );
+
+  const resetToken = await user.generateResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  const mailOptions = {
+    from: `${user.email}`,
+    to: `${user.email}`,
+    subject: "Password Reset | Splist",
+    text: `Hello, Clint! Here is your reset token: ${resetToken}`,
+  };
+  try {
+    await sendEmail(mailOptions);
+    res.status(201).json({
+      status: "success",
+    });
+  } catch (err) {
+    console.log(err);
+    this.resetToken = undefined;
+    this.resetTokenExpires = undefined;
+    user.save({ validateBeforeSave: false });
+    return next(new AppError("There was an error sending the token!", 500));
+  }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest();
+
+  const user = await User.findOne({ resetToken: hashedToken });
+
+  if (!user)
+    return next(new AppError("Token invalid, please generate a new one", 400));
+
+  console.log(user.resetTokenExpires, Date.now());
+
+  if (user.resetTokenExpires < Date.now())
+    return next(
+      new AppError(
+        "The reset token has expired, please generate a new one.",
+        400
+      )
+    );
+  user.password = req.body.password;
+  user.confirmPassword = req.body.password;
+  user.resetToken = undefined;
+  user.resetTokenExpires = undefined;
+  await user.save();
+
+  const token = await signJWT(user._id);
+
+  res.status(200).json({
+    status: "success",
+    token,
+  });
 });
