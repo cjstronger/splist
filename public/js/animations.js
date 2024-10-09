@@ -76,12 +76,12 @@ export async function handleGenerationAnimation(io) {
       ease: "power2",
     });
     gsap.to(backButton, {
-      x: 0,
+      y: 0,
       duration: 0.5,
       delay: 0.5,
     });
     gsap.to(switcher, {
-      x: 0,
+      y: 0,
       duration: 0.5,
       delay: 0.5,
     });
@@ -130,12 +130,12 @@ export async function handleGenerationAnimation(io) {
       });
     }
     gsap.to(backButton, {
-      x: "-50vw",
+      y: 50,
       duration: 0.5,
       ease: "power3.in",
     });
     gsap.to(switcher, {
-      x: "50vw",
+      y: 50,
       duration: 0.5,
       ease: "power3.in",
     });
@@ -508,6 +508,26 @@ export function handleForgetPasswordForm(io) {
     });
     gsap.to(passwordForm, {
       x: -500,
+    });
+  }
+}
+
+export function handleFailAnimation(io) {
+  const success = document.querySelector(".success");
+  const error = document.querySelector(".error");
+  if (io) {
+    gsap.from(error, {
+      opacity: 0,
+    });
+    gsap.to(success, {
+      opacity: 0,
+    });
+  } else {
+    gsap.from(success, {
+      opacity: 0,
+    });
+    gsap.to(error, {
+      opacity: 0,
     });
   }
 }

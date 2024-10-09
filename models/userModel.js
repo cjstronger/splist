@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") && !this.isNew) return next();
+  if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   this.confirmPassword = undefined;
   next();
@@ -59,10 +59,18 @@ userSchema.method("verify", async function (attemptedPW, encryptedPW) {
   return comparison;
 });
 
-userSchema.method("generateToken", function (id) {
+userSchema.method("generateToken", function (id, res) {
   const token = jwt.sign({ id }, process.env.JWT_KEY, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
+  const cookieOptions = {
+    expires: Date.now() + process.env.JWT_COOKIES_EXPIRES * 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    //ADD when in production the secure option is set to true
+  };
+
+  res.cookie("jwt", token, cookieOptions);
+
   return token;
 });
 

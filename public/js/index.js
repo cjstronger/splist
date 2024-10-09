@@ -19,6 +19,7 @@ const {
   handlePlaylistEdit,
   handleLoginForm,
   handleForgetPasswordForm,
+  handleFailAnimation,
 } = require("./animations");
 
 const loginForm = document.querySelector(".login-form");
@@ -30,10 +31,12 @@ if (loginForm) {
     const password = loginForm.querySelector(".password").value;
     const formError = loginForm.querySelector(".error");
     const { error } = await login(email, password);
-    gsap.gsap.from(formError, {
-      opacity: 0,
-    });
-    if (error) formError.innerHTML = error;
+    if (error) {
+      formError.innerHTML = error;
+      handleFailAnimation(true);
+    } else {
+      handleFailAnimation(false);
+    }
   });
 }
 
@@ -48,7 +51,12 @@ if (registerForm) {
     const email = registerForm.querySelector(".email").value;
     const formError = registerForm.querySelector(".error");
     const { error } = await signUp(email, password, confirmPassword);
-    if (error) formError.innerHTML = error;
+    if (error) {
+      formError.innerHTML = error;
+      handleFailAnimation(true);
+    } else {
+      handleFailAnimation(false);
+    }
   });
 }
 
@@ -61,8 +69,13 @@ if (forgotPasswordForm) {
     const formError = forgotPasswordForm.querySelector(".error");
     e.preventDefault();
     const { error } = await forgotPassword(email);
-    if (!error) success.innerHTML = `Password reset sent to '${email}'`;
-    if (error) formError.innerHTML = error;
+    if (error) {
+      formError.innerHTML = error;
+      handleFailAnimation(true);
+    } else {
+      success.innerHTML = `Password reset sent to '${email}'`;
+      handleFailAnimation(false);
+    }
   });
 }
 
@@ -70,11 +83,22 @@ const resetPasswordForm = document.querySelector(".reset-password");
 if (resetPasswordForm) {
   resetPasswordForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const token = window.location.href.split("&token=")[1];
+    const token = location.pathname.split("/")[2];
     const password = resetPasswordForm.querySelector(".password").value;
     const confirmPassword =
       resetPasswordForm.querySelector(".confirm-password").value;
-    await resetPassword(password, confirmPassword, token);
+    const { error } = await resetPassword(password, confirmPassword, token);
+    const success = resetPasswordForm.querySelector(".success");
+    const formError = resetPasswordForm.querySelector(".error");
+    if (error) {
+      formError.innerHTML = error;
+      return handleFailAnimation(true);
+    } else {
+      success.innerHTML = "Password reset, logging in...";
+      handleFailAnimation(false);
+    }
+    await buffer(1000);
+    location.assign("/");
   });
 }
 
@@ -277,27 +301,17 @@ menuLinks.forEach((link) => {
     const target = e.target;
     const href = target.parentElement.href;
     if (href.includes("playlists")) {
-      const spotifyToken = document.cookie
-        ?.split("; ")
-        ?.filter((cookie) => {
-          return cookie.startsWith("spotify_token");
-        })[0]
-        ?.split("=")[1];
-      if (!spotifyToken) {
-        return toast("Login with Spotify", "fail");
-      }
       try {
-        await axios.get(`https://api.spotify.com/v1/me`, {
-          headers: { Authorization: `Bearer ${spotifyToken}` },
-        });
+        await axios.get(`${location.origin}/api/auth/logged-in-spotify`);
       } catch (err) {
-        const { status, message } = err.response?.data?.error;
-        if (
-          status === 401 ||
-          message === "Only valid bearer authentication supported"
-        ) {
-          toast("Your Spotify login has expired, login again please", "fail");
-          return document.cookie("spotify_token", "");
+        const { status } = err.response.data;
+        if (status === "fail") {
+          return toast("Please login with Spotify", "fail");
+        } else if (status === "token expired") {
+          return toast(
+            "Your login with Spotify expired, please login again",
+            "fail"
+          );
         }
       }
     }

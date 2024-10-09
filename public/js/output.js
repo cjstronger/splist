@@ -11569,7 +11569,7 @@ function login(_x, _x2) {
 }
 function _login() {
   _login = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(email, password) {
-    var error, data, res;
+    var error, res;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -11577,10 +11577,8 @@ function _login() {
           _context.prev = 1;
           _context.next = 4;
           return _axios.default.post("/api/auth/login", {
-            data: {
-              email: email,
-              password: password
-            }
+            email: email,
+            password: password
           });
         case 4:
           res = _context.sent;
@@ -11642,35 +11640,32 @@ function _signUp() {
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
-          console.log("here at the signup function");
           error = false;
-          _context3.prev = 2;
-          _context3.next = 5;
+          _context3.prev = 1;
+          _context3.next = 4;
           return _axios.default.post("/api/auth/signup", {
-            data: {
-              email: email,
-              password: password,
-              confirmPassword: confirmPassword
-            }
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
           });
-        case 5:
+        case 4:
           res = _context3.sent;
           if (res.data.status === "success") location.assign("/");
           return _context3.abrupt("return", {
             error: error
           });
-        case 10:
-          _context3.prev = 10;
-          _context3.t0 = _context3["catch"](2);
+        case 9:
+          _context3.prev = 9;
+          _context3.t0 = _context3["catch"](1);
           error = _context3.t0.response.data.message;
           return _context3.abrupt("return", {
             error: error
           });
-        case 14:
+        case 13:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[2, 10]]);
+    }, _callee3, null, [[1, 9]]);
   }));
   return _signUp.apply(this, arguments);
 }
@@ -11728,38 +11723,37 @@ function _resetPassword() {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
           error = false;
-          console.log(token);
-          _context5.prev = 2;
-          _context5.next = 5;
+          _context5.prev = 1;
+          _context5.next = 4;
           return _axios.default.patch("/api/auth/reset-password/".concat(token), {
             password: password,
             confirmPassword: confirmPassword
           });
-        case 5:
+        case 4:
           _yield$axios$patch = _context5.sent;
           data = _yield$axios$patch.data;
           if (!(data.status === "success")) {
-            _context5.next = 9;
+            _context5.next = 8;
             break;
           }
           return _context5.abrupt("return", {
             error: error
           });
-        case 9:
-          _context5.next = 15;
+        case 8:
+          _context5.next = 14;
           break;
-        case 11:
-          _context5.prev = 11;
-          _context5.t0 = _context5["catch"](2);
-          error = _context5.t0.response.data.error;
+        case 10:
+          _context5.prev = 10;
+          _context5.t0 = _context5["catch"](1);
+          error = _context5.t0.response.data.message;
           return _context5.abrupt("return", {
             error: error
           });
-        case 15:
+        case 14:
         case "end":
           return _context5.stop();
       }
-    }, _callee5, null, [[2, 11]]);
+    }, _callee5, null, [[1, 10]]);
   }));
   return _resetPassword.apply(this, arguments);
 }
@@ -11928,6 +11922,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.handleCloseMenu = handleCloseMenu;
+exports.handleFailAnimation = handleFailAnimation;
 exports.handleForgetPasswordForm = handleForgetPasswordForm;
 exports.handleGenerationAnimation = handleGenerationAnimation;
 exports.handleLoginForm = handleLoginForm;
@@ -12095,12 +12090,12 @@ function _handleGenerationAnimation() {
             ease: "power2"
           });
           _gsap.default.to(backButton, {
-            x: 0,
+            y: 0,
             duration: 0.5,
             delay: 0.5
           });
           _gsap.default.to(switcher, {
-            x: 0,
+            y: 0,
             duration: 0.5,
             delay: 0.5
           });
@@ -12150,12 +12145,12 @@ function _handleGenerationAnimation() {
             });
           }
           _gsap.default.to(backButton, {
-            x: "-50vw",
+            y: 50,
             duration: 0.5,
             ease: "power3.in"
           });
           _gsap.default.to(switcher, {
-            x: "50vw",
+            y: 50,
             duration: 0.5,
             ease: "power3.in"
           });
@@ -12569,6 +12564,25 @@ function handleForgetPasswordForm(io) {
     });
   }
 }
+function handleFailAnimation(io) {
+  var success = document.querySelector(".success");
+  var error = document.querySelector(".error");
+  if (io) {
+    _gsap.default.from(error, {
+      opacity: 0
+    });
+    _gsap.default.to(success, {
+      opacity: 0
+    });
+  } else {
+    _gsap.default.from(success, {
+      opacity: 0
+    });
+    _gsap.default.to(error, {
+      opacity: 0
+    });
+  }
+}
 },{"gsap":"../../node_modules/gsap/index.js","./index":"index.js","axios":"../../node_modules/axios/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -12608,7 +12622,8 @@ var _require4 = require("./animations"),
   handleGenerationAnimation = _require4.handleGenerationAnimation,
   handlePlaylistEdit = _require4.handlePlaylistEdit,
   handleLoginForm = _require4.handleLoginForm,
-  handleForgetPasswordForm = _require4.handleForgetPasswordForm;
+  handleForgetPasswordForm = _require4.handleForgetPasswordForm,
+  handleFailAnimation = _require4.handleFailAnimation;
 var loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", /*#__PURE__*/function () {
@@ -12626,11 +12641,13 @@ if (loginForm) {
           case 6:
             _yield$login = _context.sent;
             error = _yield$login.error;
-            gsap.gsap.from(formError, {
-              opacity: 0
-            });
-            if (error) formError.innerHTML = error;
-          case 10:
+            if (error) {
+              formError.innerHTML = error;
+              handleFailAnimation(true);
+            } else {
+              handleFailAnimation(false);
+            }
+          case 9:
           case "end":
             return _context.stop();
         }
@@ -12659,7 +12676,12 @@ if (registerForm) {
           case 7:
             _yield$signUp = _context2.sent;
             error = _yield$signUp.error;
-            if (error) formError.innerHTML = error;
+            if (error) {
+              formError.innerHTML = error;
+              handleFailAnimation(true);
+            } else {
+              handleFailAnimation(false);
+            }
           case 10:
           case "end":
             return _context2.stop();
@@ -12688,9 +12710,14 @@ if (forgotPasswordForm) {
           case 6:
             _yield$forgotPassword = _context3.sent;
             error = _yield$forgotPassword.error;
-            if (!error) success.innerHTML = "Password reset sent to '".concat(email, "'");
-            if (error) formError.innerHTML = error;
-          case 10:
+            if (error) {
+              formError.innerHTML = error;
+              handleFailAnimation(true);
+            } else {
+              success.innerHTML = "Password reset sent to '".concat(email, "'");
+              handleFailAnimation(false);
+            }
+          case 9:
           case "end":
             return _context3.stop();
         }
@@ -12705,17 +12732,36 @@ var resetPasswordForm = document.querySelector(".reset-password");
 if (resetPasswordForm) {
   resetPasswordForm.addEventListener("submit", /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
-      var token, password, confirmPassword;
+      var token, password, confirmPassword, _yield$resetPassword, error, success, formError;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             e.preventDefault();
-            token = window.location.href.split("&token=")[1];
+            token = location.pathname.split("/")[2];
             password = resetPasswordForm.querySelector(".password").value;
             confirmPassword = resetPasswordForm.querySelector(".confirm-password").value;
             _context4.next = 6;
             return resetPassword(password, confirmPassword, token);
           case 6:
+            _yield$resetPassword = _context4.sent;
+            error = _yield$resetPassword.error;
+            success = resetPasswordForm.querySelector(".success");
+            formError = resetPasswordForm.querySelector(".error");
+            if (!error) {
+              _context4.next = 15;
+              break;
+            }
+            formError.innerHTML = error;
+            return _context4.abrupt("return", handleFailAnimation(true));
+          case 15:
+            success.innerHTML = "Password reset, logging in...";
+            handleFailAnimation(false);
+          case 17:
+            _context4.next = 19;
+            return buffer(1000);
+          case 19:
+            location.assign("/");
+          case 20:
           case "end":
             return _context4.stop();
         }
@@ -12963,7 +13009,7 @@ var menuLinks = document.querySelectorAll(".menu-links");
 menuLinks.forEach(function (link) {
   link.addEventListener("click", /*#__PURE__*/function () {
     var _ref11 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(e) {
-      var target, href, _document$cookie, spotifyToken, _err$response, _err$response$data$er, status, message;
+      var target, href, status;
       return _regeneratorRuntime().wrap(function _callee11$(_context11) {
         while (1) switch (_context11.prev = _context11.next) {
           case 0:
@@ -12974,35 +13020,27 @@ menuLinks.forEach(function (link) {
               _context11.next = 18;
               break;
             }
-            spotifyToken = (_document$cookie = document.cookie) === null || _document$cookie === void 0 || (_document$cookie = _document$cookie.split("; ")) === null || _document$cookie === void 0 || (_document$cookie = _document$cookie.filter(function (cookie) {
-              return cookie.startsWith("spotify_token");
-            })[0]) === null || _document$cookie === void 0 ? void 0 : _document$cookie.split("=")[1];
-            if (spotifyToken) {
-              _context11.next = 7;
-              break;
-            }
-            return _context11.abrupt("return", (0, _toast.default)("Login with Spotify", "fail"));
+            _context11.prev = 4;
+            _context11.next = 7;
+            return axios.get("".concat(location.origin, "/api/auth/logged-in-spotify"));
           case 7:
-            _context11.prev = 7;
-            _context11.next = 10;
-            return axios.get("https://api.spotify.com/v1/me", {
-              headers: {
-                Authorization: "Bearer ".concat(spotifyToken)
-              }
-            });
-          case 10:
             _context11.next = 18;
             break;
-          case 12:
-            _context11.prev = 12;
-            _context11.t0 = _context11["catch"](7);
-            _err$response$data$er = (_err$response = _context11.t0.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.error, status = _err$response$data$er.status, message = _err$response$data$er.message;
-            if (!(status === 401 || message === "Only valid bearer authentication supported")) {
+          case 9:
+            _context11.prev = 9;
+            _context11.t0 = _context11["catch"](4);
+            status = _context11.t0.response.data.status;
+            if (!(status === "fail")) {
+              _context11.next = 16;
+              break;
+            }
+            return _context11.abrupt("return", (0, _toast.default)("Please login with Spotify", "fail"));
+          case 16:
+            if (!(status === "token expired")) {
               _context11.next = 18;
               break;
             }
-            (0, _toast.default)("Your Spotify login has expired, login again please", "fail");
-            return _context11.abrupt("return", document.cookie("spotify_token", ""));
+            return _context11.abrupt("return", (0, _toast.default)("Your login with Spotify expired, please login again", "fail"));
           case 18:
             handleCloseMenu(true);
             _context11.next = 21;
@@ -13013,7 +13051,7 @@ menuLinks.forEach(function (link) {
           case "end":
             return _context11.stop();
         }
-      }, _callee11, null, [[7, 12]]);
+      }, _callee11, null, [[4, 9]]);
     }));
     return function (_x7) {
       return _ref11.apply(this, arguments);
@@ -13174,7 +13212,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54340" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61740" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

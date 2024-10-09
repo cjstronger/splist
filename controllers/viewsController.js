@@ -40,7 +40,7 @@ exports.getSpotify = catchAsync(async (req, res) => {
 
   res.cookie("api", false);
 
-  res.redirect(spotifyAuthUrl);
+  return next();
 });
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
