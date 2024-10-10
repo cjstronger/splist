@@ -192,13 +192,6 @@ if (chatBot) {
       uris = [...uris, item.id];
     });
 
-    document
-      .querySelector("main")
-      .insertAdjacentHTML(
-        "beforebegin",
-        '<button class="back-button button">back</button>'
-      );
-
     const backButton = document.querySelector(".back-button");
 
     handleGenerationAnimation(true);
@@ -393,10 +386,10 @@ if (location.pathname !== "/") {
 
 const submitButton = document.querySelector(".spotify-playlist-submit");
 if (submitButton && location.pathname !== "/") {
-  gsap.gsap.from(submitButton, {
-    scale: 0,
-    ease: "elastic",
-    duration: 1.5,
+  gsap.gsap.to(submitButton, {
+    y: 0,
+    ease: "power1",
+    duration: 0.25,
     delay: 1,
   });
   submitButton.addEventListener("mousemove", (e) => {
@@ -414,8 +407,8 @@ if (submitButton && location.pathname !== "/") {
   const name = document.querySelector(".playlist-title").innerHTML;
   submitButton.addEventListener("mousedown", async () => {
     gsap.gsap.to(submitButton, {
-      scale: 0,
-      ease: "sine",
+      y: 200,
+      ease: "power1",
       duration: 0.25,
     });
     await buffer(250);
@@ -425,10 +418,10 @@ if (submitButton && location.pathname !== "/") {
       uris,
       name,
     });
-    const playlistButton = document.querySelector(".open-spotify");
+    const playlistButton = document.querySelector(".open-playlist");
     gsap.gsap.to(playlistButton, {
-      scale: 1,
-      ease: "elastic",
+      y: 0,
+      ease: "power1",
       duration: 1,
     });
     playlistButton.addEventListener("mousedown", () => {

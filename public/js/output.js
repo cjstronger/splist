@@ -11813,8 +11813,8 @@ exports.sendPlaylist = /*#__PURE__*/function () {
           document.querySelector("main").insertAdjacentHTML("beforeend", html);
           submitButton = document.querySelector(".spotify-playlist-submit");
           _gsap.default.from(submitButton, {
-            scale: 0,
-            ease: "elastic",
+            y: 80,
+            ease: "power1",
             duration: 1.5,
             delay: 1
           });
@@ -11823,7 +11823,7 @@ exports.sendPlaylist = /*#__PURE__*/function () {
             submitButton.style.setProperty("--y", "".concat(e.pageY - submitButton.offsetTop, "px"));
           });
           submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-            var _yield$axios$post, saveData, _yield$axios$post2, data, playlistButton;
+            var _yield$axios$post, data, playlistButton;
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
@@ -11834,30 +11834,27 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                     songs: params.uris
                   });
                 case 3:
-                  _yield$axios$post = _context2.sent;
-                  saveData = _yield$axios$post.data;
-                  console.log(saveData);
-                  _context2.next = 11;
+                  _context2.next = 8;
                   break;
-                case 8:
-                  _context2.prev = 8;
+                case 5:
+                  _context2.prev = 5;
                   _context2.t0 = _context2["catch"](0);
                   return _context2.abrupt("return", (0, _toast.default)(_context2.t0.response.data.message, "fail"));
-                case 11:
+                case 8:
                   _gsap.default.to(submitButton, {
                     scale: 0,
                     ease: "sine",
                     duration: 0.25
                   });
                   submitButton.remove();
-                  _context2.next = 15;
+                  _context2.next = 12;
                   return _axios.default.post("/api/playlists/create", {
                     name: params.name,
                     uris: params.uris
                   });
-                case 15:
-                  _yield$axios$post2 = _context2.sent;
-                  data = _yield$axios$post2.data;
+                case 12:
+                  _yield$axios$post = _context2.sent;
+                  data = _yield$axios$post.data;
                   document.querySelector("main").insertAdjacentHTML("beforeend", '<button class="open-playlist">open playlist</button>');
                   playlistButton = document.querySelector(".open-playlist");
                   _gsap.default.from(playlistButton, {
@@ -11868,11 +11865,11 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                   playlistButton.addEventListener("mousedown", function () {
                     window.open("".concat(data.link), "_blank");
                   });
-                case 21:
+                case 18:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[0, 8]]);
+            }, _callee2, null, [[0, 5]]);
           })));
         case 6:
         case "end":
@@ -11886,7 +11883,7 @@ exports.sendPlaylist = /*#__PURE__*/function () {
 }();
 exports.savePlaylist = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(params) {
-    var _yield$axios$post3, data;
+    var _yield$axios$post2, data;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
@@ -11897,8 +11894,8 @@ exports.savePlaylist = /*#__PURE__*/function () {
             songs: params.uris
           });
         case 3:
-          _yield$axios$post3 = _context4.sent;
-          data = _yield$axios$post3.data;
+          _yield$axios$post2 = _context4.sent;
+          data = _yield$axios$post2.data;
           console.log(data);
           return _context4.abrupt("return", (0, _toast.default)("Playlist created!", "success"));
         case 9:
@@ -11957,7 +11954,8 @@ function handleGenerationAnimation(_x) {
 }
 function _handleGenerationAnimation() {
   _handleGenerationAnimation = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(io) {
-    var splistTitle, playlistForm, songs, savedPlaylists, backButton, playlist, playlistTitle, switcher, chatBot, submitButton, playlistButton;
+    var _document$querySelect5;
+    var splistTitle, playlistForm, songs, savedPlaylists, backButton, playlist, playlistTitle, switcher, chatBot, editButton, openPlaylist, submitButton, playlistButton;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
@@ -11970,8 +11968,10 @@ function _handleGenerationAnimation() {
           playlistTitle = document.querySelector(".playlist-title");
           switcher = document.querySelector(".switch-previews");
           chatBot = document.querySelector(".chat-bot");
+          editButton = document.querySelector(".edit-button");
+          openPlaylist = (_document$querySelect5 = document.querySelector(".open-playlist")) === null || _document$querySelect5 === void 0 ? void 0 : _document$querySelect5.childNodes[0];
           if (!io) {
-            _context5.next = 18;
+            _context5.next = 22;
             break;
           }
           if (songs.length) {
@@ -12089,19 +12089,28 @@ function _handleGenerationAnimation() {
             delay: 0.5,
             ease: "power2"
           });
+          _gsap.default.to(editButton, {
+            y: 0,
+            duration: 0.45
+          });
           _gsap.default.to(backButton, {
             y: 0,
-            duration: 0.5,
-            delay: 0.5
+            duration: 0.2,
+            delay: 0.3
           });
           _gsap.default.to(switcher, {
             y: 0,
-            duration: 0.5,
+            duration: 0.2,
             delay: 0.5
           });
-          _context5.next = 36;
+          _gsap.default.to(openPlaylist, {
+            y: 0,
+            duration: 0.2,
+            delay: 0.8
+          });
+          _context5.next = 41;
           break;
-        case 18:
+        case 22:
           submitButton = document.querySelector(".spotify-playlist-submit");
           playlistButton = document.querySelector(".open-playlist");
           if (songs.length) {
@@ -12144,6 +12153,10 @@ function _handleGenerationAnimation() {
               delay: 0.25
             });
           }
+          _gsap.default.to(editButton, {
+            y: 50,
+            duration: 0.25
+          });
           _gsap.default.to(backButton, {
             y: 50,
             duration: 0.5,
@@ -12162,33 +12175,33 @@ function _handleGenerationAnimation() {
           });
           if (submitButton) {
             _gsap.default.to(submitButton, {
-              scale: 0,
+              y: 80,
               ease: "power2",
               duration: 0.5
             });
           }
           if (playlistButton) {
             _gsap.default.to(playlistButton, {
-              scale: 0,
+              y: 80,
               ease: "power2",
               duration: 0.5
             });
           }
-          _context5.next = 30;
+          _context5.next = 35;
           return buffer(500);
-        case 30:
+        case 35:
           if (submitButton) {
             submitButton.remove();
           }
           playlist.remove();
-          _context5.next = 34;
+          _context5.next = 39;
           return buffer(200);
-        case 34:
+        case 39:
           backButton.remove();
           if (playlistButton) {
             playlistButton.remove();
           }
-        case 36:
+        case 41:
         case "end":
           return _context5.stop();
       }
@@ -12886,7 +12899,6 @@ if (chatBot) {
               document.querySelector(".playlist").insertAdjacentHTML("afterbegin", html);
               uris = [].concat(_toConsumableArray(uris), [item.id]);
             });
-            document.querySelector("main").insertAdjacentHTML("beforebegin", '<button class="back-button button">back</button>');
             backButton = document.querySelector(".back-button");
             handleGenerationAnimation(true);
             backButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
@@ -12930,9 +12942,9 @@ if (chatBot) {
                 return _ref9.apply(this, arguments);
               };
             }());
-            _context9.next = 30;
+            _context9.next = 29;
             return spotify.sendPlaylist(params);
-          case 30:
+          case 29:
           case "end":
             return _context9.stop();
         }
@@ -13135,10 +13147,10 @@ if (location.pathname !== "/") {
 }
 var submitButton = document.querySelector(".spotify-playlist-submit");
 if (submitButton && location.pathname !== "/") {
-  gsap.gsap.from(submitButton, {
-    scale: 0,
-    ease: "elastic",
-    duration: 1.5,
+  gsap.gsap.to(submitButton, {
+    y: 0,
+    ease: "power1",
+    duration: 0.25,
     delay: 1
   });
   submitButton.addEventListener("mousemove", function (e) {
@@ -13154,8 +13166,8 @@ if (submitButton && location.pathname !== "/") {
       while (1) switch (_context12.prev = _context12.next) {
         case 0:
           gsap.gsap.to(submitButton, {
-            scale: 0,
-            ease: "sine",
+            y: 200,
+            ease: "power1",
             duration: 0.25
           });
           _context12.next = 3;
@@ -13171,10 +13183,10 @@ if (submitButton && location.pathname !== "/") {
         case 6:
           _yield$axios$post = _context12.sent;
           data = _yield$axios$post.data;
-          playlistButton = document.querySelector(".open-spotify");
+          playlistButton = document.querySelector(".open-playlist");
           gsap.gsap.to(playlistButton, {
-            scale: 1,
-            ease: "elastic",
+            y: 0,
+            ease: "power1",
             duration: 1
           });
           playlistButton.addEventListener("mousedown", function () {

@@ -425,3 +425,34 @@ var removeDuplicates = function (nums) {
   return nums;
   return j;
 };
+
+var jump = function (nums) {
+  let index = 0;
+  let n = 0;
+  let jumps = 0;
+  while (n < nums.length - 1) {
+    let next = 0;
+    for (let i = index; i <= n; i++) {
+      if (nums[i] >= next - i) {
+        next = Math.max(next, i + nums[i]);
+      }
+    }
+    index = n + 1;
+    n = next;
+    jumps++;
+  }
+  return jumps;
+};
+
+var hIndex = function (citations) {
+  citations = citations.sort();
+  let ans = 0;
+  for (let i = 0; i <= citations.length - 1; i++) {
+    if (citations[i] >= citations.length) {
+      ans = citations.length - i;
+    }
+  }
+  return ans;
+};
+
+hIndex([3, 0, 6, 1, 5]);

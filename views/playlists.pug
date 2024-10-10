@@ -3,7 +3,8 @@ extends base
 block content 
     if playlists.length
         h1.playlist-title.hidden playlists
-        button.edit-button.button edit
+        .small-overflow-hidden
+            button.edit-button.button edit
         .saved-playlists
             each playlist in playlists
                 .playlist-group.hidden

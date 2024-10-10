@@ -14,6 +14,8 @@ export async function handleGenerationAnimation(io) {
   const playlistTitle = document.querySelector(".playlist-title");
   const switcher = document.querySelector(".switch-previews");
   const chatBot = document.querySelector(".chat-bot");
+  const editButton = document.querySelector(".edit-button");
+  const openPlaylist = document.querySelector(".open-playlist")?.childNodes[0];
 
   if (io) {
     if (songs.length) {
@@ -75,15 +77,24 @@ export async function handleGenerationAnimation(io) {
       delay: 0.5,
       ease: "power2",
     });
+    gsap.to(editButton, {
+      y: 0,
+      duration: 0.45,
+    });
     gsap.to(backButton, {
       y: 0,
-      duration: 0.5,
-      delay: 0.5,
+      duration: 0.2,
+      delay: 0.3,
     });
     gsap.to(switcher, {
       y: 0,
-      duration: 0.5,
+      duration: 0.2,
       delay: 0.5,
+    });
+    gsap.to(openPlaylist, {
+      y: 0,
+      duration: 0.2,
+      delay: 0.8,
     });
   } else {
     const submitButton = document.querySelector(".spotify-playlist-submit");
@@ -129,6 +140,10 @@ export async function handleGenerationAnimation(io) {
         delay: 0.25,
       });
     }
+    gsap.to(editButton, {
+      y: 50,
+      duration: 0.25,
+    });
     gsap.to(backButton, {
       y: 50,
       duration: 0.5,
@@ -147,14 +162,14 @@ export async function handleGenerationAnimation(io) {
     });
     if (submitButton) {
       gsap.to(submitButton, {
-        scale: 0,
+        y: 80,
         ease: "power2",
         duration: 0.5,
       });
     }
     if (playlistButton) {
       gsap.to(playlistButton, {
-        scale: 0,
+        y: 80,
         ease: "power2",
         duration: 0.5,
       });

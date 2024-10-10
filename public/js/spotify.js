@@ -19,8 +19,8 @@ exports.sendPlaylist = async (params) => {
   document.querySelector("main").insertAdjacentHTML("beforeend", html);
   const submitButton = document.querySelector(".spotify-playlist-submit");
   gsap.from(submitButton, {
-    scale: 0,
-    ease: "elastic",
+    y: 80,
+    ease: "power1",
     duration: 1.5,
     delay: 1,
   });
@@ -36,11 +36,10 @@ exports.sendPlaylist = async (params) => {
   });
   submitButton.addEventListener("mousedown", async () => {
     try {
-      const { data: saveData } = await axios.post("/api/playlists/save", {
+      await axios.post("/api/playlists/save", {
         name: params.name,
         songs: params.uris,
       });
-      console.log(saveData);
     } catch (err) {
       return toast(err.response.data.message, "fail");
     }

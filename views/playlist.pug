@@ -31,13 +31,12 @@ block content
                 hr.list-separator
     .dbPlaylist
         p= dbPlaylist.songs
-    if dbPlaylist.created === true
-        a.open-playlist(href=`${dbPlaylist.createdUrl}` target="_blank")
-            span open
-                img(src='/images/Spotify_icon.svg' width="50px")
-    else
-        button.spotify-playlist-submit
-            span create
-                img(src='/images/Spotify_icon.svg' width="50px")
-
-    button.open-spotify open playlist
+    .spotify-buttons
+        if dbPlaylist.created === true
+            a.open-playlist(href=`${dbPlaylist.createdUrl}` target="_blank")
+                div.span open
+                    img(src='/images/Spotify_icon.svg' width="50px")
+        else
+            button.spotify-playlist-submit
+                span create
+                    img(src='/images/Spotify_icon.svg' width="50px")
