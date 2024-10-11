@@ -112,8 +112,10 @@ exports.spotifyRedirect = (req, res, next) => {
       httpOnly: true,
     });
   }
-  const redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
-
+  let redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
+  if (process.env.MODE === "production") {
+    redirect_uri = `https://${req.headers.host}/api/auth/callback`;
+  }
   const redirectURL =
     "https://accounts.spotify.com/authorize?" +
     querystring.stringify({
@@ -142,7 +144,10 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
   if (state === null) {
     return next(new AppError("There was an issue logging in", 400));
   } else {
-    const redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
+    let redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
+    if (process.env.MODE === "production") {
+      redirect_uri = `https://${req.headers.host}/api/auth/callback`;
+    }
     var authOptions = {
       url: "https://accounts.spotify.com/api/token",
       form: {
