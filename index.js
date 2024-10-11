@@ -29,7 +29,7 @@ app.use(
         scriptSrc: ["'self'", "https:", "http:", "blob:"],
         objectSrc: ["'none'"],
         styleSrc: ["'self'", "https:", "'unsafe-inline'"],
-        childSrc: ["'self'", "blob:"],
+        childSrc: ["'self'", "blob:", "https://vercel.live/"],
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         formAction: ["'self'"],
         connectSrc: [
