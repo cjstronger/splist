@@ -114,16 +114,13 @@ exports.spotifyRedirect = (req, res, next) => {
   }
   const redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
 
-  console.log("http%3A%2F%2F127.0.0.1%3A3000%2Fapi%2Fauth%2Fcallback");
-  console.log("http%3A%2F%2F127.0.0.1%3A3001%2Fapi%2Fauth%2Fcallback");
-
   const redirectURL =
     "https://accounts.spotify.com/authorize?" +
     querystring.stringify({
       response_type: "code",
       client_id: process.env.SPOTIFY_ID,
       scope,
-      redirect_uri: "http://127.0.0.1:3001/api/auth/callback",
+      redirect_uri,
       state: state,
       show_dialog: true,
     });
@@ -145,11 +142,12 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
   if (state === null) {
     return next(new AppError("There was an issue logging in", 400));
   } else {
+    const redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
     var authOptions = {
       url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
-        redirect_uri: `${req.headers.origin}/api/auth/callback`,
+        redirect_uri,
         grant_type: "authorization_code",
       },
       headers: {
