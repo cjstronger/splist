@@ -43,6 +43,7 @@ app.use(
           "wss://splist-self.vercel.app:*/",
           "https://i.scdn.co/image/*",
           "https://vercel.live/'",
+          "wss://ws-us3.pusher.com",
         ],
         upgradeInsecureRequests: [],
       },
