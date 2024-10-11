@@ -14,7 +14,7 @@ const app = express();
 app.use(
   cors({
     origin: ["https://splist-self.vercel.app/"],
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "PATCH", "DELETE"],
     credentials: true,
   })
 );
