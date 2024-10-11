@@ -1,4 +1,4 @@
-const app = require(".");
+const app = require("..");
 const mongoose = require("mongoose");
 
 mongoose.connect(process.env.DATABASE);
