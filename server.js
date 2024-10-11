@@ -9,7 +9,7 @@ async function connectDB() {
     });
     console.log("MongoDB connected");
   } catch (err) {
-    console.error(err.message);
+    throw new Error(err.message);
     process.exit(1);
   }
 }
