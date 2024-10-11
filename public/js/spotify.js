@@ -2,6 +2,8 @@ import axios from "axios";
 import toast from "./toast";
 import gsap from "gsap";
 
+const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 exports.spotifyGenerate = async (params) => {
   let err = null;
   let data = null;
@@ -15,14 +17,18 @@ exports.spotifyGenerate = async (params) => {
 };
 
 exports.sendPlaylist = async (params) => {
-  const html = `<button class="spotify-playlist-submit"><span>create <img src="/images/Spotify_icon.svg" width="50px"/></span></button>`;
-  document.querySelector("main").insertAdjacentHTML("beforeend", html);
+  const html = `<button class="spotify-playlist-submit"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div><span>create <img src="/images/Spotify_icon.svg" width="50px"/></span></button>`;
+  document
+    .querySelector(".spotify-buttons")
+    .insertAdjacentHTML("beforeend", html);
   const submitButton = document.querySelector(".spotify-playlist-submit");
-  gsap.from(submitButton, {
-    y: 80,
+  const submitSpan = submitButton.querySelector("span");
+  const spinner = document.querySelector(".lds-ellipsis");
+  gsap.to(submitButton, {
+    y: 0,
     ease: "power1",
-    duration: 1.5,
-    delay: 1,
+    duration: 0.5,
+    delay: 0.5,
   });
   submitButton.addEventListener("mousemove", (e) => {
     submitButton.style.setProperty(
@@ -35,38 +41,50 @@ exports.sendPlaylist = async (params) => {
     );
   });
   submitButton.addEventListener("mousedown", async () => {
+    gsap.to(submitSpan, {
+      y: 80,
+      duration: 0.5,
+    });
+    gsap.to(spinner, {
+      opacity: 1,
+      delay: 0.5,
+      duration: 0.5,
+    });
     try {
       await axios.post("/api/playlists/save", {
         name: params.name,
         songs: params.uris,
       });
     } catch (err) {
+      await buffer(500);
+      gsap.to(submitSpan, {
+        y: 0,
+        duration: 0.5,
+        delay: 0.5,
+      });
+      gsap.to(spinner, {
+        opacity: 0,
+        duration: 0.5,
+      });
       return toast(err.response.data.message, "fail");
     }
-    gsap.to(submitButton, {
-      scale: 0,
-      ease: "sine",
-      duration: 0.25,
-    });
-    submitButton.remove();
     const { data } = await axios.post("/api/playlists/create", {
       name: params.name,
       uris: params.uris,
     });
-    document
-      .querySelector("main")
-      .insertAdjacentHTML(
-        "beforeend",
-        '<button class="open-playlist">open playlist</button>'
-      );
-    const playlistButton = document.querySelector(".open-playlist");
-    gsap.from(playlistButton, {
-      scale: 0,
-      ease: "elastic",
-      duration: 1,
-    });
-    playlistButton.addEventListener("mousedown", () => {
+    submitSpan.innerHTML =
+      '<span>open <img src="/images/Spotify_icon.svg" width="50px"/></span>';
+    submitButton.addEventListener("mousedown", () => {
       window.open(`${data.link}`, "_blank");
+    });
+    gsap.to(submitSpan, {
+      y: 0,
+      duration: 0.5,
+      delay: 0.5,
+    });
+    gsap.to(spinner, {
+      opacity: 0,
+      duration: 0.5,
     });
   });
 };

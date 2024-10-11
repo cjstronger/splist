@@ -16,8 +16,8 @@ block content
             .song.hidden
                 img.song-image(src=`${song.img}`)
                 .song-details
-                    p.song-name= song.name
-                    p.song-artist= song.artist
+                    p.song-name-grid= song.name
+                    p.song-artist-grid= song.artist
     .playlist-list 
         each song in playlist 
             .song-list
@@ -31,7 +31,7 @@ block content
                 hr.list-separator
     .dbPlaylist
         p= dbPlaylist.songs
-    .spotify-buttons
+    .spotify-buttons-playlist
         if dbPlaylist.created === true
             a.open-playlist(href=`${dbPlaylist.createdUrl}` target="_blank")
                 div.span open

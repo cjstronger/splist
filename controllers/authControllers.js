@@ -180,12 +180,14 @@ exports.spotifyLoggedIn = catchAsync(async (req, res, next) => {
       });
     } catch (error) {
       res.locals.spotifyToken = false;
+      res.cookie("spotify_token", "");
       return res.status(401).json({
         status: "token expired",
       });
     }
   }
   res.locals.spotifyToken = false;
+  res.cookie("spotify_token", "");
   res.status(401).json({
     status: "fail",
   });

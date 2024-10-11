@@ -106,10 +106,7 @@ exports.createPlaylist = catchAsync(async (req, res, next) => {
       }
     );
     const { url } = req.body;
-    await Playlist.findOneAndUpdate(
-      { url },
-      { created: true, createdUrl: link }
-    );
+    await Playlist.findOneAndUpdate({ url, created: true, createdUrl: link });
     res.status(201).json({
       status: "success",
       link,
@@ -201,7 +198,9 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
 
 exports.getPlaylist = catchAsync(async (req, res, next) => {
   try {
-    let playlist = await Playlist.findOne({ url: slugify(req.params.name) });
+    let playlist = await Playlist.findOne({
+      url: slugify(req.params.name).replaceAll(".", ""),
+    });
     req.dbPlaylist = playlist;
     if (!playlist)
       return next(

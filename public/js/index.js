@@ -22,6 +22,8 @@ const {
   handleFailAnimation,
 } = require("./animations");
 
+const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const loginForm = document.querySelector(".login-form");
 
 if (loginForm) {
@@ -110,8 +112,6 @@ if (logoutButton) {
   });
 }
 
-const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 function handleLoaders(loading) {
   if (loading) {
     const loaders =
@@ -192,7 +192,7 @@ if (chatBot) {
       uris = [...uris, item.id];
     });
 
-    const backButton = document.querySelector(".back-button");
+    const backButton = document.querySelector(".solo-back-button");
 
     handleGenerationAnimation(true);
 
@@ -418,13 +418,20 @@ if (submitButton && location.pathname !== "/") {
       uris,
       name,
     });
-    const playlistButton = document.querySelector(".open-playlist");
-    gsap.gsap.to(playlistButton, {
+    const playlistButton = document.createElement("button");
+    playlistButton.className = "open-playlist";
+    playlistButton.innerHTML =
+      '<div class="span">open <img src="/images/Spotify_icon.svg" width="50px"/></div>';
+    document
+      .querySelector(".spotify-buttons-playlist")
+      .appendChild(playlistButton);
+    const playlistSpan = playlistButton.childNodes[0];
+    gsap.gsap.to(playlistSpan, {
       y: 0,
       ease: "power1",
-      duration: 1,
+      duration: 0.5,
     });
-    playlistButton.addEventListener("mousedown", () => {
+    playlistSpan.addEventListener("mousedown", () => {
       window.open(`${data.link}`, "_blank");
     });
   });

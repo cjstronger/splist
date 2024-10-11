@@ -2,14 +2,15 @@ extends base
 
 block content
     div
-        form.playlist-form
-            input.playlist-name(placeholder="playlist01")
-            button.playlist-save.button save
-        .solo-button
-            button.back-button.button back
-        h1.title splist
+        .title-container
+            form.playlist-form
+                input.playlist-name(placeholder="playlist01")
+                button.playlist-save.button save
+            h1.title splist
         form.chat-bot
             input.chat-input(placeholder="ask for a playlist!" required)
             button
                 svg.submit-svg(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor")
                     path(stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18")
+        .spotify-buttons
+            button.solo-back-button.button back

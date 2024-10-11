@@ -24,7 +24,8 @@ const playlistSchema = new mongoose.Schema({
 });
 
 playlistSchema.pre("save", function (next) {
-  const url = slugify(this.name);
+  let url = slugify(this.name);
+  url = url.replaceAll(".", "");
   this.url = url;
   return next();
 });

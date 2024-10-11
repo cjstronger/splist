@@ -9,7 +9,9 @@ export async function handleGenerationAnimation(io) {
   const playlistForm = document.querySelector(".playlist-form");
   const songs = document.querySelectorAll(".song");
   const savedPlaylists = document.querySelectorAll(".playlist-group");
-  const backButton = document.querySelector(".back-button");
+  const backButton =
+    document.querySelector(".back-button") ||
+    document.querySelector(".solo-back-button");
   const playlist = document.querySelector(".playlist");
   const playlistTitle = document.querySelector(".playlist-title");
   const switcher = document.querySelector(".switch-previews");
@@ -52,15 +54,13 @@ export async function handleGenerationAnimation(io) {
     if (chatBot) {
       gsap.to(chatBot, {
         y: "100vh",
-        duration: 3.5,
-        ease: "power3.out",
+        duration: 1.5,
       });
     }
     if (splistTitle) {
       gsap.to(splistTitle, {
         y: "-100vh",
-        duration: 3.5,
-        ease: "power3.out",
+        duration: 1.5,
       });
     } else {
       gsap.from(playlistTitle, {
@@ -72,7 +72,7 @@ export async function handleGenerationAnimation(io) {
       });
     }
     gsap.to(playlistForm, {
-      y: 200,
+      y: 0,
       duration: 0.5,
       delay: 0.5,
       ease: "power2",
@@ -83,7 +83,7 @@ export async function handleGenerationAnimation(io) {
     });
     gsap.to(backButton, {
       y: 0,
-      duration: 0.2,
+      duration: 0.5,
       delay: 0.3,
     });
     gsap.to(switcher, {
@@ -122,7 +122,7 @@ export async function handleGenerationAnimation(io) {
       });
     }
     gsap.to(playlistForm, {
-      y: 0,
+      y: -200,
       duration: 0.5,
     });
     if (splistTitle) {
@@ -181,7 +181,7 @@ export async function handleGenerationAnimation(io) {
     }
     playlist.remove();
     await buffer(200);
-    backButton.remove();
+    // backButton.remove();
     if (playlistButton) {
       playlistButton.remove();
     }
@@ -258,6 +258,18 @@ export function handleSongsAnimation() {
         ease: "sine",
         duration: 0.1,
       });
+      if (song.dataset.clicked === "true") {
+        song.dataset.clicked = "false";
+        if (songsBelow.length) {
+          gsap.to(songsBelow, {
+            y: 0,
+            ease: "sine",
+            delay: 0.15,
+            duration: 0.15,
+            stagger: 0.05,
+          });
+        }
+      }
     });
   });
 }

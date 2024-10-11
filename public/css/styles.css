@@ -255,12 +255,16 @@ input:-webkit-autofill:focus {
   outline: none;
 }
 
+.title-container {
+  text-align: center;
+  transform: translateY(20px);
+  margin-bottom: 50px;
+}
 .title {
   font-size: 100px;
-  position: fixed;
-  margin: 0 auto;
-  left: 50%;
-  transform: translateX(-50%);
+  line-height: 1;
+  padding: 0;
+  margin: 0;
 }
 .playlist-title {
   font-size: 60px;
@@ -280,9 +284,8 @@ input:-webkit-autofill:focus {
 
 .playlist-form {
   position: absolute;
-  top: -100px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-200px);
   display: flex;
 }
 .playlist-name {
@@ -508,11 +511,11 @@ input:-webkit-autofill:focus {
   margin-bottom: 10px;
   overflow: hidden;
 }
-.solo-button {
-  overflow: hidden;
-  margin-top: -20px;
-  margin-left: 20px;
-  margin-bottom: 20px;
+.solo-back-button {
+  border-radius: 20px;
+  background-color: var(--accent);
+  padding: 10px;
+  transform: translateY(60px);
 }
 .back-button {
   border-radius: 20px;
@@ -592,6 +595,15 @@ input:-webkit-autofill:focus {
 .artist-name {
   font-size: 13px;
 }
+.song-name-grid {
+  font-size: 16px;
+}
+.album-name-grid {
+  font-size: 10px;
+}
+.song-artist-grid {
+  font-size: 15px;
+}
 
 .spotify-buttons {
   overflow: hidden;
@@ -599,6 +611,18 @@ input:-webkit-autofill:focus {
   left: 50%;
   bottom: 10%;
   transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  z-index: 10;
+}
+.spotify-buttons-playlist {
+  overflow: hidden;
+  position: fixed;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 .spotify-playlist-submit {
   background-color: #1db954;
@@ -607,6 +631,8 @@ input:-webkit-autofill:focus {
   overflow: hidden;
   transition: color 0.25s;
   transform: translateY(80px);
+  height: 75px;
+  width: 160px;
 }
 .spotify-playlist-submit span {
   display: flex;
@@ -795,9 +821,6 @@ input:-webkit-autofill:focus {
   .playlist-save {
     padding: 10px;
   }
-  .back-button {
-    padding: 10px;
-  }
   .playlist-title {
     font-size: 40px;
   }
@@ -829,9 +852,14 @@ input:-webkit-autofill:focus {
     font-size: 35px;
     margin-top: 10px;
   }
-  body,
-  main {
-    overflow-x: hidden;
+  .song-name-grid {
+    font-size: 12px;
+  }
+  .album-name-grid {
+    font-size: 10px;
+  }
+  .song-artist-grid {
+    font-size: 10px;
   }
 }
 
@@ -876,4 +904,69 @@ input:-webkit-autofill:focus {
   border-radius: 10px;
   background: var(--text);
   width: 5px;
+}
+
+.lds-ellipsis {
+  color: var(--text);
+  position: absolute;
+  left: 25%;
+  top: 0;
+  opacity: 0;
+}
+.lds-ellipsis,
+.lds-ellipsis div {
+  box-sizing: border-box;
+}
+.lds-ellipsis {
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33.33333px;
+  width: 13.33333px;
+  height: 13.33333px;
+  border-radius: 50%;
+  background: currentColor;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
 }

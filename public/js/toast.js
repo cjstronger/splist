@@ -17,7 +17,6 @@ function toast(message, type) {
   const toast = `<div class="app-notif toast-${type}">${message}</div>`;
   document.querySelector("body").insertAdjacentHTML("afterbegin", toast);
   const alert = document.querySelector(".app-notif");
-  console.log(alert);
   gsap.to(alert, {
     y: 175,
     ease: "expo.inOut",

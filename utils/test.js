@@ -445,14 +445,48 @@ var jump = function (nums) {
 };
 
 var hIndex = function (citations) {
-  citations = citations.sort();
-  let ans = 0;
+  citations = citations.sort((a, b) => a - b);
   for (let i = 0; i <= citations.length - 1; i++) {
-    if (citations[i] >= citations.length) {
-      ans = citations.length - i;
+    if (citations[i] >= citations.length - i) {
+      return citations.length - i;
     }
   }
-  return ans;
+  return 0;
 };
 
-hIndex([3, 0, 6, 1, 5]);
+class RandomizedSet {
+  constructor(array = []) {
+    this.array = array;
+  }
+  remove(val) {
+    if (this.array.length >= val) {
+      if (this.array[val] === val) {
+        this.array[val] = null;
+        return true;
+      }
+    }
+    return false;
+  }
+  insert(val) {
+    if (this.array[val] === val) return false;
+    if (this.array.length < val) {
+      this.array.length += val;
+      this.array[val] = val;
+    } else {
+      this.array[val] = val;
+    }
+    return true;
+  }
+  getRandom() {
+    let random;
+    do {
+      random = Math.floor(Math.random() * this.array.length);
+    } while (this.array[random] === null || this.array[random] === undefined);
+    return this.array[random];
+  }
+}
+
+const set = new RandomizedSet();
+const insert = set.insert(0);
+const random = set.getRandom();
+console.log(insert, random);
