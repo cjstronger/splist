@@ -40,7 +40,7 @@ app.use(
           "https://*.spotify.com",
           "https://bundle.js:*",
           "ws://127.0.0.1:*/",
-          "wss://splist-icloz8ud9-cjstrongers-projects.vercel.app:54543/",
+          "wss://splist-self.vercel.app:*/",
           "https://i.scdn.co/image/*",
           "https://vercel.live/'",
         ],
