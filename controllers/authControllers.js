@@ -6,7 +6,7 @@ const querystring = require("querystring");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
 const { default: axios } = require("axios");
-const { sendEmail, SendEmail } = require("../utils/mailer");
+const { SendEmail } = require("../utils/mailer");
 
 exports.signUp = catchAsync(async function (req, res, next) {
   const { email, password, confirmPassword, name } = req.body;
@@ -102,22 +102,33 @@ exports.spotifyRedirect = (req, res, next) => {
   var state = generateRandomString(16);
   var scope = "playlist-modify-public playlist-modify-private";
 
-  res.cookie("state", state, {
-    httpOnly: true,
-    //add secure to true for live app
-  });
+  if (process.env.MODE === "production") {
+    res.cookie("state", state, {
+      httpOnly: true,
+      secure: true,
+    });
+  } else {
+    res.cookie("state", state, {
+      httpOnly: true,
+    });
+  }
+  const redirect_uri = `${req.protocol}://${req.headers.host}/api/auth/callback`;
 
-  res.redirect(
+  console.log("http%3A%2F%2F127.0.0.1%3A3000%2Fapi%2Fauth%2Fcallback");
+  console.log("http%3A%2F%2F127.0.0.1%3A3001%2Fapi%2Fauth%2Fcallback");
+
+  const redirectURL =
     "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: process.env.SPOTIFY_ID,
-        scope,
-        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
-        state: state,
-        show_dialog: true,
-      })
-  );
+    querystring.stringify({
+      response_type: "code",
+      client_id: process.env.SPOTIFY_ID,
+      scope,
+      redirect_uri: "http://127.0.0.1:3001/api/auth/callback",
+      state: state,
+      show_dialog: true,
+    });
+
+  res.redirect(redirectURL);
 };
 
 exports.spotifyCallback = catchAsync(async (req, res, next) => {
@@ -138,7 +149,7 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
       url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
-        redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
+        redirect_uri: `${req.headers.origin}/api/auth/callback`,
         grant_type: "authorization_code",
       },
       headers: {
@@ -161,7 +172,14 @@ exports.spotifyCallback = catchAsync(async (req, res, next) => {
       $addToSet: { platforms: "spotify" },
     });
 
-    res.cookie("spotify_token", data.access_token, { httpOnly: true });
+    if (process.env.MODE === "production") {
+      res.cookie("spotify_token", data.access_token, {
+        httpOnly: true,
+        secure: true,
+      });
+    } else {
+      res.cookie("spotify_token", data.access_token, { httpOnly: true });
+    }
     res.locals.spotifyToken = true;
 
     return res.redirect("/");

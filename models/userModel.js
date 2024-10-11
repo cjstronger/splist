@@ -63,11 +63,14 @@ userSchema.method("generateToken", function (id, res) {
   const token = jwt.sign({ id }, process.env.JWT_KEY, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
-  const cookieOptions = {
+  let cookieOptions = {
     expires: Date.now() + process.env.JWT_COOKIES_EXPIRES * 1000 * 60 * 60 * 24,
     httpOnly: true,
-    //ADD when in production the secure option is set to true
   };
+
+  if (process.env.MODE === "production") {
+    cookieOptions.secure = true;
+  }
 
   res.cookie("jwt", token, cookieOptions);
 

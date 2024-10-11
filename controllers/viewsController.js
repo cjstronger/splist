@@ -29,14 +29,21 @@ exports.getSpotify = catchAsync(async (req, res) => {
       response_type: "code",
       client_id: process.env.SPOTIFY_ID,
       scope: "playlist-modify-public playlist-modify-private",
-      redirect_uri: "http://127.0.0.1:3000/api/auth/callback",
+      redirect_uri: `${req.headers.origin}/api/auth/callback`,
       state: state,
       show_dialog: true,
     });
 
-  res.cookie("state", state, {
-    httpOnly: true,
-  });
+  if (process.env.MODE === "production") {
+    res.cookie("state", state, {
+      httpOnly: true,
+      secure: true,
+    });
+  } else {
+    res.cookie("state", state, {
+      httpOnly: true,
+    });
+  }
 
   res.cookie("api", false);
 
@@ -45,10 +52,6 @@ exports.getSpotify = catchAsync(async (req, res) => {
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const { playlists } = res;
-
-  // res.cookie("playlists", playlists, {
-  //   httpOnly: true,
-  // });
 
   res.render("playlists", {
     title: "Playlists",
