@@ -33,7 +33,7 @@ export async function signUp(email, password, confirmPassword) {
       password,
       confirmPassword,
     });
-    if (res.data.status === "success") location.assign("/");
+    if (res.data.status === "success") location.assign("/thank-you");
     return { error };
   } catch (err) {
     error = err.response.data.message;

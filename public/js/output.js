@@ -11649,7 +11649,7 @@ function _signUp() {
           });
         case 4:
           res = _context3.sent;
-          if (res.data.status === "success") location.assign("/");
+          if (res.data.status === "success") location.assign("/thank-you");
           return _context3.abrupt("return", {
             error: error
           });

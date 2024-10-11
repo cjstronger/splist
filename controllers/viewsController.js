@@ -83,3 +83,9 @@ exports.getResetPassword = (req, res, next) => {
     title: "Reset Password",
   });
 };
+
+exports.getThankYou = (req, res) => {
+  res.render("thank-you", {
+    title: "Thank you!",
+  });
+};

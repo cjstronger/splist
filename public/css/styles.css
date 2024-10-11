@@ -270,6 +270,25 @@ input:-webkit-autofill:focus {
   font-size: 60px;
   text-align: center;
 }
+.thank-you {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.thank-you h1 {
+  line-height: 1;
+  margin-top: 20px;
+  margin-bottom: 0;
+  font-size: 40px;
+}
+.thank-you p {
+  text-align: center;
+  max-width: 650px;
+}
+.thanks {
+  font-size: 20px;
+}
 
 .edit-button {
   transform: translateY(100px);
@@ -349,6 +368,15 @@ input:-webkit-autofill:focus {
   margin: 0;
   padding: 2px 0px;
   transform: translateY(100px);
+}
+.upper-links {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+.upper-links > a > p,
+.upper-links > button > p {
+  font-size: 20px !important;
 }
 .close-menu {
   width: 65px;
@@ -769,6 +797,10 @@ input:-webkit-autofill:focus {
 }
 .overflow-hidden {
   overflow: hidden;
+}
+.upper-links a.overflow-hidden {
+  display: block;
+  overflow: hidden !important;
 }
 
 .delete-container {
