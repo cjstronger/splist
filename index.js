@@ -10,34 +10,34 @@ const helmet = require("helmet");
 
 const app = express();
 
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'", "data:", "blob:", "https:", "ws:"],
-        baseUri: ["'self'"],
-        fontSrc: ["'self'", "https:", "data:"],
-        scriptSrc: ["'self'", "https:", "http:", "blob:"],
-        objectSrc: ["'none'"],
-        styleSrc: ["'self'", "https:", "'unsafe-inline'"],
-        childSrc: ["'self'", "blob:"],
-        imgSrc: ["'self'", "data:", "blob:", "https:"],
-        formAction: ["'self'"],
-        connectSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "data:",
-          "blob:",
-          "https://*.spotify.com",
-          "https://bundle.js:*",
-          "ws://127.0.0.1:*/",
-          "https://i.scdn.co/image/*",
-        ],
-        upgradeInsecureRequests: [],
-      },
-    },
-  })
-);
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         defaultSrc: ["'self'", "data:", "blob:", "https:", "ws:"],
+//         baseUri: ["'self'"],
+//         fontSrc: ["'self'", "https:", "data:"],
+//         scriptSrc: ["'self'", "https:", "http:", "blob:"],
+//         objectSrc: ["'none'"],
+//         styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+//         childSrc: ["'self'", "blob:"],
+//         imgSrc: ["'self'", "data:", "blob:", "https:"],
+//         formAction: ["'self'"],
+//         connectSrc: [
+//           "'self'",
+//           "'unsafe-inline'",
+//           "data:",
+//           "blob:",
+//           "https://*.spotify.com",
+//           "https://bundle.js:*",
+//           "ws://127.0.0.1:*/",
+//           "https://i.scdn.co/image/*",
+//         ],
+//         upgradeInsecureRequests: [],
+//       },
+//     },
+//   })
+// );
 
 app.use(express.json({ limit: "10kb" }));
 
