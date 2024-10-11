@@ -1,28 +1,28 @@
-const app = require(".");
-const mongoose = require("mongoose");
+// const app = require(".");
+// const mongoose = require("mongoose");
 
-async function connectDB() {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("MongoDB connected");
-  } catch (err) {
-    throw new Error(err.message);
-    process.exit(1);
-  }
-}
+// async function connectDB() {
+//   try {
+//     await mongoose.connect(process.env.MONGODB_URI, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log("MongoDB connected");
+//   } catch (err) {
+//     throw new Error(err.message);
+//     process.exit(1);
+//   }
+// }
 
-connectDB();
+// connectDB();
 
-app.listen(process.env.PORT, () =>
-  console.log(`Listening on port ${process.env.PORT}`)
-);
+// app.listen(process.env.PORT, () =>
+//   console.log(`Listening on port ${process.env.PORT}`)
+// );
 
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  console.error("Stack Trace:", reason.stack);
-  // Optionally, you can exit the process if needed
-  // process.exit(1);
-});
+// process.on("unhandledRejection", (reason, promise) => {
+//   console.error("Unhandled Rejection at:", promise, "reason:", reason);
+//   console.error("Stack Trace:", reason.stack);
+//   // Optionally, you can exit the process if needed
+//   // process.exit(1);
+// });

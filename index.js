@@ -8,6 +8,7 @@ const userRouter = require("./routes/api/userRoutes");
 const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -106,6 +107,29 @@ app.use((err, req, res, next) => {
       error.message || err.message
     )}`
   );
+});
+
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+}
+
+connectDB();
+
+app.listen(process.env.PORT, () =>
+  console.log(`Listening on port ${process.env.PORT}`)
+);
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  console.error("Stack Trace:", reason.stack);
+  // Optionally, you can exit the process if needed
+  // process.exit(1);
 });
 
 module.exports = app;

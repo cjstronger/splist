@@ -244,7 +244,7 @@ input:-webkit-autofill:focus {
 .error {
   color: #d65a5a;
   z-index: 10;
-  padding: 5px 0;
+  padding: 5px 10px;
   text-align: center;
 }
 .success {
