@@ -11945,6 +11945,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.handleCloseMenu = handleCloseMenu;
 exports.handleFailAnimation = handleFailAnimation;
 exports.handleForgetPasswordForm = handleForgetPasswordForm;
+exports.handleFormSumbit = handleFormSumbit;
 exports.handleGenerationAnimation = handleGenerationAnimation;
 exports.handleLoginForm = handleLoginForm;
 exports.handlePlaylistEdit = handlePlaylistEdit;
@@ -12630,6 +12631,26 @@ function handleFailAnimation(io) {
     });
   }
 }
+function handleFormSumbit(io, span, spinner) {
+  if (io) {
+    _gsap.default.to(span, {
+      opacity: 0,
+      duration: 0.25
+    });
+    _gsap.default.to(spinner, {
+      opacity: 1,
+      delay: 0.3
+    });
+  } else {
+    _gsap.default.to(span, {
+      opacity: 1,
+      delay: 0.3
+    });
+    _gsap.default.to(spinner, {
+      opacity: 0
+    });
+  }
+}
 },{"gsap":"../../node_modules/gsap/index.js","./index":"index.js","axios":"../../node_modules/axios/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -12670,7 +12691,8 @@ var _require4 = require("./animations"),
   handlePlaylistEdit = _require4.handlePlaylistEdit,
   handleLoginForm = _require4.handleLoginForm,
   handleForgetPasswordForm = _require4.handleForgetPasswordForm,
-  handleFailAnimation = _require4.handleFailAnimation;
+  handleFailAnimation = _require4.handleFailAnimation,
+  handleFormSumbit = _require4.handleFormSumbit;
 var buffer = function buffer(ms) {
   return new Promise(function (resolve) {
     return setTimeout(resolve, ms);
@@ -12680,26 +12702,31 @@ var loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
-      var email, password, formError, _yield$login, error;
+      var spinner, span, email, password, formError, _yield$login, error;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             e.preventDefault();
+            spinner = loginForm.querySelector(".lds-ellipsis");
+            span = loginForm.querySelector(".form-button").querySelector("span");
+            handleFormSumbit(true, span, spinner);
             email = loginForm.querySelector(".email").value;
             password = loginForm.querySelector(".password").value;
             formError = loginForm.querySelector(".error");
-            _context.next = 6;
+            _context.next = 9;
             return login(email, password);
-          case 6:
+          case 9:
             _yield$login = _context.sent;
             error = _yield$login.error;
             if (error) {
               formError.innerHTML = error;
               handleFailAnimation(true);
+              handleFormSumbit(false, span, spinner);
             } else {
               handleFailAnimation(false);
+              handleFormSumbit(false, span, spinner);
             }
-          case 9:
+          case 12:
           case "end":
             return _context.stop();
         }
@@ -12714,27 +12741,32 @@ var registerForm = document.querySelector(".register-form");
 if (registerForm) {
   registerForm.addEventListener("submit", /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-      var password, confirmPassword, email, formError, _yield$signUp, error;
+      var spinner, span, password, confirmPassword, email, formError, _yield$signUp, error;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             e.preventDefault();
+            spinner = registerForm.querySelector(".lds-ellipsis");
+            span = registerForm.querySelector(".form-button").querySelector("span");
+            handleFormSumbit(true, span, spinner);
             password = registerForm.querySelector(".password").value;
             confirmPassword = registerForm.querySelector(".confirm-password").value;
             email = registerForm.querySelector(".email").value;
             formError = registerForm.querySelector(".error");
-            _context2.next = 7;
+            _context2.next = 10;
             return signUp(email, password, confirmPassword);
-          case 7:
+          case 10:
             _yield$signUp = _context2.sent;
             error = _yield$signUp.error;
             if (error) {
               formError.innerHTML = error;
               handleFailAnimation(true);
+              handleFormSumbit(false, span, spinner);
             } else {
               handleFailAnimation(false);
+              handleFormSumbit(false, span, spinner);
             }
-          case 10:
+          case 13:
           case "end":
             return _context2.stop();
         }
@@ -12749,27 +12781,32 @@ var forgotPasswordForm = document.querySelector(".forgot-form");
 if (forgotPasswordForm) {
   forgotPasswordForm.addEventListener("submit", /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-      var email, success, formError, _yield$forgotPassword, error;
+      var spinner, span, email, success, formError, _yield$forgotPassword, error;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
+            spinner = forgotPasswordForm.querySelector(".lds-ellipsis");
+            span = forgotPasswordForm.querySelector(".form-button").querySelector("span");
+            handleFormSumbit(true, span, spinner);
             email = forgotPasswordForm.querySelector(".email").value;
             success = forgotPasswordForm.querySelector(".success");
             formError = forgotPasswordForm.querySelector(".error");
             e.preventDefault();
-            _context3.next = 6;
+            _context3.next = 9;
             return forgotPassword(email);
-          case 6:
+          case 9:
             _yield$forgotPassword = _context3.sent;
             error = _yield$forgotPassword.error;
             if (error) {
               formError.innerHTML = error;
               handleFailAnimation(true);
+              handleFormSumbit(false, span, spinner);
             } else {
               success.innerHTML = "Password reset sent to '".concat(email, "'");
               handleFailAnimation(false);
+              handleFormSumbit(false, span, spinner);
             }
-          case 9:
+          case 12:
           case "end":
             return _context3.stop();
         }
@@ -12989,48 +13026,15 @@ if (chatBot) {
     };
   }());
 }
-var root = document.documentElement;
 var lightDarkButton = document.querySelector(".light-dark-button");
-function setDarkMode() {
-  root.style.setProperty("--bg", "#414141");
-  root.style.setProperty("--accent", "#282828");
-  root.style.setProperty("--text", "#e8e8e8");
-  root.style.setProperty("--secondary", "black");
-  lightDarkButton.childNodes[0].innerHTML = "dark";
+function toggleTheme() {
+  var currentTheme = document.documentElement.getAttribute("data-theme");
+  var newTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
 }
-function setLightMode() {
-  root.style.setProperty("--bg", "#f7f7f7");
-  root.style.setProperty("--accent", "#dbdbdb");
-  root.style.setProperty("--text", "#414141");
-  root.style.setProperty("--secondary", "white");
-  lightDarkButton.childNodes[0].innerHTML = "light";
-}
-window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? setDarkMode() : setLightMode();
-var cookieDark = document.cookie.split("; ").includes("darkMode=true");
-var cookieLight = document.cookie.split("; ").includes("darkMode=false");
-if (!cookieLight) {
-  cookieDark = true;
-}
-cookieDark ? setDarkMode() : setLightMode();
 if (lightDarkButton) {
-  lightDarkButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
-    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-      while (1) switch (_context10.prev = _context10.next) {
-        case 0:
-          document.querySelector("body").classList.add("transition");
-          cookieDark = !cookieDark;
-          document.cookie = "darkMode=".concat(cookieDark);
-          cookieDark ? setDarkMode() : setLightMode();
-          _context10.next = 6;
-          return buffer(550);
-        case 6:
-          document.querySelector("body").classList.remove("transition");
-        case 7:
-        case "end":
-          return _context10.stop();
-      }
-    }, _callee10);
-  })));
+  lightDarkButton.addEventListener("click", toggleTheme);
 }
 var menuButton = document.querySelector(".modal-svg");
 var modal = document.querySelector(".user-modal");
@@ -13054,53 +13058,53 @@ closeMenu.addEventListener("mousedown", function () {
 var menuLinks = document.querySelectorAll(".menu-links");
 menuLinks.forEach(function (link) {
   link.addEventListener("click", /*#__PURE__*/function () {
-    var _ref11 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(e) {
+    var _ref10 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(e) {
       var target, href, status;
-      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-        while (1) switch (_context11.prev = _context11.next) {
+      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+        while (1) switch (_context10.prev = _context10.next) {
           case 0:
             e.preventDefault();
             target = e.target;
             href = target.parentElement.href;
             if (!href.includes("playlists")) {
-              _context11.next = 18;
+              _context10.next = 18;
               break;
             }
-            _context11.prev = 4;
-            _context11.next = 7;
+            _context10.prev = 4;
+            _context10.next = 7;
             return axios.get("".concat(location.origin, "/api/auth/logged-in-spotify"));
           case 7:
-            _context11.next = 18;
+            _context10.next = 18;
             break;
           case 9:
-            _context11.prev = 9;
-            _context11.t0 = _context11["catch"](4);
-            status = _context11.t0.response.data.status;
+            _context10.prev = 9;
+            _context10.t0 = _context10["catch"](4);
+            status = _context10.t0.response.data.status;
             if (!(status === "fail")) {
-              _context11.next = 16;
+              _context10.next = 16;
               break;
             }
-            return _context11.abrupt("return", (0, _toast.default)("Please login with Spotify", "fail"));
+            return _context10.abrupt("return", (0, _toast.default)("Please login with Spotify", "fail"));
           case 16:
             if (!(status === "token expired")) {
-              _context11.next = 18;
+              _context10.next = 18;
               break;
             }
-            return _context11.abrupt("return", (0, _toast.default)("Your login with Spotify expired, please login again", "fail"));
+            return _context10.abrupt("return", (0, _toast.default)("Your login with Spotify expired, please login again", "fail"));
           case 18:
             handleCloseMenu(true);
-            _context11.next = 21;
+            _context10.next = 21;
             return buffer(500);
           case 21:
             location.assign(href);
           case 22:
           case "end":
-            return _context11.stop();
+            return _context10.stop();
         }
-      }, _callee11, null, [[4, 9]]);
+      }, _callee10, null, [[4, 9]]);
     }));
     return function (_x7) {
-      return _ref11.apply(this, arguments);
+      return _ref10.apply(this, arguments);
     };
   }());
 });
@@ -13129,23 +13133,23 @@ function handlePlaylistRoute(_x8) {
   return _handlePlaylistRoute.apply(this, arguments);
 }
 function _handlePlaylistRoute() {
-  _handlePlaylistRoute = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(playlist) {
+  _handlePlaylistRoute = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12(playlist) {
     var name, slug;
-    return _regeneratorRuntime().wrap(function _callee13$(_context13) {
-      while (1) switch (_context13.prev = _context13.next) {
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
         case 0:
           name = playlist.querySelector(".playlist-group-name");
           slug = slugify(name.textContent);
           handleGenerationAnimation(false);
-          _context13.next = 5;
+          _context12.next = 5;
           return buffer(500);
         case 5:
           location.assign("/playlists/".concat(slug));
         case 6:
         case "end":
-          return _context13.stop();
+          return _context12.stop();
       }
-    }, _callee13);
+    }, _callee12);
   }));
   return _handlePlaylistRoute.apply(this, arguments);
 }
@@ -13194,28 +13198,28 @@ if (submitButton && location.pathname !== "/") {
   var uris = document.querySelector(".dbPlaylist p").innerHTML.split(",");
   var url = slugify(location.pathname.split("/playlists/")[1]);
   var name = document.querySelector(".playlist-title").innerHTML;
-  submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
+  submitButton.addEventListener("mousedown", /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
     var _yield$axios$post, data, playlistButton, playlistSpan;
-    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-      while (1) switch (_context12.prev = _context12.next) {
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) switch (_context11.prev = _context11.next) {
         case 0:
           gsap.gsap.to(submitButton, {
             y: 200,
             ease: "power1",
             duration: 0.25
           });
-          _context12.next = 3;
+          _context11.next = 3;
           return buffer(250);
         case 3:
           submitButton.remove();
-          _context12.next = 6;
+          _context11.next = 6;
           return axios.post("/api/playlists/create", {
             url: url,
             uris: uris,
             name: name
           });
         case 6:
-          _yield$axios$post = _context12.sent;
+          _yield$axios$post = _context11.sent;
           data = _yield$axios$post.data;
           playlistButton = document.createElement("button");
           playlistButton.className = "open-playlist";
@@ -13232,10 +13236,43 @@ if (submitButton && location.pathname !== "/") {
           });
         case 15:
         case "end":
-          return _context12.stop();
+          return _context11.stop();
       }
-    }, _callee12);
+    }, _callee11);
   })));
+}
+var hidePassword = document.querySelectorAll(".hide-password");
+if (hidePassword.length) {
+  hidePassword.forEach(function (hider) {
+    hider.dataset.clicked = "false";
+    var eye = hider.querySelector(".eye-svg");
+    var closed = hider.querySelector(".closed-eye-svg");
+    hider.addEventListener("mousedown", function () {
+      if (hider.dataset.clicked === "false") {
+        hider.dataset.clicked = "true";
+        hider.previousSibling.type = "text";
+        gsap.gsap.to(eye, {
+          y: 30,
+          duration: 0.2
+        });
+        gsap.gsap.to(closed, {
+          y: 0,
+          duration: 0.2
+        });
+      } else {
+        hider.dataset.clicked = "false";
+        hider.previousSibling.type = "password";
+        gsap.gsap.to(eye, {
+          y: 0,
+          duration: 0.2
+        });
+        gsap.gsap.to(closed, {
+          y: -30,
+          duration: 0.2
+        });
+      }
+    });
+  });
 }
 },{"./toast":"toast.js","slugify":"../../node_modules/slugify/slugify.js","./login":"login.js","./spotify":"spotify.js","gsap":"../../node_modules/gsap/index.js","axios":"../../node_modules/axios/index.js","./animations":"animations.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -13262,7 +13299,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54543" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56593" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

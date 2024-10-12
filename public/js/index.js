@@ -20,6 +20,7 @@ const {
   handleLoginForm,
   handleForgetPasswordForm,
   handleFailAnimation,
+  handleFormSumbit,
 } = require("./animations");
 
 const buffer = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -29,6 +30,9 @@ const loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const spinner = loginForm.querySelector(".lds-ellipsis");
+    const span = loginForm.querySelector(".form-button").querySelector("span");
+    handleFormSumbit(true, span, spinner);
     const email = loginForm.querySelector(".email").value;
     const password = loginForm.querySelector(".password").value;
     const formError = loginForm.querySelector(".error");
@@ -36,8 +40,10 @@ if (loginForm) {
     if (error) {
       formError.innerHTML = error;
       handleFailAnimation(true);
+      handleFormSumbit(false, span, spinner);
     } else {
       handleFailAnimation(false);
+      handleFormSumbit(false, span, spinner);
     }
   });
 }
@@ -47,6 +53,11 @@ const registerForm = document.querySelector(".register-form");
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const spinner = registerForm.querySelector(".lds-ellipsis");
+    const span = registerForm
+      .querySelector(".form-button")
+      .querySelector("span");
+    handleFormSumbit(true, span, spinner);
     const password = registerForm.querySelector(".password").value;
     const confirmPassword =
       registerForm.querySelector(".confirm-password").value;
@@ -56,8 +67,10 @@ if (registerForm) {
     if (error) {
       formError.innerHTML = error;
       handleFailAnimation(true);
+      handleFormSumbit(false, span, spinner);
     } else {
       handleFailAnimation(false);
+      handleFormSumbit(false, span, spinner);
     }
   });
 }
@@ -66,6 +79,11 @@ const forgotPasswordForm = document.querySelector(".forgot-form");
 
 if (forgotPasswordForm) {
   forgotPasswordForm.addEventListener("submit", async (e) => {
+    const spinner = forgotPasswordForm.querySelector(".lds-ellipsis");
+    const span = forgotPasswordForm
+      .querySelector(".form-button")
+      .querySelector("span");
+    handleFormSumbit(true, span, spinner);
     const email = forgotPasswordForm.querySelector(".email").value;
     const success = forgotPasswordForm.querySelector(".success");
     const formError = forgotPasswordForm.querySelector(".error");
@@ -74,9 +92,11 @@ if (forgotPasswordForm) {
     if (error) {
       formError.innerHTML = error;
       handleFailAnimation(true);
+      handleFormSumbit(false, span, spinner);
     } else {
       success.innerHTML = `Password reset sent to '${email}'`;
       handleFailAnimation(false);
+      handleFormSumbit(false, span, spinner);
     }
   });
 }
@@ -219,46 +239,17 @@ if (chatBot) {
   });
 }
 
-const root = document.documentElement;
 const lightDarkButton = document.querySelector(".light-dark-button");
 
-function setDarkMode() {
-  root.style.setProperty("--bg", "#414141");
-  root.style.setProperty("--accent", "#282828");
-  root.style.setProperty("--text", "#e8e8e8");
-  root.style.setProperty("--secondary", "black");
-  lightDarkButton.childNodes[0].innerHTML = "dark";
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
 }
-
-function setLightMode() {
-  root.style.setProperty("--bg", "#f7f7f7");
-  root.style.setProperty("--accent", "#dbdbdb");
-  root.style.setProperty("--text", "#414141");
-  root.style.setProperty("--secondary", "white");
-  lightDarkButton.childNodes[0].innerHTML = "light";
-}
-
-window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-  ? setDarkMode()
-  : setLightMode();
-
-let cookieDark = document.cookie.split("; ").includes("darkMode=true");
-let cookieLight = document.cookie.split("; ").includes("darkMode=false");
-if (!cookieLight) {
-  cookieDark = true;
-}
-
-cookieDark ? setDarkMode() : setLightMode();
 
 if (lightDarkButton) {
-  lightDarkButton.addEventListener("click", async () => {
-    document.querySelector("body").classList.add("transition");
-    cookieDark = !cookieDark;
-    document.cookie = `darkMode=${cookieDark}`;
-    cookieDark ? setDarkMode() : setLightMode();
-    await buffer(550);
-    document.querySelector("body").classList.remove("transition");
-  });
+  lightDarkButton.addEventListener("click", toggleTheme);
 }
 
 const menuButton = document.querySelector(".modal-svg");
@@ -433,6 +424,41 @@ if (submitButton && location.pathname !== "/") {
     });
     playlistSpan.addEventListener("mousedown", () => {
       window.open(`${data.link}`, "_blank");
+    });
+  });
+}
+
+const hidePassword = document.querySelectorAll(".hide-password");
+
+if (hidePassword.length) {
+  hidePassword.forEach((hider) => {
+    hider.dataset.clicked = "false";
+    const eye = hider.querySelector(".eye-svg");
+    const closed = hider.querySelector(".closed-eye-svg");
+    hider.addEventListener("mousedown", () => {
+      if (hider.dataset.clicked === "false") {
+        hider.dataset.clicked = "true";
+        hider.previousSibling.type = "text";
+        gsap.gsap.to(eye, {
+          y: 30,
+          duration: 0.2,
+        });
+        gsap.gsap.to(closed, {
+          y: 0,
+          duration: 0.2,
+        });
+      } else {
+        hider.dataset.clicked = "false";
+        hider.previousSibling.type = "password";
+        gsap.gsap.to(eye, {
+          y: 0,
+          duration: 0.2,
+        });
+        gsap.gsap.to(closed, {
+          y: -30,
+          duration: 0.2,
+        });
+      }
     });
   });
 }

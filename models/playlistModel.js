@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
-//1) a playlist needs to link to the users _id
-//2) a playlist can have a length of songs
-//3) playlists should have a one to one relationship
-//4) songs should have a many to many relationship
-
 const playlistSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,6 +21,7 @@ const playlistSchema = new mongoose.Schema({
 playlistSchema.pre("save", function (next) {
   let url = slugify(this.name);
   url = url.replaceAll(".", "");
+  console.log(url);
   this.url = url;
   return next();
 });

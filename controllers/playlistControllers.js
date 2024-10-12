@@ -8,7 +8,7 @@ const { default: slugify } = require("slugify");
 const localStorage = require("localStorage");
 const jsonStorage = require("json-storage").JsonStorage;
 
-const store = jsonStorage.create(localStorage, "storage", {
+exports.store = jsonStorage.create(localStorage, "storage", {
   stringify: true,
 });
 
@@ -16,6 +16,11 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
   const message = `Generate a playlist that takes in these requirements: ${req.body.message} and make the output a json object with the artist as the key and the trackname as the value`;
   const cookies = cookieParser.JSONCookies(req.cookies);
+
+  if (!cookies.spotify_token)
+    return next(
+      new AppError("Please sign in with Spotify to generate playlists")
+    );
 
   try {
     // const AIContent = await openai.chat.completions.create({
@@ -122,7 +127,7 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
   const user = res.user._id;
   const { name, songs } = req.body;
   try {
-    store.set("playlists", null);
+    exports.store.set("playlists", null);
     const newPlaylist = await Playlist.create({
       name,
       songs,
@@ -140,7 +145,7 @@ exports.savePlaylist = catchAsync(async (req, res, next) => {
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const user = res.user._id;
   const cookies = req.cookies;
-  const storedPlaylists = store.get("playlists");
+  const storedPlaylists = exports.store.get("playlists");
   if (storedPlaylists !== null) {
     res.playlists = storedPlaylists;
     return next();
@@ -180,7 +185,7 @@ exports.getPlaylists = catchAsync(async (req, res, next) => {
       };
     });
 
-    store.set("playlists", playlists);
+    exports.store.set("playlists", playlists);
 
     res.playlists = playlists;
 
@@ -207,15 +212,22 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
         new AppError(`You have no playlists with the name '${req.params.name}'`)
       );
 
-    const playlists = store.get("playlists");
+    const playlists = exports.store.get("playlists");
 
     if (!playlists) {
       return res.redirect("/playlists");
     }
 
     playlist = playlists.filter((playlist) => {
-      return playlist.name === req.params.name;
+      return slugify(playlist.name) === req.params.name;
     });
+
+    if (!playlist)
+      return next(
+        new AppError(
+          `There was a problem getting the playlist '${req.params.name}'`
+        )
+      );
 
     req.playlist = playlist[0];
     next();
@@ -227,16 +239,20 @@ exports.getPlaylist = catchAsync(async (req, res, next) => {
 exports.deletePlaylist = catchAsync(async (req, res, next) => {
   const name = req.body.name;
   const user = res.user._id;
-  let storedPlaylists = store.get("playlists");
+  let storedPlaylists = exports.store.get("playlists");
   try {
     if (storedPlaylists !== null) {
       storedPlaylists = storedPlaylists.filter((playlist) => {
         return playlist.name !== name;
       });
-      store.set("playlists", storedPlaylists);
+      exports.store.set("playlists", storedPlaylists);
     }
-    const deleted = await Playlist.findOneAndDelete({ name });
-    const playlists = await Playlist.find({ user });
+    const playlist = await Playlist.findOneAndDelete({ name, user });
+    if (!playlist) {
+      return next(
+        new AppError(`You have no playlists with this name to delete ${name}`)
+      );
+    }
     res.status(200).json({
       status: "success",
     });

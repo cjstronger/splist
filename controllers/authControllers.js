@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
 const { default: axios } = require("axios");
 const { SendEmail } = require("../utils/mailer");
+const { store } = require("./playlistControllers");
+const util = require("util");
 
 exports.signUp = catchAsync(async function (req, res, next) {
   const { email, password, confirmPassword, name } = req.body;
@@ -48,6 +50,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = (req, res) => {
+  store.set("playlists", null);
   res.cookie("jwt", "");
   res.user = null;
   res.status(200).json({
@@ -63,7 +66,10 @@ function signJWT(id) {
 
 exports.verify = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
-    const verifiedToken = jwt.verify(req.cookies.jwt, process.env.JWT_KEY);
+    const verifiedToken = await util.promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_KEY
+    );
 
     const freshUser = await User.findById(verifiedToken.id);
     if (!freshUser)

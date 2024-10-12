@@ -558,3 +558,24 @@ export function handleFailAnimation(io) {
     });
   }
 }
+
+export function handleFormSumbit(io, span, spinner) {
+  if (io) {
+    gsap.to(span, {
+      opacity: 0,
+      duration: 0.25,
+    });
+    gsap.to(spinner, {
+      opacity: 1,
+      delay: 0.3,
+    });
+  } else {
+    gsap.to(span, {
+      opacity: 1,
+      delay: 0.3,
+    });
+    gsap.to(spinner, {
+      opacity: 0,
+    });
+  }
+}

@@ -5,6 +5,13 @@
   --secondary: white;
 }
 
+[data-theme="dark"] {
+  --bg: #414141;
+  --accent: #282828;
+  --text: #e8e8e8;
+  --secondary: black;
+}
+
 * {
   font-family: "Work Sans";
   font-weight: 600;
@@ -38,6 +45,7 @@ a {
   cursor: pointer;
   color: var(--text);
   font-size: 25px;
+  padding: 0;
 }
 
 nav {
@@ -104,7 +112,7 @@ input:-webkit-autofill:focus {
   width: 200px;
   height: auto;
   text-align: center;
-  padding: 10px;
+  padding: 25px 5px;
   color: var(--text);
   border-radius: 20px;
   position: absolute;
@@ -226,6 +234,7 @@ input:-webkit-autofill:focus {
   border-radius: 20px;
   margin-top: 20px;
   transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+  position: relative;
 }
 .form-button:hover {
   background: var(--secondary);
@@ -244,8 +253,10 @@ input:-webkit-autofill:focus {
 .error {
   color: #d65a5a;
   z-index: 10;
-  padding: 5px 10px;
+  width: 400px;
+  padding-bottom: 10px;
   text-align: center;
+  margin: 0 auto;
 }
 .success {
   color: #1db954;
@@ -330,7 +341,7 @@ input:-webkit-autofill:focus {
 
 .user {
   cursor: pointer;
-  z-index: 5;
+  z-index: 15;
   position: relative;
 }
 .modal-svg {
@@ -339,6 +350,31 @@ input:-webkit-autofill:focus {
   color: var(--text);
   transition: color 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
   padding-left: 10px;
+}
+.modal-svg-close {
+  width: 60px;
+  height: 60px;
+}
+.hide-password {
+  overflow: hidden;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  cursor: pointer;
+  position: absolute;
+  right: -5px;
+  top: 6px;
+  background: var(--accent);
+}
+.password-svgs {
+  position: relative;
+}
+.closed-eye-svg {
+  transform: translateY(-30px);
+  position: absolute;
+}
+.eye-svg {
+  position: absolute;
 }
 
 .user-modal {
@@ -354,6 +390,9 @@ input:-webkit-autofill:focus {
   flex-direction: column;
   align-items: center;
   margin-top: 25vh;
+}
+.modal-items a p {
+  font-size: 50px !important;
 }
 .overflow-hidden > p {
   font-size: 40px !important;
@@ -376,7 +415,7 @@ input:-webkit-autofill:focus {
 }
 .upper-links > a > p,
 .upper-links > button > p {
-  font-size: 20px !important;
+  font-size: 30px !important;
 }
 .close-menu {
   width: 65px;
@@ -561,11 +600,12 @@ input:-webkit-autofill:focus {
   transform: translateY(50px);
 }
 .previews-switch {
-  width: 40%;
-  height: 80%;
+  width: 25px;
+  height: 25px;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   background-color: var(--accent);
+  margin-left: 3px;
 }
 .switch-icon {
   color: var(--accent);
@@ -642,7 +682,7 @@ input:-webkit-autofill:focus {
   display: flex;
   align-items: center;
   gap: 50px;
-  z-index: 10;
+  z-index: 8;
 }
 .spotify-buttons-playlist {
   overflow: hidden;
@@ -650,7 +690,7 @@ input:-webkit-autofill:focus {
   left: 50%;
   bottom: 10%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 8;
 }
 .spotify-playlist-submit {
   background-color: #1db954;
@@ -938,6 +978,10 @@ input:-webkit-autofill:focus {
   width: 5px;
 }
 
+.form-spinner {
+  left: 40% !important;
+  top: -40% !important;
+}
 .lds-ellipsis {
   color: var(--text);
   position: absolute;
