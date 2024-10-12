@@ -14,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://splist-self.vercel.app/"],
+    origin: ["https://splist-2f0dc642f6ab.herokuapp.com/welcome"],
     methods: ["POST", "GET", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -30,7 +30,7 @@ app.use(
         scriptSrc: ["'self'", "https:", "http:", "blob:"],
         objectSrc: ["'none'"],
         styleSrc: ["'self'", "https:", "'unsafe-inline'"],
-        childSrc: ["'self'", "blob:", "https://vercel.live/"],
+        childSrc: ["'self'", "blob:"],
         imgSrc: ["'self'", "data:", "blob:", "https:"],
         formAction: ["'self'"],
         connectSrc: [
@@ -41,9 +41,8 @@ app.use(
           "https://*.spotify.com",
           "https://bundle.js:*",
           "ws://127.0.0.1:*/",
-          "wss://splist-self.vercel.app:*/",
           "https://i.scdn.co/image/*",
-          "https://vercel.live/'",
+          "wss://*.herokuapp.com:*/",
           "wss://ws-us3.pusher.com",
         ],
         upgradeInsecureRequests: [],
