@@ -41,37 +41,40 @@ exports.sendPlaylist = async (params) => {
     );
   });
   submitButton.addEventListener("mousedown", async () => {
-    gsap.to(submitSpan, {
-      y: 80,
-      duration: 0.5,
-    });
-    gsap.to(spinner, {
-      opacity: 1,
-      delay: 0.5,
-      duration: 0.5,
-    });
-    try {
-      await axios.post("/api/playlists/save", {
-        name: params.name,
-        songs: params.uris,
-      });
-    } catch (err) {
-      await buffer(500);
+    if (submitButton.dataset.clicked !== "true") {
       gsap.to(submitSpan, {
-        y: 0,
+        y: 80,
         duration: 0.5,
-        delay: 0.5,
       });
       gsap.to(spinner, {
-        opacity: 0,
+        opacity: 1,
+        delay: 0.5,
         duration: 0.5,
       });
-      return toast(err.response.data.message, "fail");
+      try {
+        await axios.post("/api/playlists/save", {
+          name: params.name,
+          songs: params.uris,
+        });
+      } catch (err) {
+        await buffer(500);
+        gsap.to(submitSpan, {
+          y: 0,
+          duration: 0.5,
+          delay: 0.5,
+        });
+        gsap.to(spinner, {
+          opacity: 0,
+          duration: 0.5,
+        });
+        return toast(err.response.data.message, "fail");
+      }
     }
     const { data } = await axios.post("/api/playlists/create", {
       name: params.name,
       uris: params.uris,
     });
+    submitButton.dataset.clicked = "true";
     submitSpan.innerHTML =
       '<span>open <img src="/images/Spotify_icon.svg" width="50px"/></span>';
     submitButton.addEventListener("mousedown", () => {
@@ -95,7 +98,6 @@ exports.savePlaylist = async (params) => {
       name: params.name,
       songs: params.uris,
     });
-    console.log(data);
     return toast("Playlist created!", "success");
   } catch (err) {
     return toast(err.response.data.message, "fail");

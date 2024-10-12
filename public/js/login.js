@@ -10,7 +10,6 @@ export async function login(email, password) {
     if (res.data.status === "success") location.assign("/");
     return { error };
   } catch (err) {
-    console.log(err);
     error = err.response.data.message;
     return { error };
   }
@@ -49,7 +48,6 @@ export async function forgotPassword(email) {
     });
     if (data.status === "success") return { error };
   } catch (err) {
-    console.log(err);
     error = err.response.data.message;
     return { error };
   }

@@ -11588,12 +11588,11 @@ function _login() {
         case 9:
           _context.prev = 9;
           _context.t0 = _context["catch"](1);
-          console.log(_context.t0);
           error = _context.t0.response.data.message;
           return _context.abrupt("return", {
             error: error
           });
-        case 14:
+        case 13:
         case "end":
           return _context.stop();
       }
@@ -11694,17 +11693,16 @@ function _forgotPassword() {
             error: error
           });
         case 8:
-          _context4.next = 15;
+          _context4.next = 14;
           break;
         case 10:
           _context4.prev = 10;
           _context4.t0 = _context4["catch"](1);
-          console.log(_context4.t0);
           error = _context4.t0.response.data.message;
           return _context4.abrupt("return", {
             error: error
           });
-        case 15:
+        case 14:
         case "end":
           return _context4.stop();
       }
@@ -11833,6 +11831,10 @@ exports.sendPlaylist = /*#__PURE__*/function () {
             return _regeneratorRuntime().wrap(function _callee2$(_context2) {
               while (1) switch (_context2.prev = _context2.next) {
                 case 0:
+                  if (!(submitButton.dataset.clicked !== "true")) {
+                    _context2.next = 15;
+                    break;
+                  }
                   _gsap.default.to(submitSpan, {
                     y: 80,
                     duration: 0.5
@@ -11842,21 +11844,21 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                     delay: 0.5,
                     duration: 0.5
                   });
-                  _context2.prev = 2;
-                  _context2.next = 5;
+                  _context2.prev = 3;
+                  _context2.next = 6;
                   return _axios.default.post("/api/playlists/save", {
                     name: params.name,
                     songs: params.uris
                   });
-                case 5:
-                  _context2.next = 14;
+                case 6:
+                  _context2.next = 15;
                   break;
-                case 7:
-                  _context2.prev = 7;
-                  _context2.t0 = _context2["catch"](2);
-                  _context2.next = 11;
+                case 8:
+                  _context2.prev = 8;
+                  _context2.t0 = _context2["catch"](3);
+                  _context2.next = 12;
                   return buffer(500);
-                case 11:
+                case 12:
                   _gsap.default.to(submitSpan, {
                     y: 0,
                     duration: 0.5,
@@ -11867,15 +11869,16 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                     duration: 0.5
                   });
                   return _context2.abrupt("return", (0, _toast.default)(_context2.t0.response.data.message, "fail"));
-                case 14:
-                  _context2.next = 16;
+                case 15:
+                  _context2.next = 17;
                   return _axios.default.post("/api/playlists/create", {
                     name: params.name,
                     uris: params.uris
                   });
-                case 16:
+                case 17:
                   _yield$axios$post = _context2.sent;
                   data = _yield$axios$post.data;
+                  submitButton.dataset.clicked = "true";
                   submitSpan.innerHTML = '<span>open <img src="/images/Spotify_icon.svg" width="50px"/></span>';
                   submitButton.addEventListener("mousedown", function () {
                     window.open("".concat(data.link), "_blank");
@@ -11889,11 +11892,11 @@ exports.sendPlaylist = /*#__PURE__*/function () {
                     opacity: 0,
                     duration: 0.5
                   });
-                case 22:
+                case 24:
                 case "end":
                   return _context2.stop();
               }
-            }, _callee2, null, [[2, 7]]);
+            }, _callee2, null, [[3, 8]]);
           })));
         case 8:
         case "end":
@@ -11920,17 +11923,16 @@ exports.savePlaylist = /*#__PURE__*/function () {
         case 3:
           _yield$axios$post2 = _context4.sent;
           data = _yield$axios$post2.data;
-          console.log(data);
           return _context4.abrupt("return", (0, _toast.default)("Playlist created!", "success"));
-        case 9:
-          _context4.prev = 9;
+        case 8:
+          _context4.prev = 8;
           _context4.t0 = _context4["catch"](0);
           return _context4.abrupt("return", (0, _toast.default)(_context4.t0.response.data.message, "fail"));
-        case 12:
+        case 11:
         case "end":
           return _context4.stop();
       }
-    }, _callee4, null, [[0, 9]]);
+    }, _callee4, null, [[0, 8]]);
   }));
   return function (_x3) {
     return _ref4.apply(this, arguments);
@@ -12345,7 +12347,7 @@ function addDeleteListeners() {
           case 9:
             _context.prev = 9;
             _context.t0 = _context["catch"](4);
-            console.log(_context.t0);
+            return _context.abrupt("return");
           case 12:
           case "end":
             return _context.stop();
@@ -13299,7 +13301,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54662" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57100" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

@@ -295,7 +295,7 @@ function addDeleteListeners() {
           },
         });
       } catch (err) {
-        console.log(err);
+        return
       }
     });
     deleteButton.addEventListener("mouseenter", () => {

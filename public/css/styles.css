@@ -800,12 +800,12 @@ input:-webkit-autofill:focus {
 
 .saved-playlists {
   width: 100%;
-  transform: rotateX(20deg);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .playlist-group {
+  position: relative;
   width: 90%;
   max-width: 800px;
   height: 300px;
