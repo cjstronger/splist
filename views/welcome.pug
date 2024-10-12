@@ -1,0 +1,24 @@
+extends base
+
+mixin step(number, img, title, description)
+    hr.break-line
+    .welcome-step 
+        .step-left 
+            h3= `step ${number}`
+            h1= title
+            p= description
+        .step-right 
+            img(src=`/images/${img}`)
+
+block content 
+    .welcome-page 
+        .split
+            h1 generate
+            h1 playlists 
+            h1 with ease
+            a.button(href='/login') start now
+        .split
+            img(src="/images/splist-mac-model.png").product-img
+    +step('1', '/step-1', 'type and submit', 'as simple as that, splist will generate the playlist based on your request.')
+    +step('2', '/step-2', 'send to spotify', 'if you like what you see, send the playlist to spotify or try again. you can also save for later, youtube support coming soon.')
+    +step('3', '/step-3', 'enjoy', 'open the playlist right from splist and jam out!')

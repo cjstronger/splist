@@ -7,9 +7,8 @@ const viewsRouter = express.Router();
 
 viewsRouter.use(authController.isLoggedIn);
 
-viewsRouter.get("/thank-you", viewsController.getThankYou);
-
-viewsRouter.get("/", viewsController.getHome);
+viewsRouter.get("/welcome", viewsController.getWelcome);
+viewsRouter.get("/", authController.verify, viewsController.getHome);
 viewsRouter.get("/login", viewsController.getLogin);
 viewsRouter.get("/reset-password/:token", viewsController.getResetPassword);
 viewsRouter.get(
@@ -19,6 +18,10 @@ viewsRouter.get(
 );
 
 viewsRouter.get("/error", viewsController.getError);
+
+viewsRouter.use(authController.protect);
+
+viewsRouter.get("/thank-you", viewsController.getThankYou);
 
 viewsRouter.get(
   "/playlists",

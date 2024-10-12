@@ -1,5 +1,3 @@
-const querystring = require("querystring");
-const cookieParser = require("cookie-parser");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getHome = (req, res) => {
@@ -8,47 +6,17 @@ exports.getHome = (req, res) => {
   });
 };
 
+exports.getWelcome = (req, res) => {
+  res.render("welcome", {
+    title: "Welcome",
+  });
+};
+
 exports.getLogin = (req, res) => {
   res.render("login", {
     title: "Login",
   });
 };
-
-const generateRandomString = (length) => {
-  const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const values = crypto.getRandomValues(new Uint8Array(length));
-  return values.reduce((acc, x) => acc + possible[x % possible.length], "");
-};
-
-exports.getSpotify = catchAsync(async (req, res) => {
-  const state = generateRandomString(16);
-  const spotifyAuthUrl =
-    "https://accounts.spotify.com/authorize?" +
-    querystring.stringify({
-      response_type: "code",
-      client_id: process.env.SPOTIFY_ID,
-      scope: "playlist-modify-public playlist-modify-private",
-      redirect_uri: `${req.headers.origin}/api/auth/callback`,
-      state: state,
-      show_dialog: true,
-    });
-
-  if (process.env.MODE === "production") {
-    res.cookie("state", state, {
-      httpOnly: true,
-      secure: true,
-    });
-  } else {
-    res.cookie("state", state, {
-      httpOnly: true,
-    });
-  }
-
-  res.cookie("api", false);
-
-  return next();
-});
 
 exports.getPlaylists = catchAsync(async (req, res, next) => {
   const { playlists } = res;

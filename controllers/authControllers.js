@@ -58,14 +58,8 @@ exports.logout = (req, res) => {
   });
 };
 
-function signJWT(id) {
-  return jwt.sign({ id }, process.env.JWT_KEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-}
-
 exports.verify = catchAsync(async (req, res, next) => {
-  if (req.cookies.jwt) {
+  if (req?.cookies?.jwt) {
     const verifiedToken = await util.promisify(jwt.verify)(
       req.cookies.jwt,
       process.env.JWT_KEY
@@ -79,7 +73,7 @@ exports.verify = catchAsync(async (req, res, next) => {
 
     return next();
   }
-  return res.redirect("/login");
+  res.redirect("/welcome");
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
@@ -288,4 +282,20 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     status: "success",
     token,
   });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  if (req?.cookies?.jwt) {
+    const verifiedToken = await util.promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_KEY
+    );
+
+    const user = await User.findById(verifiedToken.id);
+
+    if (!user) return res.redirect("/");
+
+    return next();
+  }
+  return res.redirect("/");
 });
