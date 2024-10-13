@@ -14,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://splist-2f0dc642f6ab.herokuapp.com/welcome"],
+    origin: ["https://spli.st", "https://www.spli.st"],
     methods: ["POST", "GET", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -43,6 +43,8 @@ app.use(
           "ws://127.0.0.1:*/",
           "https://i.scdn.co/image/*",
           "wss://*.herokuapp.com:*/",
+          "https://spli.st/*",
+          "https://www.spli.st/*",
           "wss://ws-us3.pusher.com",
         ],
         mediaSrc: ["'self'", "https:", "http:"],
