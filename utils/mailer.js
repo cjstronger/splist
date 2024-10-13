@@ -1,15 +1,8 @@
-const { createTransport } = require("nodemailer");
+const { Resend } = require("resend");
 const pug = require("pug");
 const path = require("path");
 
-const transporter = createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 587,
-  auth: {
-    user: process.env.MAIL_USERNAME,
-    pass: process.env.MAIL_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_KEY);
 
 exports.SendEmail = class SendEmail {
   constructor(mailOptions, view) {
@@ -24,7 +17,7 @@ exports.SendEmail = class SendEmail {
       }
     );
     this.mailOptions.html = html;
-    await transporter.sendMail(this.mailOptions);
+    await resend.emails.send(this.mailOptions);
   }
 };
 

@@ -1,14 +1,16 @@
 extends base
 
-mixin step(number, img, title, description)
+mixin step(number, video, title, description)
     hr.break-line
     .welcome-step 
         .step-left 
             h3= `step ${number}`
             h1= title
             p= description
-        .step-right 
-            img(src=`/images/${img}`)
+        .step-right
+            if video
+                video.video(height="700" width="1100" muted playsinline loading='lazy' loop)
+                    source(src=`/videos/${video}` type="video/mp4")
 
 block content 
     .welcome-page 
@@ -19,7 +21,7 @@ block content
             a.button(href='/login') start now
         .split
             img(src="/images/splist-mac-model.png").product-img
-    +step('1', '/step-1', 'create account', 'create an account with splist and login with spotify.')
-    +step('2', '/step-2', 'type and submit', 'as simple as that, splist will generate the playlist based on your request.')
-    +step('3', '/step-3', 'send to spotify', 'if you like what you see, send the playlist to spotify or try again. you can also save for later, youtube support coming soon.')
-    +step('4', '/step-4', 'enjoy', 'open the playlist right from splist and jam out!')
+        +step('1', 'splist-1.mp4', 'create account', 'create an account with splist and login with spotify.')
+        +step('2', 'splist-2.mp4', 'type and submit', 'as simple as that, splist will generate the playlist based on your request.')
+        +step('3', 'splist-3.mp4', 'send to spotify', 'if you like what you see, send the playlist to spotify or try again. you can also save for later, youtube support coming soon.')
+        +step('4', '', 'enjoy', 'open the playlist right from splist and jam out!')

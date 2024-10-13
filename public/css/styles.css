@@ -74,6 +74,11 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s !important;
 }
 
+video {
+  width: 700px;
+  height: 100%;
+}
+
 .site-title-container {
   position: absolute;
   width: 100vw;
@@ -96,7 +101,7 @@ input:-webkit-autofill:focus {
 .welcome-page {
   display: flex;
   flex-direction: column;
-  margin-top: 15vh;
+  margin: 15vh 0;
 }
 .split {
   display: flex;
@@ -110,6 +115,9 @@ input:-webkit-autofill:focus {
 }
 .split a {
   max-width: 120px;
+}
+.step-left p {
+  max-width: 300px;
 }
 .product-img {
   max-width: 800px;
@@ -126,7 +134,7 @@ input:-webkit-autofill:focus {
 }
 .welcome-step {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 .step-left {
   display: flex;
@@ -927,6 +935,11 @@ input:-webkit-autofill:focus {
 }
 
 @media (max-width: 1150px) {
+  .welcome-step {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
   .loaders {
     grid-template-columns: 200px 200px 200px !important;
   }
@@ -946,6 +959,9 @@ input:-webkit-autofill:focus {
 }
 
 @media (max-width: 750px) {
+  video {
+    width: 90vw;
+  }
   .button:hover {
     background-color: var(--accent);
   }

@@ -462,3 +462,21 @@ if (hidePassword.length) {
     });
   });
 }
+
+const videos = document.querySelectorAll("video");
+
+if (videos.length) {
+  window.addEventListener("scroll", () => {
+    videos.forEach((video) => {
+      const { offsetTop, offsetHeight } = video;
+      if (
+        offsetTop - offsetHeight <= window.scrollY + 300 &&
+        window.scrollY <= offsetTop - offsetHeight + 400
+      ) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    });
+  });
+}

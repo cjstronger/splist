@@ -45,6 +45,7 @@ app.use(
           "wss://*.herokuapp.com:*/",
           "wss://ws-us3.pusher.com",
         ],
+        mediaSrc: ["'self'", "https:", "http:"],
         upgradeInsecureRequests: [],
       },
     },
