@@ -118,6 +118,18 @@ video {
 }
 .step-left p {
   max-width: 300px;
+  font-size: 20px;
+  line-height: 2px;
+}
+.step-hr {
+  width: 100%;
+  height: 5px;
+  outline: none;
+  border: none;
+  background: var(--accent);
+}
+.step-iteration {
+  font-size: 90px;
 }
 .product-img {
   max-width: 800px;
@@ -134,7 +146,8 @@ video {
 }
 .welcome-step {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 .step-left {
   display: flex;
@@ -959,6 +972,11 @@ video {
 }
 
 @media (max-width: 750px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: var(--text);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.55);
+  }
   video {
     width: 90vw;
   }

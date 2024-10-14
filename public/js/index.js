@@ -480,3 +480,20 @@ if (videos.length) {
     });
   });
 }
+
+const startNow = document.querySelector(".start-now");
+
+if (startNow) {
+  startNow.addEventListener("mousedown", () => {
+    const date = new Date();
+    date.setSeconds(date.getSeconds() + 10);
+    const expires = date.toUTCString();
+    document.cookie = `newUser=true; expires=${expires}`;
+  });
+}
+
+if (location.pathname === "/login") {
+  if (document.cookie.includes("newUser")) {
+    handleLoginForm(true);
+  }
+}

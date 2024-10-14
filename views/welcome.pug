@@ -4,8 +4,9 @@ mixin step(number, video, title, description)
     hr.break-line
     .welcome-step 
         .step-left 
-            h3= `step ${number}`
+            h1.step-iteration= `step ${number}`
             h1= title
+            hr.step-hr
             p= description
         .step-right
             if video
@@ -18,7 +19,7 @@ block content
             h1 generate
             h1 playlists 
             h1 with ease
-            a.button(href='/login') start now
+            a.button.start-now(href='/login') start now
         .split
             img(src="/images/splist-mac-model.png").product-img
         +step('1', 'splist-1.mp4', 'create account', 'create an account with splist and login with spotify.')
