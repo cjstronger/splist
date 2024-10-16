@@ -23,18 +23,11 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
     );
 
   try {
-    // const AIContent = await openai.chat.completions.create({
-    //   model: "gpt-3.5-turbo",
-    //   messages: [{ role: "user", content: message }],
-    // });
-    // const playlists = JSON.parse(AIContent.choices[0].message.content);
-    const playlists = {
-      COIN: "Talk Too Much",
-      "Glass Animals": "Gooey",
-      "The Head and the Heart": "All We Ever Knew",
-      "Portugal. The Man": "Feel It Still",
-      "Young the Giant": "Cough Syrup",
-    };
+    const AIContent = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: message }],
+    });
+    const playlists = JSON.parse(AIContent.choices[0].message.content);
 
     const spotifySearches = Object.keys(playlists).map((key) => {
       let url = `https://api.spotify.com/v1/search?q=track:${playlists[
