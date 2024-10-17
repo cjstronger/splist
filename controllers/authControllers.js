@@ -231,9 +231,9 @@ exports.sendResetEmail = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   const mailOptions = {
-    from: "Acme <onboarding@resend.dev>",
+    from: "Splist <no-reply@spli.st>",
     to: `${user.email}`,
-    subject: "Password Reset | Splist",
+    subject: "[Splist] Password Reset",
   };
   const url = `${req.headers.origin}/reset-password/${resetToken}`;
   try {
