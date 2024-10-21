@@ -11780,7 +11780,9 @@ exports.spotifyGenerate = /*#__PURE__*/function () {
           data = null;
           _context.prev = 2;
           _context.next = 5;
-          return _axios.default.post("/api/playlists/generate", params);
+          return _axios.default.post("/api/playlists/generate", {
+            message: params
+          });
         case 5:
           _data = _context.sent;
           return _context.abrupt("return", {
@@ -12948,21 +12950,18 @@ if (chatBot) {
             e.preventDefault();
             handleLoaders(true);
             _context9.next = 4;
-            return buffer(1000);
-          case 4:
-            _context9.next = 6;
             return spotify.spotifyGenerate(parameters.value);
-          case 6:
+          case 4:
             _yield$spotify$spotif = _context9.sent;
             data = _yield$spotify$spotif.data;
             err = _yield$spotify$spotif.err;
             handleLoaders(false);
             if (!err) {
-              _context9.next = 12;
+              _context9.next = 10;
               break;
             }
             return _context9.abrupt("return");
-          case 12:
+          case 10:
             uris = [];
             playlist = document.createElement("div");
             playlist.className = "playlist";
@@ -13015,9 +13014,9 @@ if (chatBot) {
                 return _ref9.apply(this, arguments);
               };
             }());
-            _context9.next = 29;
+            _context9.next = 27;
             return spotify.sendPlaylist(params);
-          case 29:
+          case 27:
           case "end":
             return _context9.stop();
         }
@@ -13329,7 +13328,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58276" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51301" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

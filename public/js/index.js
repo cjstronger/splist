@@ -194,7 +194,6 @@ if (chatBot) {
   chatBot.addEventListener("submit", async (e) => {
     e.preventDefault();
     handleLoaders(true);
-    await buffer(1000);
     const { data, err } = await spotify.spotifyGenerate(parameters.value);
     handleLoaders(false);
     if (err) {

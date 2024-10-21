@@ -8,7 +8,9 @@ exports.spotifyGenerate = async (params) => {
   let err = null;
   let data = null;
   try {
-    const data = await axios.post("/api/playlists/generate", params);
+    const data = await axios.post("/api/playlists/generate", {
+      message: params,
+    });
     return { data, err };
   } catch (err) {
     toast(err.response.data.message, "fail");

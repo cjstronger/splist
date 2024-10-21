@@ -14,7 +14,8 @@ exports.store = jsonStorage.create(localStorage, "storage", {
 
 exports.generatePlaylist = catchAsync(async (req, res, next) => {
   const openai = new OpenAI();
-  const message = `Generate a playlist that takes in these requirements: ${req.body.message} and make the output a json object with the artist as the key and the trackname as the value`;
+  console.log(req.body.message);
+  const message = `Look at the following input: '${req.body.message}'. Create a playlist that matches the mood, style, or genre described in the prompt. Output the playlist in a JSON object format, where each key is the artist's name and each value is the song name. If no direct matches are found, suggest songs that are generally associated with similar genres or themes.`;
   const cookies = cookieParser.JSONCookies(req.cookies);
 
   if (!cookies.spotify_token)
@@ -24,9 +25,10 @@ exports.generatePlaylist = catchAsync(async (req, res, next) => {
 
   try {
     const AIContent = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [{ role: "user", content: message }],
     });
+
     const playlists = JSON.parse(AIContent.choices[0].message.content);
 
     const spotifySearches = Object.keys(playlists).map((key) => {
